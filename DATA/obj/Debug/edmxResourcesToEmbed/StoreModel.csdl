@@ -1,0 +1,574 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CompanyPOSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="Value" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Category_Store" FromRole="Category" ToRole="Store" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_Item_Category" FromRole="Category" ToRole="Item" />
+  </EntityType>
+  <EntityType Name="Invoice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SaleID" Type="Int32" Nullable="false" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="PaymentMethod" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Sale" Relationship="Self.FK_Invoice_Sale" FromRole="Invoice" ToRole="Sale" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Invoice_Store" FromRole="Invoice" ToRole="Store" />
+  </EntityType>
+  <EntityType Name="Item">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="UnitPrice" Type="Single" />
+    <Property Name="CategoryID" Type="Int32" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_Item_Category" FromRole="Item" ToRole="Category" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Item_Store" FromRole="Item" ToRole="Store" />
+    <NavigationProperty Name="ItemPagePosition" Relationship="Self.FK_ItemPagePosition_Item" FromRole="Item" ToRole="ItemPagePosition" />
+    <NavigationProperty Name="ItemPurchase" Relationship="Self.FK_ItemPurchase_Item" FromRole="Item" ToRole="ItemPurchase" />
+    <NavigationProperty Name="Sale" Relationship="Self.FK_Sale_Item" FromRole="Item" ToRole="Sale" />
+    <NavigationProperty Name="ItemAttribute" Relationship="Self.FK_SubItem_Item" FromRole="Item" ToRole="ItemAttribute" />
+  </EntityType>
+  <EntityType Name="ItemAttribute">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="ItemID" Type="Int32" Nullable="false" />
+    <Property Name="Value" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="Price" Type="Single" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="Visible" Type="Boolean" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_SubItem_Item" FromRole="ItemAttribute" ToRole="Item" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_ItemAttribute_Store" FromRole="ItemAttribute" ToRole="Store" />
+  </EntityType>
+  <EntityType Name="ItemPagePosition">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="hPos" Type="Int32" />
+    <Property Name="vPos" Type="Int32" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="ItemID" Type="Int32" Nullable="false" />
+    <Property Name="MenuID" Type="Int32" Nullable="false" />
+    <Property Name="Page" Type="Int32" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_ItemPagePosition_Item" FromRole="ItemPagePosition" ToRole="Item" />
+    <NavigationProperty Name="Menu" Relationship="Self.FK_ItemPagePosition_Menu" FromRole="ItemPagePosition" ToRole="Menu" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_ItemPagePosition_Store" FromRole="ItemPagePosition" ToRole="Store" />
+  </EntityType>
+  <EntityType Name="Menu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="Page" Type="Int32" />
+    <NavigationProperty Name="ItemPagePosition" Relationship="Self.FK_ItemPagePosition_Menu" FromRole="Menu" ToRole="ItemPagePosition" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Menu_Store" FromRole="Menu" ToRole="Store" />
+  </EntityType>
+  <EntityType Name="Sale">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="ItemID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="ShiftID" Type="Int32" Nullable="false" />
+    <Property Name="Title" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+    <Property Name="DiscountAmount" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DiscountRate" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="TaxAmunt" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="TaxRate" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="TotalPrice" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="SubtotalPrice" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Invoice" Relationship="Self.FK_Invoice_Sale" FromRole="Sale" ToRole="Invoice" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_Sale_Item" FromRole="Sale" ToRole="Item" />
+    <NavigationProperty Name="ItemPurchase" Relationship="Self.FK_ItemPurchase_Sale" FromRole="Sale" ToRole="ItemPurchase" />
+    <NavigationProperty Name="Shift" Relationship="Self.FK_Sale_Shift" FromRole="Sale" ToRole="Shift" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Sale_Store" FromRole="Sale" ToRole="Store" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_Sale_Users" FromRole="Sale" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Session">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="TokenID" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Precision="3" />
+    <Property Name="LastUpdate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Shift">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="TimeStart" Type="DateTime" Precision="3" />
+    <Property Name="TimeEnd" Type="DateTime" Precision="3" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Sale" Relationship="Self.FK_Sale_Shift" FromRole="Shift" ToRole="Sale" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Shift_Store" FromRole="Shift" ToRole="Store" />
+  </EntityType>
+  <EntityType Name="Store">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_Category_Store" FromRole="Store" ToRole="Category" />
+    <NavigationProperty Name="Invoice" Relationship="Self.FK_Invoice_Store" FromRole="Store" ToRole="Invoice" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_Item_Store" FromRole="Store" ToRole="Item" />
+    <NavigationProperty Name="ItemAttribute" Relationship="Self.FK_ItemAttribute_Store" FromRole="Store" ToRole="ItemAttribute" />
+    <NavigationProperty Name="ItemPagePosition" Relationship="Self.FK_ItemPagePosition_Store" FromRole="Store" ToRole="ItemPagePosition" />
+    <NavigationProperty Name="Menu" Relationship="Self.FK_Menu_Store" FromRole="Store" ToRole="Menu" />
+    <NavigationProperty Name="Sale" Relationship="Self.FK_Sale_Store" FromRole="Store" ToRole="Sale" />
+    <NavigationProperty Name="Shift" Relationship="Self.FK_Shift_Store" FromRole="Store" ToRole="Shift" />
+    <NavigationProperty Name="ItemPurchase" Relationship="Self.FK_ItemPurchase_Store" FromRole="Store" ToRole="ItemPurchase" />
+    <NavigationProperty Name="UserActivity" Relationship="Self.FK_UserActivity_Store" FromRole="Store" ToRole="UserActivity" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_Users_Store" FromRole="Store" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Type" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="TypeID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="18" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="UserLevel" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Sale" Relationship="Self.FK_Sale_Users" FromRole="Users" ToRole="Sale" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_Users_Store" FromRole="Users" ToRole="Store" />
+    <NavigationProperty Name="UserActivity" Relationship="Self.FK_UserActivity_Users" FromRole="Users" ToRole="UserActivity" />
+  </EntityType>
+  <EntityType Name="ItemPurchase">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="ItemID" />
+      <PropertyRef Name="Quantity" />
+      <PropertyRef Name="SaleID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ItemID" Type="Int32" Nullable="false" />
+    <Property Name="Quantity" Type="Int32" Nullable="false" />
+    <Property Name="Discount" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="TotalPrice" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+    <Property Name="SaleID" Type="Int32" Nullable="false" />
+    <Property Name="StoreID" Type="Int32" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_ItemPurchase_Item" FromRole="ItemPurchase" ToRole="Item" />
+    <NavigationProperty Name="Sale" Relationship="Self.FK_ItemPurchase_Sale" FromRole="ItemPurchase" ToRole="Sale" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_ItemPurchase_Store" FromRole="ItemPurchase" ToRole="Store" />
+  </EntityType>
+  <EntityType Name="UserActivity">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="StoreID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="Activity" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_UserActivity_Store" FromRole="UserActivity" ToRole="Store" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_UserActivity_Users" FromRole="UserActivity" ToRole="Users" />
+  </EntityType>
+  <Association Name="FK_Category_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Category" Type="Self.Category" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Category">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Item_Category">
+    <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+    <End Role="Item" Type="Self.Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Item">
+        <PropertyRef Name="CategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Sale">
+    <End Role="Sale" Type="Self.Sale" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sale">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="SaleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Item_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Item" Type="Self.Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Item">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPagePosition_Item">
+    <End Role="Item" Type="Self.Item" Multiplicity="1" />
+    <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemPagePosition">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPurchase_Item">
+    <End Role="Item" Type="Self.Item" Multiplicity="1" />
+    <End Role="ItemPurchase" Type="Self.ItemPurchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemPurchase">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sale_Item">
+    <End Role="Item" Type="Self.Item" Multiplicity="1" />
+    <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Sale">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SubItem_Item">
+    <End Role="Item" Type="Self.Item" Multiplicity="1" />
+    <End Role="ItemAttribute" Type="Self.ItemAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemAttribute">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemAttribute_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="ItemAttribute" Type="Self.ItemAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemAttribute">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPagePosition_Menu">
+    <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
+    <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Menu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemPagePosition">
+        <PropertyRef Name="MenuID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPagePosition_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemPagePosition">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Menu_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Menu" Type="Self.Menu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Menu">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPurchase_Sale">
+    <End Role="Sale" Type="Self.Sale" Multiplicity="1" />
+    <End Role="ItemPurchase" Type="Self.ItemPurchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sale">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemPurchase">
+        <PropertyRef Name="SaleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sale_Shift">
+    <End Role="Shift" Type="Self.Shift" Multiplicity="1" />
+    <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shift">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Sale">
+        <PropertyRef Name="ShiftID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sale_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Sale">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sale_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Sale">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Shift_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Shift" Type="Self.Shift" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Shift">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPurchase_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="0..1" />
+    <End Role="ItemPurchase" Type="Self.ItemPurchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ItemPurchase">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserActivity_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="UserActivity" Type="Self.UserActivity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserActivity">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Users_Store">
+    <End Role="Store" Type="Self.Store" Multiplicity="1" />
+    <End Role="Users" Type="Self.Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserActivity_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserActivity" Type="Self.UserActivity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserActivity">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CompanyPOSEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Category" EntityType="Self.Category" />
+    <EntitySet Name="Invoice" EntityType="Self.Invoice" />
+    <EntitySet Name="Item" EntityType="Self.Item" />
+    <EntitySet Name="ItemAttribute" EntityType="Self.ItemAttribute" />
+    <EntitySet Name="ItemPagePosition" EntityType="Self.ItemPagePosition" />
+    <EntitySet Name="Menu" EntityType="Self.Menu" />
+    <EntitySet Name="Sale" EntityType="Self.Sale" />
+    <EntitySet Name="Session" EntityType="Self.Session" />
+    <EntitySet Name="Shift" EntityType="Self.Shift" />
+    <EntitySet Name="Store" EntityType="Self.Store" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="Users" EntityType="Self.Users" />
+    <EntitySet Name="ItemPurchase" EntityType="Self.ItemPurchase" />
+    <EntitySet Name="UserActivity" EntityType="Self.UserActivity" />
+    <AssociationSet Name="FK_Category_Store" Association="Self.FK_Category_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Category" EntitySet="Category" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Item_Category" Association="Self.FK_Item_Category">
+      <End Role="Category" EntitySet="Category" />
+      <End Role="Item" EntitySet="Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Sale" Association="Self.FK_Invoice_Sale">
+      <End Role="Sale" EntitySet="Sale" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Store" Association="Self.FK_Invoice_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Item_Store" Association="Self.FK_Item_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Item" EntitySet="Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPagePosition_Item" Association="Self.FK_ItemPagePosition_Item">
+      <End Role="Item" EntitySet="Item" />
+      <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPurchase_Item" Association="Self.FK_ItemPurchase_Item">
+      <End Role="Item" EntitySet="Item" />
+      <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sale_Item" Association="Self.FK_Sale_Item">
+      <End Role="Item" EntitySet="Item" />
+      <End Role="Sale" EntitySet="Sale" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SubItem_Item" Association="Self.FK_SubItem_Item">
+      <End Role="Item" EntitySet="Item" />
+      <End Role="ItemAttribute" EntitySet="ItemAttribute" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemAttribute_Store" Association="Self.FK_ItemAttribute_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="ItemAttribute" EntitySet="ItemAttribute" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPagePosition_Menu" Association="Self.FK_ItemPagePosition_Menu">
+      <End Role="Menu" EntitySet="Menu" />
+      <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPagePosition_Store" Association="Self.FK_ItemPagePosition_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Menu_Store" Association="Self.FK_Menu_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Menu" EntitySet="Menu" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPurchase_Sale" Association="Self.FK_ItemPurchase_Sale">
+      <End Role="Sale" EntitySet="Sale" />
+      <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sale_Shift" Association="Self.FK_Sale_Shift">
+      <End Role="Shift" EntitySet="Shift" />
+      <End Role="Sale" EntitySet="Sale" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sale_Store" Association="Self.FK_Sale_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Sale" EntitySet="Sale" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sale_Users" Association="Self.FK_Sale_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Sale" EntitySet="Sale" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Shift_Store" Association="Self.FK_Shift_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Shift" EntitySet="Shift" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPurchase_Store" Association="Self.FK_ItemPurchase_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserActivity_Store" Association="Self.FK_UserActivity_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="UserActivity" EntitySet="UserActivity" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Users_Store" Association="Self.FK_Users_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserActivity_Users" Association="Self.FK_UserActivity_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserActivity" EntitySet="UserActivity" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
