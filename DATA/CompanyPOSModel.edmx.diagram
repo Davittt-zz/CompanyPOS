@@ -7,6 +7,11 @@
       <Diagram DiagramId="405b9cd8ea164c4c964a8975453fc584" Name="Diagram1">
         <EntityTypeShape EntityType="CompanyPOSModel.Users" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="CompanyPOSModel.Session" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Store" Width="1.5" PointX="6.625" PointY="2.625" />
+        <EntityTypeShape EntityType="CompanyPOSModel.UserActivity" Width="1.5" PointX="3.375" PointY="3.75" />
+        <AssociationConnector Association="CompanyPOSModel.FK_UserActivity_Store" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Users_Store" />
+        <AssociationConnector Association="CompanyPOSModel.FK_UserActivity_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

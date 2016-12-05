@@ -3,6 +3,20 @@
   <EntityContainer Name="CompanyPOSEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Users" EntityType="CompanyPOSModel.Users" />
     <EntitySet Name="Session" EntityType="CompanyPOSModel.Session" />
+    <EntitySet Name="Store" EntityType="CompanyPOSModel.Store" />
+    <EntitySet Name="UserActivity" EntityType="CompanyPOSModel.UserActivity" />
+    <AssociationSet Name="FK_UserActivity_Store" Association="CompanyPOSModel.FK_UserActivity_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="UserActivity" EntitySet="UserActivity" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Users_Store" Association="CompanyPOSModel.FK_Users_Store">
+      <End Role="Store" EntitySet="Store" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserActivity_Users" Association="CompanyPOSModel.FK_UserActivity_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserActivity" EntitySet="UserActivity" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Users">
     <Key>
@@ -17,6 +31,8 @@
     <Property Name="UserLevel" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
     <Property Name="Username" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
     <Property Name="Email" Type="String" MaxLength="40" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Users_Store" FromRole="Users" ToRole="Store" />
+    <NavigationProperty Name="UserActivity" Relationship="CompanyPOSModel.FK_UserActivity_Users" FromRole="Users" ToRole="UserActivity" />
   </EntityType>
   <EntityType Name="Session">
     <Key>
@@ -29,4 +45,60 @@
     <Property Name="Created" Type="DateTime" Precision="3" />
     <Property Name="LastUpdate" Type="DateTime" Precision="3" />
   </EntityType>
+  <EntityType Name="Store">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="UserActivity" Relationship="CompanyPOSModel.FK_UserActivity_Store" FromRole="Store" ToRole="UserActivity" />
+    <NavigationProperty Name="Users" Relationship="CompanyPOSModel.FK_Users_Store" FromRole="Store" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="UserActivity">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="Activity" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_UserActivity_Store" FromRole="UserActivity" ToRole="Store" />
+    <NavigationProperty Name="Users" Relationship="CompanyPOSModel.FK_UserActivity_Users" FromRole="UserActivity" ToRole="Users" />
+  </EntityType>
+  <Association Name="FK_UserActivity_Store">
+    <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+    <End Type="CompanyPOSModel.UserActivity" Role="UserActivity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserActivity">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Users_Store">
+    <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+    <End Type="CompanyPOSModel.Users" Role="Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Store">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="StoreID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserActivity_Users">
+    <End Type="CompanyPOSModel.Users" Role="Users" Multiplicity="1" />
+    <End Type="CompanyPOSModel.UserActivity" Role="UserActivity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserActivity">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

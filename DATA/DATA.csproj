@@ -69,6 +69,12 @@
     <Compile Include="Session.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Store.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserActivity.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Users.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>

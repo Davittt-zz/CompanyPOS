@@ -17,7 +17,11 @@ namespace DATA
     {
         public CompanyPOSEntities()
             : base("name=CompanyPOSEntities")
+
         {
+            //MADE by DD
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -27,5 +31,7 @@ namespace DATA
     
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Session> Session { get; set; }
+        public virtual DbSet<Store> Store { get; set; }
+        public virtual DbSet<UserActivity> UserActivity { get; set; }
     }
 }

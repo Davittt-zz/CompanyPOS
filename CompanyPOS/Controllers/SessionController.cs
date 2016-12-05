@@ -11,7 +11,7 @@ namespace CompanyPOS.Controllers
     public class SessionController : ApiController
     {
         // POST api/Session/Login
-       // [Route("Login")]
+        // [Route("Login")]
         [HttpPost]
         public HttpResponseMessage PostLogin([FromBody] Users user)
         {
@@ -54,7 +54,7 @@ namespace CompanyPOS.Controllers
                     }
                     else
                     {
-                        var message = Request.CreateResponse(HttpStatusCode.NotFound,"User or password invalid");
+                        var message = Request.CreateResponse(HttpStatusCode.NotFound, "User or password invalid");
                         return message;
                     }
                 }
@@ -80,7 +80,8 @@ namespace CompanyPOS.Controllers
                         database.SaveChanges();
                         return Request.CreateResponse(HttpStatusCode.OK, "Logout Succesfully");
                     }
-                    else {
+                    else
+                    {
                         return Request.CreateResponse(HttpStatusCode.NoContent, "Nothing to Delete");
                     }
                 }
@@ -91,7 +92,29 @@ namespace CompanyPOS.Controllers
             }
         }
 
-
+        public Session Autenticate(string token)
+        {
+            try
+            {
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    Session session = database.Session.ToList().FirstOrDefault(x => x.TokenID.Trim().Equals(token.Trim()));
+                    if (session != null)
+                    {
+                        return session;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+      
         // GET: api/Session
         //public IEnumerable<string> Get()
         //{
@@ -110,9 +133,9 @@ namespace CompanyPOS.Controllers
         //  }
         //
         // PUT: api/Session/5
-    //   public void Put(int id, [FromBody]string value)
-    //   {
-    //   }
+        //   public void Put(int id, [FromBody]string value)
+        //   {
+        //   }
 
         // DELETE: api/Session/5
         public void Delete(int id)
