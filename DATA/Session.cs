@@ -12,16 +12,13 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class Users
+    public partial class Session
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string TypeID { get; set; }
-        public string Password { get; set; }
+        public int UserID { get; set; }
         public int StoreID { get; set; }
-        public string UserLevel { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
+        public string TokenID { get; set; }
+        public Nullable<System.DateTime> Created { get; set; }
+        public Nullable<System.DateTime> LastUpdate { get; set; }
     }
 }

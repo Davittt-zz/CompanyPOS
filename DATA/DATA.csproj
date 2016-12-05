@@ -66,6 +66,9 @@
       <DependentUpon>CompanyPOSModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Users.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>

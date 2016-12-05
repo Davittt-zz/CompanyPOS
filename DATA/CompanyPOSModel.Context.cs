@@ -26,5 +26,6 @@ namespace DATA
         }
     
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Session> Session { get; set; }
     }
 }

@@ -10,19 +10,89 @@ namespace CompanyPOS.Controllers
 {
     public class SessionController : ApiController
     {
-
-        // POST api/Account/Login
-        [Route("Login")]
-        public string Get([FromUri] Users user)
+        // POST api/Session/Login
+       // [Route("Login")]
+        [HttpPost]
+        public HttpResponseMessage PostLogin([FromBody] Users user)
         {
-            using (CompanyPOSEntities database = new CompanyPOSEntities())
+            try
             {
-                return database.Users.ToList().Any(x => x.Name == user.Name && x.Password == user.Password).ToString();
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
+                    {
+                        //Get user's data
+                        Users userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
+
+                        Session session = (database.Session.ToList().FirstOrDefault(x => x.UserID == userEntity.ID));
+
+                        if (session == null)
+                        {
+                            session = new Session();
+                            //Save Session
+                            session.StoreID = userEntity.StoreID;
+                            session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
+                            session.UserID = userEntity.ID;
+                            session.Created = DateTime.Now;
+                            session.LastUpdate = session.Created;
+                            database.Session.Add(session);
+                        }
+                        else
+                        {
+                            session.StoreID = userEntity.StoreID;
+                            session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
+                            session.UserID = userEntity.ID;
+                            session.LastUpdate = DateTime.Now;
+                            //not add because us an Update
+                            //   database.Session.Add(session);
+                        }
+                        database.SaveChanges();
+
+                        var message = Request.CreateResponse(HttpStatusCode.Created, session);
+                        message.Headers.Location = new Uri(Request.RequestUri + "/" + session.ID.ToString());
+                        return message;
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.NotFound,"User or password invalid");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpPut]
+        // PUT: api/Session/5
+        public HttpResponseMessage PutLogout([FromBody] Session Session)
+        {
+            try
+            {
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    Session session = database.Session.ToList().LastOrDefault(x => x.TokenID.Trim().Equals(Session.TokenID.Trim()));
+                    if (session != null)
+                    {
+                        database.Session.Remove(session);
+                        database.SaveChanges();
+                        return Request.CreateResponse(HttpStatusCode.OK, "Logout Succesfully");
+                    }
+                    else {
+                        return Request.CreateResponse(HttpStatusCode.NoContent, "Nothing to Delete");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
 
 
-        //// GET: api/Session
+        // GET: api/Session
         //public IEnumerable<string> Get()
         //{
         //    return new string[] { "value1", "value2" };
@@ -35,14 +105,14 @@ namespace CompanyPOS.Controllers
         //}
 
         // POST: api/Session
-        public void Post([FromBody]string value)
-        {
-        }
-
+        //  public void Post([FromBody]string value)
+        //  {
+        //  }
+        //
         // PUT: api/Session/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+    //   public void Put(int id, [FromBody]string value)
+    //   {
+    //   }
 
         // DELETE: api/Session/5
         public void Delete(int id)

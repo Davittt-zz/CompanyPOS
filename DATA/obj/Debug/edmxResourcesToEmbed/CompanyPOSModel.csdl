@@ -2,6 +2,7 @@
 <Schema Namespace="CompanyPOSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityContainer Name="CompanyPOSEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Users" EntityType="CompanyPOSModel.Users" />
+    <EntitySet Name="Session" EntityType="CompanyPOSModel.Session" />
   </EntityContainer>
   <EntityType Name="Users">
     <Key>
@@ -14,5 +15,18 @@
     <Property Name="Password" Type="String" Nullable="false" MaxLength="18" FixedLength="true" Unicode="true" />
     <Property Name="StoreID" Type="Int32" Nullable="false" />
     <Property Name="UserLevel" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="Username" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="40" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Session">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="StoreID" Type="Int32" Nullable="false" />
+    <Property Name="TokenID" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Precision="3" />
+    <Property Name="LastUpdate" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>
