@@ -19,7 +19,9 @@ namespace CompanyPOS
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-            config.Formatters.XmlFormatter.UseXmlSerializer = false;
+
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
+           // config.Formatters.XmlFormatter.UseXmlSerializer = false;
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
         }
     }

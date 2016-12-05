@@ -17,11 +17,7 @@ namespace DATA
     {
         public CompanyPOSEntities()
             : base("name=CompanyPOSEntities")
-
         {
-            //MADE by DD
-            this.Configuration.LazyLoadingEnabled = false;
-            this.Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

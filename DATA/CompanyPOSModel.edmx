@@ -29,7 +29,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
-          <Property Name="Activity" Type="nchar" MaxLength="10" />
+          <Property Name="Activity" Type="nchar" MaxLength="20" />
           <Property Name="StoreID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
@@ -43,7 +43,7 @@
           <Property Name="Password" Type="nchar" MaxLength="18" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="UserLevel" Type="nchar" MaxLength="10" />
-          <Property Name="Username" Type="nchar" MaxLength="15" />
+          <Property Name="Username" Type="nchar" MaxLength="15" Nullable="false" />
           <Property Name="Email" Type="nchar" MaxLength="40" />
         </EntityType>
         <Association Name="FK_UserActivity_Store">
@@ -133,7 +133,7 @@
           <Property Name="Password" Type="String" Nullable="false" MaxLength="18" FixedLength="true" Unicode="true" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <Property Name="UserLevel" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="15" FixedLength="true" Unicode="true" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="40" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Users_Store" FromRole="Users" ToRole="Store" />
           <NavigationProperty Name="UserActivity" Relationship="CompanyPOSModel.FK_UserActivity_Users" FromRole="Users" ToRole="UserActivity" />
@@ -164,7 +164,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="Activity" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Activity" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_UserActivity_Store" FromRole="UserActivity" ToRole="Store" />
           <NavigationProperty Name="Users" Relationship="CompanyPOSModel.FK_UserActivity_Users" FromRole="UserActivity" ToRole="Users" />

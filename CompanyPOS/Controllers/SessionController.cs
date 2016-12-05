@@ -46,6 +46,17 @@ namespace CompanyPOS.Controllers
                             //not add because us an Update
                             //   database.Session.Add(session);
                         }
+
+                        //SAVE ACTIVITY
+                        database.UserActivity.Add(new UserActivity()
+                            {
+                                StoreID = session.StoreID
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "LOGIN"
+                            }
+                            );
                         database.SaveChanges();
 
                         var message = Request.CreateResponse(HttpStatusCode.Created, session);
@@ -77,6 +88,18 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         database.Session.Remove(session);
+
+                        //SAVE ACTIVITY
+                        database.UserActivity.Add(new UserActivity()
+                        {
+                            StoreID = session.StoreID
+                            ,
+                            UserID = session.UserID
+                            ,
+                            Activity = "LOGOUT"
+                        }
+                            );
+
                         database.SaveChanges();
                         return Request.CreateResponse(HttpStatusCode.OK, "Logout Succesfully");
                     }
@@ -114,7 +137,7 @@ namespace CompanyPOS.Controllers
                 return null;
             }
         }
-      
+
         // GET: api/Session
         //public IEnumerable<string> Get()
         //{
