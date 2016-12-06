@@ -31,7 +31,7 @@ namespace CompanyPOS.Controllers
 
                     if (session != null)
                     {
-                        Store store = database.Store.ToList().FirstOrDefault(x => x.ID == session.StoreID);
+                        Store store = database.Store.ToList().FirstOrDefault(x => (x.ID == id) );
                         if (store != null)
                         {
                             //Save last  update
