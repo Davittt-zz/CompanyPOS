@@ -19,6 +19,7 @@ namespace DATA
         {
             this.UserActivity = new HashSet<UserActivity>();
             this.Users = new HashSet<Users>();
+            this.Menu = new HashSet<Menu>();
         }
     
         public int ID { get; set; }
@@ -28,5 +29,7 @@ namespace DATA
         public virtual ICollection<UserActivity> UserActivity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Users> Users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Menu> Menu { get; set; }
     }
 }

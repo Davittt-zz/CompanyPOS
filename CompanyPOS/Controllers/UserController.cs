@@ -93,6 +93,7 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
+                            user.StoreID = session.StoreID;
                             database.Users.Add(user);
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
@@ -157,11 +158,11 @@ namespace CompanyPOS.Controllers
                         if (currentUser != null)
                         {
                             currentUser.Name = user.Name;
-                            currentUser.Type = user.Type;
-                            currentUser.TypeID = user.TypeID;
-                            currentUser.Password = user.Password;
-                            currentUser.StoreID = user.StoreID;
-                            currentUser.UserLevel = user.UserLevel;
+                            //currentUser.Type = user.Type;
+                            //currentUser.TypeID = user.TypeID;
+                           // currentUser.Password = user.Password;
+                           // currentUser.StoreID = user.StoreID;
+                           //  currentUser.UserLevel = user.UserLevel;
                             currentUser.Username = user.Username;
                             currentUser.Email = user.Email;
 
