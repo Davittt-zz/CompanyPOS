@@ -159,6 +159,8 @@
     <Compile Include="Controllers\HomeController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\ItemPagePositionController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\SessionController.cs">
       <SubType>Code</SubType>
