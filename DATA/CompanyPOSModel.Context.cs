@@ -6,6 +6,8 @@
 //     Los cambios manuales en este archivo se sobrescribirán si se regenera el código.
 // </auto-generated>
 //------------------------------------------------------------------------------
+ //     this.Configuration.LazyLoadingEnabled = false;
+ //     this.Configuration.ProxyCreationEnabled = false;
 
 namespace DATA
 {
@@ -18,6 +20,8 @@ namespace DATA
         public CompanyPOSEntities()
             : base("name=CompanyPOSEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -31,5 +35,8 @@ namespace DATA
         public virtual DbSet<UserActivity> UserActivity { get; set; }
         public virtual DbSet<Menu> Menu { get; set; }
         public virtual DbSet<ItemPagePosition> ItemPagePosition { get; set; }
+        public virtual DbSet<Item> Item { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<ItemAttribute> ItemAttribute { get; set; }
     }
 }
