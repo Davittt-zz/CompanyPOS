@@ -5,6 +5,28 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="CompanyPOSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ItemPagePosition">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="hPos" Type="int" />
+          <Property Name="vPos" Type="int" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="MenuID" Type="int" Nullable="false" />
+          <Property Name="Page" Type="int" />
+        </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="50" />
+          <Property Name="Description" Type="nchar" MaxLength="255" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+          <Property Name="Page" Type="int" />
+        </EntityType>
         <EntityType Name="Session">
           <Key>
             <PropertyRef Name="ID" />
@@ -46,6 +68,42 @@
           <Property Name="Username" Type="nchar" MaxLength="15" Nullable="false" />
           <Property Name="Email" Type="nchar" MaxLength="40" />
         </EntityType>
+        <Association Name="FK_ItemPagePosition_Menu">
+          <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
+          <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="MenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPagePosition_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Menu_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Menu" Type="Self.Menu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Menu">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserActivity_Store">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="UserActivity" Type="Self.UserActivity" Multiplicity="*" />
@@ -83,10 +141,24 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="CompanyPOSModelStoreContainer">
+          <EntitySet Name="ItemPagePosition" EntityType="Self.ItemPagePosition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserActivity" EntityType="Self.UserActivity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ItemPagePosition_Menu" Association="Self.FK_ItemPagePosition_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPagePosition_Store" Association="Self.FK_ItemPagePosition_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Menu_Store" Association="Self.FK_Menu_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Menu" EntitySet="Menu" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserActivity_Store" Association="Self.FK_UserActivity_Store">
             <End Role="Store" EntitySet="Store" />
             <End Role="UserActivity" EntitySet="UserActivity" />
@@ -120,6 +192,20 @@
           <AssociationSet Name="FK_UserActivity_Users" Association="CompanyPOSModel.FK_UserActivity_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="UserActivity" EntitySet="UserActivity" />
+          </AssociationSet>
+          <EntitySet Name="Menu" EntityType="CompanyPOSModel.Menu" />
+          <AssociationSet Name="FK_Menu_Store" Association="CompanyPOSModel.FK_Menu_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Menu" EntitySet="Menu" />
+          </AssociationSet>
+          <EntitySet Name="ItemPagePosition" EntityType="CompanyPOSModel.ItemPagePosition" />
+          <AssociationSet Name="FK_ItemPagePosition_Menu" Association="CompanyPOSModel.FK_ItemPagePosition_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPagePosition_Store" Association="CompanyPOSModel.FK_ItemPagePosition_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Users">
@@ -157,6 +243,8 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="UserActivity" Relationship="CompanyPOSModel.FK_UserActivity_Store" FromRole="Store" ToRole="UserActivity" />
           <NavigationProperty Name="Users" Relationship="CompanyPOSModel.FK_Users_Store" FromRole="Store" ToRole="Users" />
+          <NavigationProperty Name="Menu" Relationship="CompanyPOSModel.FK_Menu_Store" FromRole="Store" ToRole="Menu" />
+          <NavigationProperty Name="ItemPagePosition" Relationship="CompanyPOSModel.FK_ItemPagePosition_Store" FromRole="Store" ToRole="ItemPagePosition" />
         </EntityType>
         <EntityType Name="UserActivity">
           <Key>
@@ -202,6 +290,68 @@
             </Principal>
             <Dependent Role="UserActivity">
               <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <Property Name="Page" Type="Int32" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Menu_Store" FromRole="Menu" ToRole="Store" />
+          <NavigationProperty Name="ItemPagePosition" Relationship="CompanyPOSModel.FK_ItemPagePosition_Menu" FromRole="Menu" ToRole="ItemPagePosition" />
+        </EntityType>
+        <Association Name="FK_Menu_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Menu" Role="Menu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Menu">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ItemPagePosition">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="hPos" Type="Int32" />
+          <Property Name="vPos" Type="Int32" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="MenuID" Type="Int32" Nullable="false" />
+          <Property Name="Page" Type="Int32" />
+          <NavigationProperty Name="Menu" Relationship="CompanyPOSModel.FK_ItemPagePosition_Menu" FromRole="ItemPagePosition" ToRole="Menu" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_ItemPagePosition_Store" FromRole="ItemPagePosition" ToRole="Store" />
+        </EntityType>
+        <Association Name="FK_ItemPagePosition_Menu">
+          <End Type="CompanyPOSModel.Menu" Role="Menu" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemPagePosition" Role="ItemPagePosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="MenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPagePosition_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemPagePosition" Role="ItemPagePosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="StoreID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -252,6 +402,30 @@
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="Activity" ColumnName="Activity" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Menu">
+            <EntityTypeMapping TypeName="CompanyPOSModel.Menu">
+              <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="Page" ColumnName="Page" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemPagePosition">
+            <EntityTypeMapping TypeName="CompanyPOSModel.ItemPagePosition">
+              <MappingFragment StoreEntitySet="ItemPagePosition">
+                <ScalarProperty Name="Page" ColumnName="Page" />
+                <ScalarProperty Name="MenuID" ColumnName="MenuID" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="vPos" ColumnName="vPos" />
+                <ScalarProperty Name="hPos" ColumnName="hPos" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -20,6 +20,7 @@ namespace DATA
             this.UserActivity = new HashSet<UserActivity>();
             this.Users = new HashSet<Users>();
             this.Menu = new HashSet<Menu>();
+            this.ItemPagePosition = new HashSet<ItemPagePosition>();
         }
     
         public int ID { get; set; }
@@ -31,5 +32,7 @@ namespace DATA
         public virtual ICollection<Users> Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Menu> Menu { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ItemPagePosition> ItemPagePosition { get; set; }
     }
 }

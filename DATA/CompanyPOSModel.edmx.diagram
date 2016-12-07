@@ -12,6 +12,11 @@
         <AssociationConnector Association="CompanyPOSModel.FK_UserActivity_Store" />
         <AssociationConnector Association="CompanyPOSModel.FK_Users_Store" />
         <AssociationConnector Association="CompanyPOSModel.FK_UserActivity_Users" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Menu" Width="1.5" PointX="8.75" PointY="0.5" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Menu_Store" />
+        <EntityTypeShape EntityType="CompanyPOSModel.ItemPagePosition" Width="2" PointX="11" PointY="1.25" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemPagePosition_Menu" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemPagePosition_Store" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

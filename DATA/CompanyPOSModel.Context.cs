@@ -18,8 +18,6 @@ namespace DATA
         public CompanyPOSEntities()
             : base("name=CompanyPOSEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
-            this.Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -31,5 +29,7 @@ namespace DATA
         public virtual DbSet<Session> Session { get; set; }
         public virtual DbSet<Store> Store { get; set; }
         public virtual DbSet<UserActivity> UserActivity { get; set; }
+        public virtual DbSet<Menu> Menu { get; set; }
+        public virtual DbSet<ItemPagePosition> ItemPagePosition { get; set; }
     }
 }

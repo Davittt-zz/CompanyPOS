@@ -12,22 +12,17 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class Menu
+    public partial class ItemPagePosition
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Menu()
-        {
-            this.ItemPagePosition = new HashSet<ItemPagePosition>();
-        }
-    
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public Nullable<int> hPos { get; set; }
+        public Nullable<int> vPos { get; set; }
         public int StoreID { get; set; }
+        public int ItemID { get; set; }
+        public int MenuID { get; set; }
         public Nullable<int> Page { get; set; }
     
+        public virtual Menu Menu { get; set; }
         public virtual Store Store { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ItemPagePosition> ItemPagePosition { get; set; }
     }
 }
