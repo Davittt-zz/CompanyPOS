@@ -21,6 +21,10 @@ namespace DATA
             this.Users = new HashSet<Users>();
             this.Menu = new HashSet<Menu>();
             this.ItemPagePosition = new HashSet<ItemPagePosition>();
+            this.Item = new HashSet<Item>();
+            this.Category = new HashSet<Category>();
+            this.ItemAttribute = new HashSet<ItemAttribute>();
+            this.Shift = new HashSet<Shift>();
         }
     
         public int ID { get; set; }
@@ -34,5 +38,13 @@ namespace DATA
         public virtual ICollection<Menu> Menu { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ItemPagePosition> ItemPagePosition { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Item> Item { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Category> Category { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ItemAttribute> ItemAttribute { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shift> Shift { get; set; }
     }
 }

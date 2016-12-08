@@ -17,6 +17,17 @@
         <EntityTypeShape EntityType="CompanyPOSModel.ItemPagePosition" Width="2" PointX="11" PointY="1.25" />
         <AssociationConnector Association="CompanyPOSModel.FK_ItemPagePosition_Menu" />
         <AssociationConnector Association="CompanyPOSModel.FK_ItemPagePosition_Store" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Item" Width="1.5" PointX="8.875" PointY="5.5" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Item_Store" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemPagePosition_Item" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Category" Width="1.5" PointX="8.875" PointY="9.875" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Category_Store" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Item_Category" />
+        <EntityTypeShape EntityType="CompanyPOSModel.ItemAttribute" Width="1.5" PointX="11.75" PointY="4.5" />
+        <AssociationConnector Association="CompanyPOSModel.FK_SubItem_Item" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemAttribute_Store" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Shift" Width="1.5" PointX="5.375" PointY="9.875" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Shift_Store" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

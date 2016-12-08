@@ -12,18 +12,14 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class ItemPagePosition
+    public partial class Shift
     {
         public int ID { get; set; }
-        public Nullable<int> hPos { get; set; }
-        public Nullable<int> vPos { get; set; }
+        public string Status { get; set; }
+        public Nullable<System.DateTime> TimeStart { get; set; }
+        public Nullable<System.DateTime> TimeEnd { get; set; }
         public int StoreID { get; set; }
-        public int ItemID { get; set; }
-        public int MenuID { get; set; }
-        public Nullable<int> Page { get; set; }
     
-        public virtual Menu Menu { get; set; }
         public virtual Store Store { get; set; }
-        public virtual Item Item { get; set; }
     }
 }

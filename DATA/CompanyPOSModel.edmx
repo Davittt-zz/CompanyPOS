@@ -5,6 +5,38 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="CompanyPOSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="50" />
+          <Property Name="Value" Type="nchar" MaxLength="15" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="50" />
+          <Property Name="UnitPrice" Type="real" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="Description" Type="nchar" MaxLength="255" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItemAttribute">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="50" />
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="Value" Type="nchar" MaxLength="50" />
+          <Property Name="Price" Type="real" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+          <Property Name="Visible" Type="bit" />
+        </EntityType>
         <EntityType Name="ItemPagePosition">
           <Key>
             <PropertyRef Name="ID" />
@@ -38,6 +70,16 @@
           <Property Name="Created" Type="datetime" />
           <Property Name="LastUpdate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Shift">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Status" Type="nchar" MaxLength="10" />
+          <Property Name="TimeStart" Type="datetime" />
+          <Property Name="TimeEnd" Type="datetime" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Store">
           <Key>
             <PropertyRef Name="ID" />
@@ -68,6 +110,66 @@
           <Property Name="Username" Type="nchar" MaxLength="15" Nullable="false" />
           <Property Name="Email" Type="nchar" MaxLength="40" />
         </EntityType>
+        <Association Name="FK_Category_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Category" Type="Self.Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Category">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Item_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Item" Type="Self.Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Item_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Item" Type="Self.Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemAttribute_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="ItemAttribute" Type="Self.ItemAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemAttribute">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPagePosition_Item">
+          <End Role="Item" Type="Self.Item" Multiplicity="1" />
+          <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ItemPagePosition_Menu">
           <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
           <End Role="ItemPagePosition" Type="Self.ItemPagePosition" Multiplicity="*" />
@@ -101,6 +203,30 @@
             </Principal>
             <Dependent Role="Menu">
               <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shift_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Shift" Type="Self.Shift" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Shift">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SubItem_Item">
+          <End Role="Item" Type="Self.Item" Multiplicity="1" />
+          <End Role="ItemAttribute" Type="Self.ItemAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemAttribute">
+              <PropertyRef Name="ItemID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -141,12 +267,36 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="CompanyPOSModelStoreContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemAttribute" EntityType="Self.ItemAttribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ItemPagePosition" EntityType="Self.ItemPagePosition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shift" EntityType="Self.Shift" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserActivity" EntityType="Self.UserActivity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Category_Store" Association="Self.FK_Category_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Category" EntitySet="Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Item_Category" Association="Self.FK_Item_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Item" EntitySet="Item" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Item_Store" Association="Self.FK_Item_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Item" EntitySet="Item" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemAttribute_Store" Association="Self.FK_ItemAttribute_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="ItemAttribute" EntitySet="ItemAttribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPagePosition_Item" Association="Self.FK_ItemPagePosition_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+          </AssociationSet>
           <AssociationSet Name="FK_ItemPagePosition_Menu" Association="Self.FK_ItemPagePosition_Menu">
             <End Role="Menu" EntitySet="Menu" />
             <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
@@ -158,6 +308,14 @@
           <AssociationSet Name="FK_Menu_Store" Association="Self.FK_Menu_Store">
             <End Role="Store" EntitySet="Store" />
             <End Role="Menu" EntitySet="Menu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shift_Store" Association="Self.FK_Shift_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Shift" EntitySet="Shift" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SubItem_Item" Association="Self.FK_SubItem_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="ItemAttribute" EntitySet="ItemAttribute" />
           </AssociationSet>
           <AssociationSet Name="FK_UserActivity_Store" Association="Self.FK_UserActivity_Store">
             <End Role="Store" EntitySet="Store" />
@@ -207,6 +365,38 @@
             <End Role="Store" EntitySet="Store" />
             <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
           </AssociationSet>
+          <EntitySet Name="Item" EntityType="CompanyPOSModel.Item" />
+          <AssociationSet Name="FK_Item_Store" Association="CompanyPOSModel.FK_Item_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Item" EntitySet="Item" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPagePosition_Item" Association="CompanyPOSModel.FK_ItemPagePosition_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
+          </AssociationSet>
+          <EntitySet Name="Category" EntityType="CompanyPOSModel.Category" />
+          <AssociationSet Name="FK_Category_Store" Association="CompanyPOSModel.FK_Category_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Category" EntitySet="Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Item_Category" Association="CompanyPOSModel.FK_Item_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Item" EntitySet="Item" />
+          </AssociationSet>
+          <EntitySet Name="ItemAttribute" EntityType="CompanyPOSModel.ItemAttribute" />
+          <AssociationSet Name="FK_SubItem_Item" Association="CompanyPOSModel.FK_SubItem_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="ItemAttribute" EntitySet="ItemAttribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemAttribute_Store" Association="CompanyPOSModel.FK_ItemAttribute_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="ItemAttribute" EntitySet="ItemAttribute" />
+          </AssociationSet>
+          <EntitySet Name="Shift" EntityType="CompanyPOSModel.Shift" />
+          <AssociationSet Name="FK_Shift_Store" Association="CompanyPOSModel.FK_Shift_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Shift" EntitySet="Shift" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Users">
           <Key>
@@ -245,6 +435,10 @@
           <NavigationProperty Name="Users" Relationship="CompanyPOSModel.FK_Users_Store" FromRole="Store" ToRole="Users" />
           <NavigationProperty Name="Menu" Relationship="CompanyPOSModel.FK_Menu_Store" FromRole="Store" ToRole="Menu" />
           <NavigationProperty Name="ItemPagePosition" Relationship="CompanyPOSModel.FK_ItemPagePosition_Store" FromRole="Store" ToRole="ItemPagePosition" />
+          <NavigationProperty Name="Item" Relationship="CompanyPOSModel.FK_Item_Store" FromRole="Store" ToRole="Item" />
+          <NavigationProperty Name="Category" Relationship="CompanyPOSModel.FK_Category_Store" FromRole="Store" ToRole="Category" />
+          <NavigationProperty Name="ItemAttribute" Relationship="CompanyPOSModel.FK_ItemAttribute_Store" FromRole="Store" ToRole="ItemAttribute" />
+          <NavigationProperty Name="Shift" Relationship="CompanyPOSModel.FK_Shift_Store" FromRole="Store" ToRole="Shift" />
         </EntityType>
         <EntityType Name="UserActivity">
           <Key>
@@ -330,6 +524,7 @@
           <Property Name="Page" Type="Int32" />
           <NavigationProperty Name="Menu" Relationship="CompanyPOSModel.FK_ItemPagePosition_Menu" FromRole="ItemPagePosition" ToRole="Menu" />
           <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_ItemPagePosition_Store" FromRole="ItemPagePosition" ToRole="Store" />
+          <NavigationProperty Name="Item" Relationship="CompanyPOSModel.FK_ItemPagePosition_Item" FromRole="ItemPagePosition" ToRole="Item" />
         </EntityType>
         <Association Name="FK_ItemPagePosition_Menu">
           <End Type="CompanyPOSModel.Menu" Role="Menu" Multiplicity="1" />
@@ -351,6 +546,141 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="UnitPrice" Type="Single" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Item_Store" FromRole="Item" ToRole="Store" />
+          <NavigationProperty Name="ItemPagePosition" Relationship="CompanyPOSModel.FK_ItemPagePosition_Item" FromRole="Item" ToRole="ItemPagePosition" />
+          <NavigationProperty Name="Category" Relationship="CompanyPOSModel.FK_Item_Category" FromRole="Item" ToRole="Category" />
+          <NavigationProperty Name="ItemAttribute" Relationship="CompanyPOSModel.FK_SubItem_Item" FromRole="Item" ToRole="ItemAttribute" />
+        </EntityType>
+        <Association Name="FK_Item_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Item" Role="Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPagePosition_Item">
+          <End Type="CompanyPOSModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemPagePosition" Role="ItemPagePosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPagePosition">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Category_Store" FromRole="Category" ToRole="Store" />
+          <NavigationProperty Name="Item" Relationship="CompanyPOSModel.FK_Item_Category" FromRole="Category" ToRole="Item" />
+        </EntityType>
+        <Association Name="FK_Category_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Category" Role="Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Category">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Item_Category">
+          <End Type="CompanyPOSModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="CompanyPOSModel.Item" Role="Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ItemAttribute">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Price" Type="Single" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <Property Name="Visible" Type="Boolean" />
+          <NavigationProperty Name="Item" Relationship="CompanyPOSModel.FK_SubItem_Item" FromRole="ItemAttribute" ToRole="Item" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_ItemAttribute_Store" FromRole="ItemAttribute" ToRole="Store" />
+        </EntityType>
+        <Association Name="FK_SubItem_Item">
+          <End Type="CompanyPOSModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemAttribute" Role="ItemAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemAttribute">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemAttribute_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemAttribute" Role="ItemAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemAttribute">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Shift">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="TimeStart" Type="DateTime" Precision="3" />
+          <Property Name="TimeEnd" Type="DateTime" Precision="3" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Shift_Store" FromRole="Shift" ToRole="Store" />
+        </EntityType>
+        <Association Name="FK_Shift_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Shift" Role="Shift" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Shift">
               <PropertyRef Name="StoreID" />
             </Dependent>
           </ReferentialConstraint>
@@ -426,6 +756,52 @@
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="vPos" ColumnName="vPos" />
                 <ScalarProperty Name="hPos" ColumnName="hPos" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Item">
+            <EntityTypeMapping TypeName="CompanyPOSModel.Item">
+              <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Category">
+            <EntityTypeMapping TypeName="CompanyPOSModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemAttribute">
+            <EntityTypeMapping TypeName="CompanyPOSModel.ItemAttribute">
+              <MappingFragment StoreEntitySet="ItemAttribute">
+                <ScalarProperty Name="Visible" ColumnName="Visible" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shift">
+            <EntityTypeMapping TypeName="CompanyPOSModel.Shift">
+              <MappingFragment StoreEntitySet="Shift">
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="TimeEnd" ColumnName="TimeEnd" />
+                <ScalarProperty Name="TimeStart" ColumnName="TimeStart" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

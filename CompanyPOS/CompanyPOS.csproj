@@ -167,6 +167,7 @@
     <Compile Include="Controllers\SessionController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\ShiftController.cs" />
     <Compile Include="Controllers\StoreController.cs">
       <SubType>Code</SubType>
     </Compile>

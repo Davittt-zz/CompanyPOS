@@ -6,8 +6,6 @@
 //     Los cambios manuales en este archivo se sobrescribirán si se regenera el código.
 // </auto-generated>
 //------------------------------------------------------------------------------
- //     this.Configuration.LazyLoadingEnabled = false;
- //     this.Configuration.ProxyCreationEnabled = false;
 
 namespace DATA
 {
@@ -23,6 +21,7 @@ namespace DATA
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
         }
+
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -38,5 +37,6 @@ namespace DATA
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<ItemAttribute> ItemAttribute { get; set; }
+        public virtual DbSet<Shift> Shift { get; set; }
     }
 }
