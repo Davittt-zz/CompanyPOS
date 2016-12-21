@@ -14,6 +14,16 @@
           <Property Name="Value" Type="nchar" MaxLength="15" />
           <Property Name="StoreID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SaleID" Type="int" Nullable="false" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="PaymentMethod" Type="nchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Item">
           <Key>
             <PropertyRef Name="ID" />
@@ -49,6 +59,18 @@
           <Property Name="MenuID" Type="int" Nullable="false" />
           <Property Name="Page" Type="int" />
         </EntityType>
+        <EntityType Name="ItemPurchase">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Discount" Type="nchar" MaxLength="10" />
+          <Property Name="TotalPrice" Type="nchar" MaxLength="20" />
+          <Property Name="SaleID" Type="int" Nullable="false" />
+          <Property Name="StoreID" Type="int" />
+        </EntityType>
         <EntityType Name="Menu">
           <Key>
             <PropertyRef Name="ID" />
@@ -58,6 +80,25 @@
           <Property Name="Description" Type="nchar" MaxLength="255" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="Page" Type="int" />
+        </EntityType>
+        <EntityType Name="Sale">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="StoreID" Type="int" Nullable="false" />
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="ShiftID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nchar" MaxLength="255" />
+          <Property Name="DiscountAmount" Type="money" />
+          <Property Name="DiscountRate" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TaxAmunt" Type="money" />
+          <Property Name="TaxRate" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TotalPrice" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SubtotalPrice" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Status" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Session">
           <Key>
@@ -118,6 +159,30 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Category">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Sale">
+          <End Role="Sale" Type="Self.Sale" Multiplicity="1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="SaleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Invoice">
               <PropertyRef Name="StoreID" />
             </Dependent>
           </ReferentialConstraint>
@@ -194,6 +259,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ItemPurchase_Item">
+          <End Role="Item" Type="Self.Item" Multiplicity="1" />
+          <End Role="ItemPurchase" Type="Self.ItemPurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPurchase">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPurchase_Sale">
+          <End Role="Sale" Type="Self.Sale" Multiplicity="1" />
+          <End Role="ItemPurchase" Type="Self.ItemPurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPurchase">
+              <PropertyRef Name="SaleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPurchase_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="0..1" />
+          <End Role="ItemPurchase" Type="Self.ItemPurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPurchase">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Menu_Store">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="Menu" Type="Self.Menu" Multiplicity="*" />
@@ -203,6 +304,54 @@
             </Principal>
             <Dependent Role="Menu">
               <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Item">
+          <End Role="Item" Type="Self.Item" Multiplicity="1" />
+          <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Shift">
+          <End Role="Shift" Type="Self.Shift" Multiplicity="1" />
+          <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shift">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="ShiftID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Store">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Sale" Type="Self.Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -268,10 +417,13 @@
         </Association>
         <EntityContainer Name="CompanyPOSModelStoreContainer">
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invoice" EntityType="Self.Invoice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ItemAttribute" EntityType="Self.ItemAttribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ItemPagePosition" EntityType="Self.ItemPagePosition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemPurchase" EntityType="Self.ItemPurchase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sale" EntityType="Self.Sale" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shift" EntityType="Self.Shift" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
@@ -280,6 +432,14 @@
           <AssociationSet Name="FK_Category_Store" Association="Self.FK_Category_Store">
             <End Role="Store" EntitySet="Store" />
             <End Role="Category" EntitySet="Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Sale" Association="Self.FK_Invoice_Sale">
+            <End Role="Sale" EntitySet="Sale" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Store" Association="Self.FK_Invoice_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Invoice" EntitySet="Invoice" />
           </AssociationSet>
           <AssociationSet Name="FK_Item_Category" Association="Self.FK_Item_Category">
             <End Role="Category" EntitySet="Category" />
@@ -305,9 +465,37 @@
             <End Role="Store" EntitySet="Store" />
             <End Role="ItemPagePosition" EntitySet="ItemPagePosition" />
           </AssociationSet>
+          <AssociationSet Name="FK_ItemPurchase_Item" Association="Self.FK_ItemPurchase_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPurchase_Sale" Association="Self.FK_ItemPurchase_Sale">
+            <End Role="Sale" EntitySet="Sale" />
+            <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPurchase_Store" Association="Self.FK_ItemPurchase_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+          </AssociationSet>
           <AssociationSet Name="FK_Menu_Store" Association="Self.FK_Menu_Store">
             <End Role="Store" EntitySet="Store" />
             <End Role="Menu" EntitySet="Menu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Item" Association="Self.FK_Sale_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Shift" Association="Self.FK_Sale_Shift">
+            <End Role="Shift" EntitySet="Shift" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Store" Association="Self.FK_Sale_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Users" Association="Self.FK_Sale_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Sale" EntitySet="Sale" />
           </AssociationSet>
           <AssociationSet Name="FK_Shift_Store" Association="Self.FK_Shift_Store">
             <End Role="Store" EntitySet="Store" />
@@ -397,6 +585,45 @@
             <End Role="Store" EntitySet="Store" />
             <End Role="Shift" EntitySet="Shift" />
           </AssociationSet>
+          <EntitySet Name="ItemPurchase" EntityType="CompanyPOSModel.ItemPurchase" />
+          <AssociationSet Name="FK_ItemPurchase_Item" Association="CompanyPOSModel.FK_ItemPurchase_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPurchase_Store" Association="CompanyPOSModel.FK_ItemPurchase_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+          </AssociationSet>
+          <EntitySet Name="Invoice" EntityType="CompanyPOSModel.Invoice" />
+          <AssociationSet Name="FK_Invoice_Store" Association="CompanyPOSModel.FK_Invoice_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <EntitySet Name="Sale" EntityType="CompanyPOSModel.Sale" />
+          <AssociationSet Name="FK_Invoice_Sale" Association="CompanyPOSModel.FK_Invoice_Sale">
+            <End Role="Sale" EntitySet="Sale" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Item" Association="CompanyPOSModel.FK_Sale_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemPurchase_Sale" Association="CompanyPOSModel.FK_ItemPurchase_Sale">
+            <End Role="Sale" EntitySet="Sale" />
+            <End Role="ItemPurchase" EntitySet="ItemPurchase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Shift" Association="CompanyPOSModel.FK_Sale_Shift">
+            <End Role="Shift" EntitySet="Shift" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Store" Association="CompanyPOSModel.FK_Sale_Store">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_Users" Association="CompanyPOSModel.FK_Sale_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Users">
           <Key>
@@ -413,6 +640,7 @@
           <Property Name="Email" Type="String" MaxLength="40" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Users_Store" FromRole="Users" ToRole="Store" />
           <NavigationProperty Name="UserActivity" Relationship="CompanyPOSModel.FK_UserActivity_Users" FromRole="Users" ToRole="UserActivity" />
+          <NavigationProperty Name="Sale" Relationship="CompanyPOSModel.FK_Sale_Users" FromRole="Users" ToRole="Sale" />
         </EntityType>
         <EntityType Name="Session">
           <Key>
@@ -439,6 +667,9 @@
           <NavigationProperty Name="Category" Relationship="CompanyPOSModel.FK_Category_Store" FromRole="Store" ToRole="Category" />
           <NavigationProperty Name="ItemAttribute" Relationship="CompanyPOSModel.FK_ItemAttribute_Store" FromRole="Store" ToRole="ItemAttribute" />
           <NavigationProperty Name="Shift" Relationship="CompanyPOSModel.FK_Shift_Store" FromRole="Store" ToRole="Shift" />
+          <NavigationProperty Name="ItemPurchase" Relationship="CompanyPOSModel.FK_ItemPurchase_Store" FromRole="Store" ToRole="ItemPurchase" />
+          <NavigationProperty Name="Invoice" Relationship="CompanyPOSModel.FK_Invoice_Store" FromRole="Store" ToRole="Invoice" />
+          <NavigationProperty Name="Sale" Relationship="CompanyPOSModel.FK_Sale_Store" FromRole="Store" ToRole="Sale" />
         </EntityType>
         <EntityType Name="UserActivity">
           <Key>
@@ -564,6 +795,8 @@
           <NavigationProperty Name="ItemPagePosition" Relationship="CompanyPOSModel.FK_ItemPagePosition_Item" FromRole="Item" ToRole="ItemPagePosition" />
           <NavigationProperty Name="Category" Relationship="CompanyPOSModel.FK_Item_Category" FromRole="Item" ToRole="Category" />
           <NavigationProperty Name="ItemAttribute" Relationship="CompanyPOSModel.FK_SubItem_Item" FromRole="Item" ToRole="ItemAttribute" />
+          <NavigationProperty Name="ItemPurchase" Relationship="CompanyPOSModel.FK_ItemPurchase_Item" FromRole="Item" ToRole="ItemPurchase" />
+          <NavigationProperty Name="Sale" Relationship="CompanyPOSModel.FK_Sale_Item" FromRole="Item" ToRole="Sale" />
         </EntityType>
         <Association Name="FK_Item_Store">
           <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
@@ -672,6 +905,7 @@
           <Property Name="TimeEnd" Type="DateTime" Precision="3" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Shift_Store" FromRole="Shift" ToRole="Store" />
+          <NavigationProperty Name="Sale" Relationship="CompanyPOSModel.FK_Sale_Shift" FromRole="Shift" ToRole="Sale" />
         </EntityType>
         <Association Name="FK_Shift_Store">
           <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
@@ -682,6 +916,166 @@
             </Principal>
             <Dependent Role="Shift">
               <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ItemPurchase">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Discount" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="TotalPrice" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="SaleID" Type="Int32" Nullable="false" />
+          <Property Name="StoreID" Type="Int32" />
+          <NavigationProperty Name="Item" Relationship="CompanyPOSModel.FK_ItemPurchase_Item" FromRole="ItemPurchase" ToRole="Item" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_ItemPurchase_Store" FromRole="ItemPurchase" ToRole="Store" />
+          <NavigationProperty Name="Sale" Relationship="CompanyPOSModel.FK_ItemPurchase_Sale" FromRole="ItemPurchase" ToRole="Sale" />
+        </EntityType>
+        <Association Name="FK_ItemPurchase_Item">
+          <End Type="CompanyPOSModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemPurchase" Role="ItemPurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPurchase">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPurchase_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="0..1" />
+          <End Type="CompanyPOSModel.ItemPurchase" Role="ItemPurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPurchase">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SaleID" Type="Int32" Nullable="false" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Invoice_Store" FromRole="Invoice" ToRole="Store" />
+          <NavigationProperty Name="Sale" Relationship="CompanyPOSModel.FK_Invoice_Sale" FromRole="Invoice" ToRole="Sale" />
+        </EntityType>
+        <Association Name="FK_Invoice_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Invoice" Role="Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Sale">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="StoreID" Type="Int32" Nullable="false" />
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="ShiftID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
+          <Property Name="DiscountAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="DiscountRate" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TaxAmunt" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="TaxRate" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SubtotalPrice" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Invoice" Relationship="CompanyPOSModel.FK_Invoice_Sale" FromRole="Sale" ToRole="Invoice" />
+          <NavigationProperty Name="Item" Relationship="CompanyPOSModel.FK_Sale_Item" FromRole="Sale" ToRole="Item" />
+          <NavigationProperty Name="ItemPurchase" Relationship="CompanyPOSModel.FK_ItemPurchase_Sale" FromRole="Sale" ToRole="ItemPurchase" />
+          <NavigationProperty Name="Shift" Relationship="CompanyPOSModel.FK_Sale_Shift" FromRole="Sale" ToRole="Shift" />
+          <NavigationProperty Name="Store" Relationship="CompanyPOSModel.FK_Sale_Store" FromRole="Sale" ToRole="Store" />
+          <NavigationProperty Name="Users" Relationship="CompanyPOSModel.FK_Sale_Users" FromRole="Sale" ToRole="Users" />
+        </EntityType>
+        <Association Name="FK_Invoice_Sale">
+          <End Type="CompanyPOSModel.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Invoice" Role="Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="SaleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Item">
+          <End Type="CompanyPOSModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemPurchase_Sale">
+          <End Type="CompanyPOSModel.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="CompanyPOSModel.ItemPurchase" Role="ItemPurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ItemPurchase">
+              <PropertyRef Name="SaleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Shift">
+          <End Type="CompanyPOSModel.Shift" Role="Shift" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shift">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="ShiftID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Store">
+          <End Type="CompanyPOSModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="StoreID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_Users">
+          <End Type="CompanyPOSModel.Users" Role="Users" Multiplicity="1" />
+          <End Type="CompanyPOSModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -802,6 +1196,50 @@
                 <ScalarProperty Name="TimeEnd" ColumnName="TimeEnd" />
                 <ScalarProperty Name="TimeStart" ColumnName="TimeStart" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemPurchase">
+            <EntityTypeMapping TypeName="CompanyPOSModel.ItemPurchase">
+              <MappingFragment StoreEntitySet="ItemPurchase">
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="SaleID" ColumnName="SaleID" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invoice">
+            <EntityTypeMapping TypeName="CompanyPOSModel.Invoice">
+              <MappingFragment StoreEntitySet="Invoice">
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="SaleID" ColumnName="SaleID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sale">
+            <EntityTypeMapping TypeName="CompanyPOSModel.Sale">
+              <MappingFragment StoreEntitySet="Sale">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SubtotalPrice" ColumnName="SubtotalPrice" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="TaxRate" ColumnName="TaxRate" />
+                <ScalarProperty Name="TaxAmunt" ColumnName="TaxAmunt" />
+                <ScalarProperty Name="DiscountRate" ColumnName="DiscountRate" />
+                <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ShiftID" ColumnName="ShiftID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

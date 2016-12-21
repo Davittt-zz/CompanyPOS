@@ -13,10 +13,46 @@ namespace CompanyPOS.Controllers
     public class CategoryController : ApiController
     {
         // GET: api/Category
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        public HttpResponseMessage Get(string token)
+        {
+         try
+            {
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
+
+                    if (session != null)
+                    {
+                        //Validate storeID and CategoryID
+                        var data = database.Category.ToList().Where(x => (x.StoreID == session.StoreID));
+                        if (data != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Category not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         // GET: api/Category/5
         public HttpResponseMessage Get(string token, int id)
@@ -64,11 +100,14 @@ namespace CompanyPOS.Controllers
         //CREATE
         public HttpResponseMessage Post([FromBody]Category Category, string token)
         {
+            string errorStatus = " ";
             try
             {
                 using (CompanyPOSEntities database = new CompanyPOSEntities())
                 {
                     SessionController sessionController = new SessionController();
+
+                    errorStatus += " Before Atutentication || ";
                     Session session = sessionController.Autenticate(token);
 
                     if (session != null)
@@ -76,6 +115,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
+                        errorStatus += " Before Find similar category || ";
                         var currentCategory = database.Category.ToList().FirstOrDefault(x => x.Name == Category.Name && (x.StoreID == session.StoreID));
                         if (currentCategory != null)
                         {
@@ -96,6 +136,8 @@ namespace CompanyPOS.Controllers
                                 ,
                                 Activity = "CREATE Category"
                             });
+
+                            errorStatus += " Before adding in the db || ";
                             database.SaveChanges();
 
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
@@ -124,7 +166,7 @@ namespace CompanyPOS.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " || " + errorStatus );
             }
         }
 

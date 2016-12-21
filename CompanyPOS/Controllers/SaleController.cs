@@ -10,51 +10,15 @@ using System.Web.Http;
 
 namespace CompanyPOS.Controllers
 {
-    public class MenuController : ApiController
+    public class SaleController : ApiController
     {
-        // GET: api/Menu
-        public HttpResponseMessage Get(string token)
-        {
-            try
-            {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
+        // GET: api/Sale
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
-                    if (session != null)
-                    {
-                        //Validate storeID and MenuID
-                        var data = database.Menu.ToList().Where(x => (x.StoreID == session.StoreID));
-                        if (data != null)
-                        {
-                            //Save last  update
-                            session.LastUpdate = DateTime.Now;
-                            database.SaveChanges();
-
-                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
-                            return message;
-                        }
-                        else
-                        {
-                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Menu not found");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-        // GET: api/Menu/5
+        // GET: api/Sale/5
         public HttpResponseMessage Get(string token, int id)
         {
             try
@@ -66,8 +30,8 @@ namespace CompanyPOS.Controllers
 
                     if (session != null)
                     {
-                        //Validate storeID and MenuID
-                        var data = database.Menu.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        //Validate storeID and SaleID
+                        var data = database.Sale.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -79,7 +43,7 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Menu not found");
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Sale not found");
                             return message;
                         }
                     }
@@ -96,9 +60,9 @@ namespace CompanyPOS.Controllers
             }
         }
 
-        // POST: api/Menu
-        // CREATE
-        public HttpResponseMessage Post([FromBody]Menu menu, string token)
+        // POST: api/Sale
+        //CREATE
+        public HttpResponseMessage Post([FromBody]Sale Sale, string token)
         {
             try
             {
@@ -112,17 +76,21 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentMenu = database.Menu.ToList().FirstOrDefault(x => x.Name == menu.Name && (x.StoreID == session.StoreID));
-                        if (currentMenu != null)
+
+                        ///Update this
+                        ///
+                        var currentSale = database.Sale.ToList().FirstOrDefault(x => x.ShiftID == Sale.ShiftID && (x.StoreID == session.StoreID));
+                        
+                        if (currentSale != null)
                         {
                             database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a menu with this name");
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Sale with this name");
                             return message;
                         }
                         else
                         {
-                            menu.StoreID = session.StoreID;
-                            database.Menu.Add(menu);
+                            Sale.StoreID = session.StoreID;
+                            database.Sale.Add(Sale);
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
                             {
@@ -130,7 +98,7 @@ namespace CompanyPOS.Controllers
                                 ,
                                 UserID = session.UserID
                                 ,
-                                Activity = "CREATE MENU"
+                                Activity = "CREATE Sale"
                             });
                             database.SaveChanges();
 
@@ -164,9 +132,9 @@ namespace CompanyPOS.Controllers
             }
         }
 
-        // PUT: api/Menu/5
-        // UPDATE
-        public HttpResponseMessage Put(int id, [FromBody]Menu menu, string token)
+        // PUT: api/Sale/5
+        //UPDATE
+        public HttpResponseMessage Put(int id, [FromBody]Sale Sale, string token)
         {
 
             try
@@ -181,21 +149,23 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentMenu = database.Menu.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentSale = database.Sale.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-                        if (currentMenu != null)
+                        if (currentSale != null)
                         {
-                            currentMenu.Name = menu.Name;
-                            currentMenu.Page = menu.Page;
-                           // currentMenu.StoreID = menu.StoreID;
-                            currentMenu.Description = menu.Description;
+                            //currentSale.Name = Sale.Name;
+                            //currentSale.UnitPrice = Sale.UnitPrice;
+                            //currentSale.CategoryID = Sale.CategoryID;
+                            //currentSale.Description = Sale.Description;
 
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
-                                ,UserID = session.UserID
-                                ,Activity = "CREATE MENU"
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "CREATE Sale"
                             });
 
                             database.SaveChanges();
@@ -204,7 +174,7 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Menu Not found");
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "Sale Not found");
                             return message;
                         }
                     }
@@ -234,8 +204,8 @@ namespace CompanyPOS.Controllers
             }
         }
 
-        // DELETE: api/Menu/5
-        // DELETE
+        // DELETE: api/Sale/5
+        //DELETE
         public HttpResponseMessage Delete(int id, string token)
         {
             try
@@ -250,17 +220,17 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var menu = database.Menu.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var Sale = database.Sale.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-                        if (menu == null)
+                        if (Sale == null)
                         {
                             return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-                                    "Menu with Id = " + id.ToString() + " not found to delete");
+                                    "Sale with Id = " + id.ToString() + " not found to delete");
                         }
                         else
                         {
 
-                            database.Menu.Remove(menu);
+                            database.Sale.Remove(Sale);
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
                             {
@@ -268,7 +238,7 @@ namespace CompanyPOS.Controllers
                                 ,
                                 UserID = session.UserID
                                 ,
-                                Activity = "DELETE MENU"
+                                Activity = "DELETE Sale"
                             });
 
                             database.SaveChanges();
@@ -301,5 +271,5 @@ namespace CompanyPOS.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-    }
+      }
 }

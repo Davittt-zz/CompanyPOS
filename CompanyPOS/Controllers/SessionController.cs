@@ -15,10 +15,11 @@ namespace CompanyPOS.Controllers
         [HttpPost]
         public HttpResponseMessage PostLogin([FromBody] Users user)
         {
-            try
-            {
+            string flow = "Before coneect to database || ";
+            try{
                 using (CompanyPOSEntities database = new CompanyPOSEntities())
                 {
+                    flow += "Before search for users"; 
                     if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
                     {
                         //Get user's data
@@ -29,7 +30,7 @@ namespace CompanyPOS.Controllers
                         if (session == null)
                         {
                             session = new Session();
-                            //Save Session
+                            //Save SessionC:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\CompanyPOS\Controllers\SessionController.cs
                             session.StoreID = userEntity.StoreID;
                             session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
                             session.UserID = userEntity.ID;
@@ -72,7 +73,7 @@ namespace CompanyPOS.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " "+flow);
             }
         }
 
