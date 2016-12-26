@@ -10,15 +10,10 @@ using System.Web.Http;
 
 namespace CompanyPOS.Controllers
 {
-    public class ItemController : ApiController
+    public class CompanyController : ApiController
     {
-        // GET: api/Item
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
 
-        // GET: api/Item/5
+        // GET: api/Company/5
         public HttpResponseMessage Get(string token, int id)
         {
             try
@@ -30,8 +25,8 @@ namespace CompanyPOS.Controllers
 
                     if (session != null)
                     {
-                        //Validate storeID and ItemID
-                        var data = database.Item.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        //Validate storeID and CompanyID
+                        var data = database.CompanySet.ToList().FirstOrDefault(x => (x.Id == id));
                         if (data != null)
                         {
                             //Save last  update
@@ -43,7 +38,7 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Item not found");
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Company not found");
                             return message;
                         }
                     }
@@ -60,9 +55,10 @@ namespace CompanyPOS.Controllers
             }
         }
 
-        // POST: api/Item
+
+        // POST: api/Company
         //CREATE
-        public HttpResponseMessage Post([FromBody]Item Item, string token)
+        public HttpResponseMessage Post([FromBody]Company Company, string token)
         {
             string errorStatus = " ";
             try
@@ -79,18 +75,17 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        errorStatus += " Before Find similar item || ";
-                        var currentItem = database.Item.ToList().FirstOrDefault(x => x.Name == Item.Name && (x.StoreID == session.StoreID));
-                        if (currentItem != null)
+                        errorStatus += " Before Find similar Company || ";
+                        var currentCompany = database.CompanySet.ToList().FirstOrDefault(x => x.Name == Company.Name);
+                        if (currentCompany != null)
                         {
                             database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Item with this name");
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Company with this name");
                             return message;
                         }
                         else
                         {
-                            Item.StoreID = session.StoreID;
-                            database.Item.Add(Item);
+                            database.CompanySet.Add(Company);
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
                             {
@@ -98,7 +93,7 @@ namespace CompanyPOS.Controllers
                                 ,
                                 UserID = session.UserID
                                 ,
-                                Activity = "CREATE Item"
+                                Activity = "CREATE Company"
                             });
 
                             errorStatus += " Before adding in the db || ";
@@ -134,9 +129,9 @@ namespace CompanyPOS.Controllers
             }
         }
 
-        // PUT: api/Item/5
+        // PUT: api/Company/5
         //UPDATE
-        public HttpResponseMessage Put(int id, [FromBody]Item Item, string token)
+        public HttpResponseMessage Put(int id, [FromBody]Company Company, string token)
         {
 
             try
@@ -151,15 +146,11 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentItem = database.Item.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentCompany = database.CompanySet.ToList().FirstOrDefault(x => x.Id == id );
 
-                        if (currentItem != null)
+                        if (currentCompany != null)
                         {
-                           currentItem.Name          = Item.Name       ;
-                           currentItem.UnitPrice     = Item.UnitPrice  ;
-                           currentItem.CategoryID    = Item.CategoryID ;
-                           currentItem.Description   = Item.Description;
-
+                            currentCompany.Name = Company.Name;
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
                             {
@@ -167,7 +158,7 @@ namespace CompanyPOS.Controllers
                                 ,
                                 UserID = session.UserID
                                 ,
-                                Activity = "CREATE Item"
+                                Activity = "UPDATE Company"
                             });
 
                             database.SaveChanges();
@@ -176,7 +167,7 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Item Not found");
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "Company Not found");
                             return message;
                         }
                     }
@@ -206,7 +197,7 @@ namespace CompanyPOS.Controllers
             }
         }
 
-        // DELETE: api/Item/5
+        // DELETE: api/Company/5
         //DELETE
         public HttpResponseMessage Delete(int id, string token)
         {
@@ -222,17 +213,17 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var Item = database.Item.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var Company = database.CompanySet.ToList().FirstOrDefault(x => x.Id == id );
 
-                        if (Item == null)
+                        if (Company == null)
                         {
                             return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-                                    "Item with Id = " + id.ToString() + " not found to delete");
+                                    "Company with Id = " + id.ToString() + " not found to delete");
                         }
                         else
                         {
 
-                            database.Item.Remove(Item);
+                            database.CompanySet.Remove(Company);
                             //SAVE ACTIVITY
                             database.UserActivity.Add(new UserActivity()
                             {
@@ -240,7 +231,7 @@ namespace CompanyPOS.Controllers
                                 ,
                                 UserID = session.UserID
                                 ,
-                                Activity = "DELETE Item"
+                                Activity = "DELETE Company"
                             });
 
                             database.SaveChanges();

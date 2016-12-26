@@ -12,18 +12,90 @@ namespace CompanyPOS.Controllers
 {
     public class UserController : ApiController
     {
-        // GET: api/User
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        public HttpResponseMessage GetStoreUsers(string token)
+        {
+            try
+            {
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
 
-        // GET: api/User/5
-        // GET: api/Store
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+                    if (session != null)
+                    {
+                        //Validate storeID and UserID
+                        Users user = database.Users.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID));
+                        if (user != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, user);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        // GET: api/Store/5
+        //READ
+        //It should have permissions
+        public HttpResponseMessage GetCompanyUsers(string token, int companyID)
+        {
+            try
+            {
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
+
+                    if (session != null)
+                    {
+                        //Validate storeID and UserID
+                        Users user = database.Users.ToList().FirstOrDefault(x => (x.CompanyID == companyID));
+                        if (user != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, user);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         // GET: api/Store/5
         //READ
@@ -94,20 +166,28 @@ namespace CompanyPOS.Controllers
                         else
                         {
                             user.StoreID = session.StoreID;
-                            database.Users.Add(user);
-                            //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE USER"
-                            });
-                            database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
-                            return message;
+                            if (user.CompanyID == currentUser.CompanyID)
+                            {
+                                database.Users.Add(user);
+                                //SAVE ACTIVITY
+                                database.UserActivity.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    ,
+                                    UserID = session.UserID
+                                    ,
+                                    Activity = "CREATE USER"
+                                });
+                                database.SaveChanges();
+
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                                return message;
+                            }
+                            else {
+                                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You can't create users from a different Company");
+                                return message;
+                            }
                         }
                     }
                     else
@@ -140,7 +220,6 @@ namespace CompanyPOS.Controllers
         //UPDATE
         public HttpResponseMessage Put(int id, [FromBody]Users user, string token)
         {
-
             try
             {
                 using (CompanyPOSEntities database = new CompanyPOSEntities())
@@ -160,9 +239,9 @@ namespace CompanyPOS.Controllers
                             currentUser.Name = user.Name;
                             //currentUser.Type = user.Type;
                             //currentUser.TypeID = user.TypeID;
-                           // currentUser.Password = user.Password;
-                           // currentUser.StoreID = user.StoreID;
-                           //  currentUser.UserLevel = user.UserLevel;
+                            // currentUser.Password = user.Password;
+                            // currentUser.StoreID = user.StoreID;
+                            //  currentUser.UserLevel = user.UserLevel;
                             currentUser.Username = user.Username;
                             currentUser.Email = user.Email;
 

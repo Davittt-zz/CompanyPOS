@@ -13,10 +13,46 @@ namespace CompanyPOS.Controllers
     public class SaleController : ApiController
     {
         // GET: api/Sale
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        public HttpResponseMessage GetAll(string token)
+    { 
+          try
+            {
+                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
+
+                    if (session != null)
+                    {
+                        //Validate storeID and SaleID
+                        var data = database.Sale.ToList().Where(x => (x.StoreID == session.StoreID)).ToList();
+                        if (data != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Sale not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         // GET: api/Sale/5
         public HttpResponseMessage Get(string token, int id)
