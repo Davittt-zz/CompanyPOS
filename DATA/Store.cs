@@ -25,6 +25,9 @@ namespace DATA
             this.Category = new HashSet<Category>();
             this.ItemAttribute = new HashSet<ItemAttribute>();
             this.Shift = new HashSet<Shift>();
+            this.ItemPurchase = new HashSet<ItemPurchase>();
+            this.Invoice = new HashSet<Invoice>();
+            this.Sale = new HashSet<Sale>();
         }
     
         public int ID { get; set; }
@@ -46,5 +49,11 @@ namespace DATA
         public virtual ICollection<ItemAttribute> ItemAttribute { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shift> Shift { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ItemPurchase> ItemPurchase { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Invoice> Invoice { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Sale> Sale { get; set; }
     }
 }

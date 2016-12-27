@@ -12,22 +12,15 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class Shift
+    public partial class Invoice
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Shift()
-        {
-            this.Sale = new HashSet<Sale>();
-        }
-    
         public int ID { get; set; }
-        public string Status { get; set; }
-        public Nullable<System.DateTime> TimeStart { get; set; }
-        public Nullable<System.DateTime> TimeEnd { get; set; }
+        public int SaleID { get; set; }
         public int StoreID { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public string PaymentMethod { get; set; }
     
         public virtual Store Store { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sale> Sale { get; set; }
+        public virtual Sale Sale { get; set; }
     }
 }

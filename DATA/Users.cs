@@ -18,6 +18,7 @@ namespace DATA
         public Users()
         {
             this.UserActivity = new HashSet<UserActivity>();
+            this.Sale = new HashSet<Sale>();
         }
     
         public int ID { get; set; }
@@ -29,9 +30,12 @@ namespace DATA
         public string UserLevel { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
+        public Nullable<int> CompanyID { get; set; }
     
         public virtual Store Store { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserActivity> UserActivity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Sale> Sale { get; set; }
     }
 }

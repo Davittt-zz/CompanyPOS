@@ -21,7 +21,6 @@ namespace DATA
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
         }
-
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -38,5 +37,9 @@ namespace DATA
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<ItemAttribute> ItemAttribute { get; set; }
         public virtual DbSet<Shift> Shift { get; set; }
+        public virtual DbSet<ItemPurchase> ItemPurchase { get; set; }
+        public virtual DbSet<Invoice> Invoice { get; set; }
+        public virtual DbSet<Sale> Sale { get; set; }
+        public virtual DbSet<Company> CompanySet { get; set; }
     }
 }

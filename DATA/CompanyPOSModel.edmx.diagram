@@ -28,6 +28,19 @@
         <AssociationConnector Association="CompanyPOSModel.FK_ItemAttribute_Store" />
         <EntityTypeShape EntityType="CompanyPOSModel.Shift" Width="1.5" PointX="5.375" PointY="9.875" />
         <AssociationConnector Association="CompanyPOSModel.FK_Shift_Store" />
+        <EntityTypeShape EntityType="CompanyPOSModel.ItemPurchase" Width="1.5" PointX="14.125" PointY="4.25" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemPurchase_Item" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemPurchase_Store" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Invoice" Width="1.5" PointX="8.875" PointY="13.25" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Invoice_Store" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Sale" Width="1.5" PointX="11.125" PointY="8.125" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Invoice_Sale" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Sale_Item" />
+        <AssociationConnector Association="CompanyPOSModel.FK_ItemPurchase_Sale" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Sale_Shift" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Sale_Store" />
+        <AssociationConnector Association="CompanyPOSModel.FK_Sale_Users" />
+        <EntityTypeShape EntityType="CompanyPOSModel.Company" Width="1.5" PointX="4.75" PointY="7" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

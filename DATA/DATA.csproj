@@ -53,6 +53,9 @@
     <Compile Include="Category.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Company.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CompanyPOSModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -68,6 +71,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CompanyPOSModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Invoice.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Item.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>
@@ -77,11 +83,17 @@
     <Compile Include="ItemPagePosition.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ItemPurchase.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Menu.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>
     <Compile Include="MyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sale.cs">
+      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Session.cs">
       <DependentUpon>CompanyPOSModel.tt</DependentUpon>
     </Compile>
