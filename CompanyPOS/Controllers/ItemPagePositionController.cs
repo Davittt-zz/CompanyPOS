@@ -13,6 +13,48 @@ namespace CompanyPOS.Controllers
 {
     public class ItemPagePositionController : ApiController
     {
+        // GET: api/Menu
+        public HttpResponseMessage Get(string token)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
+
+                    if (session != null)
+                    {
+                        //Validate storeID and MenuID
+                        var data = database.ItemPagePositions.ToList().Where(x => (x.StoreID == session.StoreID));
+                        if (data != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Item not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
         // GET: api/ItemPagePosition
         // GET: api/ItemPagePosition
         //public IEnumerable<string> Get()
@@ -33,7 +75,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and ItemPagePositionID
-                        var data = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.ID == id) );
+                        var data = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.ID == id));
                         if (data != null)
                         {
                             //Save last  update
@@ -88,20 +130,40 @@ namespace CompanyPOS.Controllers
                         else
                         {
                             ItemPagePosition.StoreID = session.StoreID;
-                            database.ItemPagePositions.Add(ItemPagePosition);
-                            //SAVE ACTIVITY
-                            database.UserActivities.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE ItemPos"
-                            });
-                            database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-                            return message;
+                            var currentItem = database.Items.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.ItemID);
+                            if (currentItem != null)
+                            {
+                                var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.MenuID);
+
+                                if (currentMenu != null)
+                                {
+                                    database.ItemPagePositions.Add(ItemPagePosition);
+                                    //SAVE ACTIVITY
+                                    database.UserActivities.Add(new UserActivity()
+                                    {
+                                        StoreID = session.StoreID
+                                        ,
+                                        UserID = session.UserID
+                                        ,
+                                        Activity = "CREATE ItemPos"
+                                    });
+                                    database.SaveChanges();
+
+                                    var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+                                    return message;
+                                }
+                                else
+                                {
+                                    var message = Request.CreateResponse(HttpStatusCode.OK, "Menu not found");
+                                    return message;
+                                }
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Item not found");
+                                return message;
+                            }
                         }
                     }
                     else

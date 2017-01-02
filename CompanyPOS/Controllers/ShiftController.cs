@@ -13,6 +13,49 @@ namespace CompanyPOS.Controllers
 {
     public class ShiftController : ApiController
     {
+        // GET: api/Shift/5
+        public HttpResponseMessage Get(string token)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
+
+                    if (session != null)
+                    {
+                        //Validate storeID and ShiftID
+                        var data = database.Shifts.ToList().Where(x => (x.StoreID == session.StoreID));
+                        if ((data != null) || (data.Count()>0))
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Shift not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
         // GET: api/Shift
         public HttpResponseMessage Get(string token, string period)
         {

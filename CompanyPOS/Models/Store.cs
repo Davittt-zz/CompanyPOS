@@ -36,7 +36,7 @@ namespace CompanyPOS.Models
         public virtual ICollection<User> Users { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
-        public virtual ICollection<ItemAttribute> ItemAttributes { get; set; }
+        //public virtual ICollection<ItemAttribute> ItemAttributes { get; set; }
         public virtual ICollection<Sale> Sales { get; set; }
         
 

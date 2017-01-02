@@ -170,15 +170,15 @@ namespace CompanyPOS.Controllers
                            currentItem.CategoryID    = Item.CategoryID ;
                            currentItem.Description   = Item.Description;
 
-                            //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE Item"
-                            //});
+                          //SAVE ACTIVITY
+                          database.UserActivities.Add(new UserActivity()
+                          {
+                              StoreID = session.StoreID
+                              ,
+                              UserID = session.UserID
+                              ,
+                              Activity = "CREATE Item"
+                          });
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");

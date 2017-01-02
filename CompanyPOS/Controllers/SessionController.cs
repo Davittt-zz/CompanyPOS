@@ -11,16 +11,39 @@ namespace CompanyPOS.Controllers
 {
     public class SessionController : ApiController
     {
+
+        //GET
+        //api/Session/
+        public HttpResponseMessage GetAll()
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    var session = database.Sessions.ToList();
+                    var message = Request.CreateResponse(HttpStatusCode.OK, session);
+                    return message;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+
+        }
+
+
         // POST api/Session/Login
         // [Route("Login")]
         [HttpPost]
         public HttpResponseMessage PostLogin([FromBody] User user)
         {
             string flow = "Before coneect to database || ";
-            try{
+            try
+            {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    flow += "Before search for users"; 
+                    flow += "Before search for users";
                     if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
                     {
                         //Get user's data
@@ -52,10 +75,10 @@ namespace CompanyPOS.Controllers
                         //SAVE ACTIVITY
                         database.UserActivities.Add(new UserActivity()
                             {
-                               // StoreID = session.StoreID
-                               // ,
-                               // UserID = session.UserID
-                               // ,
+                                // StoreID = session.StoreID
+                                // ,
+                                // UserID = session.UserID
+                                // ,
                                 Activity = "LOGIN"
                             }
                             );
@@ -74,7 +97,7 @@ namespace CompanyPOS.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " "+flow);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " " + flow);
             }
         }
 
@@ -94,10 +117,10 @@ namespace CompanyPOS.Controllers
                         //SAVE ACTIVITY
                         database.UserActivities.Add(new UserActivity()
                         {
-                         //   StoreID = session.StoreID
-                         //   ,
-                         //UserID = session.UserID
-                         // ,
+                            //   StoreID = session.StoreID
+                            //   ,
+                            //UserID = session.UserID
+                            // ,
                             Activity = "LOGOUT"
                         }
                             );

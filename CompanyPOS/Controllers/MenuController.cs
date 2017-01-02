@@ -186,22 +186,32 @@ namespace CompanyPOS.Controllers
 
                         if (currentMenu != null)
                         {
-                            currentMenu.Name = menu.Name;
-                            currentMenu.Page = menu.Page;
-                           // currentMenu.StoreID = menu.StoreID;
-                            currentMenu.Description = menu.Description;
-
-                            //SAVE ACTIVITY
-                            database.UserActivities.Add(new UserActivity()
+                            if (currentMenu.Name.ToLower() != menu.Name.Trim().ToLower())
                             {
-                                StoreID = session.StoreID
-                                ,UserID = session.UserID
-                                ,Activity = "CREATE MENU"
-                            });
+                                currentMenu.Name = menu.Name;
+                                currentMenu.Page = menu.Page;
+                                // currentMenu.StoreID = menu.StoreID;
+                                currentMenu.Description = menu.Description;
 
-                            database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-                            return message;
+                                //SAVE ACTIVITY
+                                database.UserActivities.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    ,
+                                    UserID = session.UserID
+                                    ,
+                                    Activity = "CREATE MENU"
+                                });
+
+                                database.SaveChanges();
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
+                                return message;
+                            }
+                            else {
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "There is a menu with the same name");
+                                return message;
+                            }
+
                         }
                         else
                         {

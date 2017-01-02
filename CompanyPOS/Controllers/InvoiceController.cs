@@ -127,259 +127,263 @@ namespace CompanyPOS.Controllers
         }
 
         // GET: api/Invoice
-        // GET: api/Invoice
         //public IEnumerable<string> Get()
         //{
         //    return new string[] { "value1", "value2" };
         //}
 
-        // GET: api/Invoice/5
-        //public HttpResponseMessage Get(string token, int id)
-        //{
-        //    try
-        //    {
-        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
-        //        {
-        //            SessionController sessionController = new SessionController();
-        //            Session session = sessionController.Autenticate(token);
+        //  GET: api/Invoice/5
+        public HttpResponseMessage Get(string token, int id)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
 
-        //            if (session != null)
-        //            {
-        //                //Validate storeID and InvoiceID
-        //                var data = database.Invoices.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
-        //                if (data != null)
-        //                {
-        //                    //Save last  update
-        //                    session.LastUpdate = DateTime.Now;
-        //                    database.SaveChanges();
+                    if (session != null)
+                    {
+                        //Validate storeID and InvoiceID
+                        var data = database.Invoices.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        if (data != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
 
-        //                    var message = Request.CreateResponse(HttpStatusCode.OK, data);
-        //                    return message;
-        //                }
-        //                else
-        //                {
-        //                    var message = Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found");
-        //                    return message;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-        //                return message;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-        //    }
-        //}
+                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
-        //// POST: api/Invoice
-        ////CREATE
-        //public HttpResponseMessage Post([FromBody]Invoice Invoice, string token)
-        //{
-        //    try
-        //    {
-        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
-        //        {
-        //            SessionController sessionController = new SessionController();
-        //            Session session = sessionController.Autenticate(token);
+        // POST: api/Invoice
+        //CREATE
+        public HttpResponseMessage Post(int SaleID, [FromBody]Invoice Invoice, string token)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
 
-        //            if (session != null)
-        //            {
-        //                //Save last  update
-        //                session.LastUpdate = DateTime.Now;
+                    if (session != null)
+                    {
+                        //Save last  update
+                        session.LastUpdate = DateTime.Now;
 
-        //                var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => (x. == Invoice.MenuID) && (x.hPos == Invoice.hPos) && (x.vPos == Invoice.vPos) && (x.StoreID == session.StoreID));
-        //                if (currentInvoice != null)
-        //                {
-        //                    database.SaveChanges();
-        //                    var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Invoice with this name");
-        //                    return message;
-        //                }
-        //                else
-        //                {
-        //                    Invoice.StoreID = session.StoreID;
-        //                    database.Invoices.Add(Invoice);
-        //                    //SAVE ACTIVITY
-        //                    database.UserActivities.Add(new UserActivity()
-        //                    {
-        //                        StoreID = session.StoreID
-        //                        ,
-        //                        UserID = session.UserID
-        //                        ,
-        //                        Activity = "CREATE ItemPos"
-        //                    });
-        //                    database.SaveChanges();
+                        var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => (x.SaleID == SaleID) && (x.StoreID == session.StoreID));
+                        if (currentInvoice != null)
+                        {
+                            database.SaveChanges();
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Invoice with this name");
+                            return message;
+                        }
+                        else
+                        {
+                            if (!(database.Sales.Any(x=> x.ID == currentInvoice.SaleID && x.StoreID == currentInvoice.SaleID)))
+                            {
+                                Invoice.StoreID = session.StoreID;
+                                database.Invoices.Add(Invoice);
+                                //SAVE ACTIVITY
+                                database.UserActivities.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    ,
+                                    UserID = session.UserID
+                                    ,
+                                    Activity = "CREATE Invoice"
+                                });
+                                database.SaveChanges();
 
-        //                    var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-        //                    return message;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-        //                return message;
-        //            }
-        //        }
-        //    }
-        //    catch (DbEntityValidationException dbEx)
-        //    {
-        //        foreach (var validationErrors in dbEx.EntityValidationErrors)
-        //        {
-        //            foreach (var validationError in validationErrors.ValidationErrors)
-        //            {
-        //                Trace.TraceInformation("Property: {0} Error: {1}",
-        //                                        validationError.PropertyName,
-        //                                        validationError.ErrorMessage);
-        //            }
-        //        }
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-        //    }
-        //}
+                                var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+                                return message; 
+                            } 
+                            else {
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Sale has already an Invoice");
+                                return message;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                                                validationError.PropertyName,
+                                                validationError.ErrorMessage);
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
-        //// PUT: api/Invoice/5
-        ////UPDATE
-        //public HttpResponseMessage Put(int id, [FromBody]Invoice Invoice, string token)
-        //{
-        //    try
-        //    {
-        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
-        //        {
-        //            SessionController sessionController = new SessionController();
-        //            Session session = sessionController.Autenticate(token);
+        // PUT: api/Invoice/5
+        //UPDATE
+        public HttpResponseMessage Put(int id, [FromBody]Invoice Invoice, string token)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
 
-        //            if (session != null)
-        //            {
-        //                //Save last  update
-        //                session.LastUpdate = DateTime.Now;
+                    if (session != null)
+                    {
+                        //Save last  update
+                        session.LastUpdate = DateTime.Now;
 
-        //                var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-        //                if (currentInvoice != null)
-        //                {
-        //                    currentInvoice.hPos = Invoice.hPos;
-        //                    currentInvoice.vPos = Invoice.Page;
-        //                    currentInvoice.ItemID = Invoice.ItemID;
-        //                    currentInvoice.Page = Invoice.Page;
+                        if (currentInvoice != null)
+                        {
+                            currentInvoice.PaymentMethod = Invoice.PaymentMethod;
+                            currentInvoice.Date = Invoice.Date;
 
-        //                    //SAVE ACTIVITY
-        //                    database.UserActivities.Add(new UserActivity()
-        //                    {
-        //                        StoreID = session.StoreID
-        //                        ,
-        //                        UserID = session.UserID
-        //                        ,
-        //                        Activity = "CREATE ItPagePos"
-        //                    });
+                            //SAVE ACTIVITY
+                            database.UserActivities.Add(new UserActivity()
+                            {
+                                StoreID = session.StoreID
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "UPDATE Invoice"
+                            });
 
-        //                    database.SaveChanges();
-        //                    var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-        //                    return message;
-        //                }
-        //                else
-        //                {
-        //                    var message = Request.CreateResponse(HttpStatusCode.OK, "Invoice Not found");
-        //                    return message;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-        //                return message;
-        //            }
-        //        }
-        //    }
-        //    catch (DbEntityValidationException dbEx)
-        //    {
-        //        foreach (var validationErrors in dbEx.EntityValidationErrors)
-        //        {
-        //            foreach (var validationError in validationErrors.ValidationErrors)
-        //            {
-        //                Trace.TraceInformation("Property: {0} Error: {1}",
-        //                                        validationError.PropertyName,
-        //                                        validationError.ErrorMessage);
-        //            }
-        //        }
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-        //    }
-        //}
+                            database.SaveChanges();
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "Invoice Not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                                                validationError.PropertyName,
+                                                validationError.ErrorMessage);
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
-        //// DELETE: api/Invoice/5
-        ////DELETE
-        //public HttpResponseMessage Delete(int id, string token)
-        //{
-        //    try
-        //    {
-        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
-        //        {
-        //            SessionController sessionController = new SessionController();
-        //            Session session = sessionController.Autenticate(token);
+        // DELETE: api/Invoice/5
+        //DELETE
+        public HttpResponseMessage Delete(int id, string token)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
 
-        //            if (session != null)
-        //            {
-        //                //Save last  update
-        //                session.LastUpdate = DateTime.Now;
+                    if (session != null)
+                    {
+                        //Save last  update
+                        session.LastUpdate = DateTime.Now;
 
-        //                var Invoice = database.Invoices.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var Invoice = database.Invoices.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-        //                if (Invoice == null)
-        //                {
-        //                    return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-        //                            "Invoice with Id = " + id.ToString() + " not found to delete");
-        //                }
-        //                else
-        //                {
+                        if (Invoice == null)
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                                    "Invoice with Id = " + id.ToString() + " not found to delete");
+                        }
+                        else
+                        {
 
-        //                    database.Invoices.Remove(Invoice);
-        //                    //SAVE ACTIVITY
-        //                    database.UserActivities.Add(new UserActivity()
-        //                    {
-        //                        StoreID = session.StoreID
-        //                        ,
-        //                        UserID = session.UserID
-        //                        ,
-        //                        Activity = "DELETE ItPagPos"
-        //                    });
+                            database.Invoices.Remove(Invoice);
+                            //SAVE ACTIVITY
+                            database.UserActivities.Add(new UserActivity()
+                            {
+                                StoreID = session.StoreID
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "DELETE Invoice"
+                            });
 
-        //                    database.SaveChanges();
-        //                    var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
-        //                    return message;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-        //                return message;
-        //            }
-        //        }
-        //    }
-        //    catch (DbEntityValidationException dbEx)
-        //    {
-        //        foreach (var validationErrors in dbEx.EntityValidationErrors)
-        //        {
-        //            foreach (var validationError in validationErrors.ValidationErrors)
-        //            {
-        //                Trace.TraceInformation("Property: {0} Error: {1}",
-        //                                        validationError.PropertyName,
-        //                                        validationError.ErrorMessage);
-        //            }
-        //        }
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-        //    }
-        //}
+                            database.SaveChanges();
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                                                validationError.PropertyName,
+                                                validationError.ErrorMessage);
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
     }
 }

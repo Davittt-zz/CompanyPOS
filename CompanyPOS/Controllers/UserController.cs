@@ -296,19 +296,19 @@ namespace CompanyPOS.Controllers
                             //currentUser.TypeID = user.TypeID;
                             // currentUser.Password = user.Password;
                             // currentUser.StoreID = user.StoreID;
-                            //  currentUser.UserLevel = user.UserLevel;
+                            currentUser.UserLevel = user.UserLevel;
                             currentUser.Username = user.Username;
                             currentUser.Email = user.Email;
 
                             //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE USER"
-                            //});
+                            database.UserActivities.Add(new UserActivity()
+                            {
+                                StoreID = session.StoreID
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "CREATE USER"
+                            });
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
