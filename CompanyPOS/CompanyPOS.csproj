@@ -166,6 +166,9 @@
     <Compile Include="Controllers\ItemAttributeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
+    <Compile Include="Controllers\ItemPagePositionController.cs" />
+    <Compile Include="Controllers\ItemPurchaseController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\SaleController.cs" />
     <Compile Include="Controllers\SessionController.cs">
       <SubType>Code</SubType>
@@ -194,6 +197,7 @@
     <Compile Include="Models\ItemPurchase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Menu.cs" />
     <Compile Include="Models\Sale.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Shift.cs" />

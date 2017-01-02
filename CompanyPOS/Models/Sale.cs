@@ -34,8 +34,8 @@ namespace CompanyPOS.Models
      //   public virtual Shift Shift { get; set; }
 
         public int StoreID { get; set; }
-        [ForeignKey("StoreID")]
-        public virtual Store Store { get; set; }
+    //    [ForeignKey("StoreID")]
+    //    public virtual Store Store { get; set; }
 
         public virtual ICollection<Invoice> Invoices { get; set; }
         public virtual ICollection<ItemPurchase> ItemPurchases { get; set; }

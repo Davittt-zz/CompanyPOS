@@ -12,11 +12,11 @@ namespace CompanyPOS.Models
         public Nullable<int> vPos { get; set; }
         public Nullable<int> Page { get; set; }
 
-      // public int MenuID { get; set; }
+       public int MenuID { get; set; }
       // [ForeignKey("MenuID")]
       // public virtual Menu Menu { get; set; }
       //
-      // public int StoreID { get; set; }
+       public int StoreID { get; set; }
       // [ForeignKey("StoreID")]
       //  public virtual Store Store { get; set; }
       //

@@ -31,6 +31,6 @@ namespace CompanyPOS.Models
 
         public virtual ICollection<ItemPagePosition> ItemPagePositions { get; set; }
         public virtual ICollection<ItemAttribute>    ItemAttributes { get; set; }
-        public virtual ICollection<ItemPurchase>     ItemPurchases { get; set; }
+    //  public virtual ICollection<ItemPurchase>     ItemPurchases { get; set; }
     }
 }

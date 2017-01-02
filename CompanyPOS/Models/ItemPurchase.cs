@@ -12,7 +12,7 @@ namespace CompanyPOS.Models
         public string Discount { get; set; }
         public string TotalPrice { get; set; }
 
-      //  public int ItemID { get; set; }
+        public int ItemID { get; set; }
       //  [ForeignKey("ItemID")]
       //  public virtual Item Item { get; set; }
       //

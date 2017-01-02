@@ -80,33 +80,42 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        errorStatus += " Before Find similar item || ";
+                        errorStatus += " Before finding similar item || ";
                         var currentItem = database.Items.ToList().FirstOrDefault(x => x.Name == Item.Name && (x.StoreID == session.StoreID));
                         if (currentItem != null)
                         {
-                            database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Item with this name");
                             return message;
                         }
                         else
                         {
-                            Item.StoreID = session.StoreID;
-                            database.Items.Add(Item);
-                            //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE Item"
-                            //});
+                            var category = database.Categories.FirstOrDefault(x => (x.StoreID == session.StoreID) && (x.ID == Item.CategoryID));
+                            
+                             //check existing categories
+                            if (category != null)
+                            {
+                                Item.StoreID = session.StoreID;
+                                database.Items.Add(Item);
+                                //SAVE ACTIVITY
+                                database.UserActivities.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    ,
+                                    UserID = session.UserID
+                                    ,
+                                    Activity = "CREATE Item"
+                                });
 
-                            errorStatus += " Before adding in the db || ";
-                            database.SaveChanges();
+                                errorStatus += " Before adding in the db || ";
+                                database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
-                            return message;
+                                var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+                                return message;
+                            }
+                            else {
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Category not found");
+                                return message;
+                            }
                         }
                     }
                     else

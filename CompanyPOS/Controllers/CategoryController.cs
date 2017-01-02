@@ -36,6 +36,7 @@ namespace CompanyPOS.Controllers
                     {
                         //Validate storeID and CategoryID
                         var data = database.Categories.ToList().Where(x => (x.StoreID == session.StoreID));
+
                         if (data != null)
                         {
                             //Save last  update
@@ -138,19 +139,19 @@ namespace CompanyPOS.Controllers
                             Category.StoreID = session.StoreID;
                             database.Categories.Add(Category);
                             //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE Category"
-                            //});
+                            database.UserActivities.Add(new UserActivity()
+                            {
+                                StoreID = session.StoreID
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "CREATE Category"
+                            });
 
                             errorStatus += " Before adding in the db || ";
                             database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                            var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
                             return message;
                         }
                     }

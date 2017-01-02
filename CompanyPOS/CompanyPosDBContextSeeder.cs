@@ -44,11 +44,29 @@ namespace CompanyPOS
                              Name = "Owner X" , Username = "ownerX" , Password = "test", Type = "Owner" , UserLevel = "admin" 
                          }
                      }
-                  }, 
+                  },  
                 }
             };
 
             context.Companies.Add(company);
+            context.SaveChanges();
+
+            //Create Session
+            Session session = new Session()
+            {
+
+                Created = DateTime.Now
+                ,
+                LastUpdate = DateTime.Now
+                ,
+                StoreID = context.Stores.First().ID
+                ,
+                UserID = context.Stores.First().Users.First().ID
+                ,
+                TokenID = "11554895561" 
+            };
+
+            context.Sessions.Add(session);
 
             base.Seed(context);
         }

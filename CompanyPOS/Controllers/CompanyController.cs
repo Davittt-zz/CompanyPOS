@@ -99,7 +99,7 @@ namespace CompanyPOS.Controllers
                         errorStatus += " Before adding in the db || ";
                         database.SaveChanges();
 
-                        var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                        var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
                         return message;
                     }
                 }

@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -17,7 +18,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -25,7 +26,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and MenuID
-                        var data = database.Menu.ToList().Where(x => (x.StoreID == session.StoreID));
+                        var data = database.Menues.ToList().Where(x => (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -59,7 +60,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -67,7 +68,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and MenuID
-                        var data = database.Menu.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        var data = database.Menues.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -102,7 +103,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -112,7 +113,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentMenu = database.Menu.ToList().FirstOrDefault(x => x.Name == menu.Name && (x.StoreID == session.StoreID));
+                        var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.Name == menu.Name && (x.StoreID == session.StoreID));
                         if (currentMenu != null)
                         {
                             database.SaveChanges();
@@ -122,9 +123,9 @@ namespace CompanyPOS.Controllers
                         else
                         {
                             menu.StoreID = session.StoreID;
-                            database.Menu.Add(menu);
+                            database.Menues.Add(menu);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            database.UserActivities.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
                                 ,
@@ -134,7 +135,7 @@ namespace CompanyPOS.Controllers
                             });
                             database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                            var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
                             return message;
                         }
                     }
@@ -171,7 +172,7 @@ namespace CompanyPOS.Controllers
 
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -181,7 +182,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentMenu = database.Menu.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (currentMenu != null)
                         {
@@ -191,7 +192,7 @@ namespace CompanyPOS.Controllers
                             currentMenu.Description = menu.Description;
 
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            database.UserActivities.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
                                 ,UserID = session.UserID
@@ -240,7 +241,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -250,7 +251,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var menu = database.Menu.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var menu = database.Menues.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (menu == null)
                         {
@@ -260,9 +261,9 @@ namespace CompanyPOS.Controllers
                         else
                         {
 
-                            database.Menu.Remove(menu);
+                            database.Menues.Remove(menu);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            database.UserActivities.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
                                 ,

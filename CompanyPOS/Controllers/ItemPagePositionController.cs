@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -24,7 +25,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -32,7 +33,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and ItemPagePositionID
-                        var data = database.ItemPagePosition.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        var data = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.ID == id) );
                         if (data != null)
                         {
                             //Save last  update
@@ -67,7 +68,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -77,7 +78,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentItemPagePosition = database.ItemPagePosition.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));
+                        var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));
                         if (currentItemPagePosition != null)
                         {
                             database.SaveChanges();
@@ -87,9 +88,9 @@ namespace CompanyPOS.Controllers
                         else
                         {
                             ItemPagePosition.StoreID = session.StoreID;
-                            database.ItemPagePosition.Add(ItemPagePosition);
+                            database.ItemPagePositions.Add(ItemPagePosition);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            database.UserActivities.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
                                 ,
@@ -99,7 +100,7 @@ namespace CompanyPOS.Controllers
                             });
                             database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                            var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
                             return message;
                         }
                     }
@@ -129,14 +130,13 @@ namespace CompanyPOS.Controllers
             }
         }
 
-
         // PUT: api/ItemPagePosition/5
         //UPDATE
         public HttpResponseMessage Put(int id, [FromBody]ItemPagePosition ItemPagePosition, string token)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -146,7 +146,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentItemPagePosition = database.ItemPagePosition.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (currentItemPagePosition != null)
                         {
@@ -156,7 +156,7 @@ namespace CompanyPOS.Controllers
                             currentItemPagePosition.Page = ItemPagePosition.Page;
 
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            database.UserActivities.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
                                 ,
@@ -207,7 +207,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -217,7 +217,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var ItemPagePosition = database.ItemPagePosition.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var ItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (ItemPagePosition == null)
                         {
@@ -227,9 +227,9 @@ namespace CompanyPOS.Controllers
                         else
                         {
 
-                            database.ItemPagePosition.Remove(ItemPagePosition);
+                            database.ItemPagePositions.Remove(ItemPagePosition);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            database.UserActivities.Add(new UserActivity()
                             {
                                 StoreID = session.StoreID
                                 ,
