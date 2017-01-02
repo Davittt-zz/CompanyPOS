@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,19 +14,19 @@ namespace CompanyPOS.Controllers
         // POST api/Session/Login
         // [Route("Login")]
         [HttpPost]
-        public HttpResponseMessage PostLogin([FromBody] Users user)
+        public HttpResponseMessage PostLogin([FromBody] User user)
         {
             string flow = "Before coneect to database || ";
             try{
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     flow += "Before search for users"; 
                     if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
                     {
                         //Get user's data
-                        Users userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
+                        User userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
 
-                        Session session = (database.Session.ToList().FirstOrDefault(x => x.UserID == userEntity.ID));
+                        Session session = (database.Sessions.ToList().FirstOrDefault(x => x.UserID == userEntity.ID));
 
                         if (session == null)
                         {
@@ -36,7 +37,7 @@ namespace CompanyPOS.Controllers
                             session.UserID = userEntity.ID;
                             session.Created = DateTime.Now;
                             session.LastUpdate = session.Created;
-                            database.Session.Add(session);
+                            database.Sessions.Add(session);
                         }
                         else
                         {
@@ -45,16 +46,16 @@ namespace CompanyPOS.Controllers
                             session.UserID = userEntity.ID;
                             session.LastUpdate = DateTime.Now;
                             //not add because us an Update
-                            //   database.Session.Add(session);
+                            //   database.Sessions.Add(session);
                         }
 
                         //SAVE ACTIVITY
-                        database.UserActivity.Add(new UserActivity()
+                        database.UserActivities.Add(new UserActivity()
                             {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
+                               // StoreID = session.StoreID
+                               // ,
+                               // UserID = session.UserID
+                               // ,
                                 Activity = "LOGIN"
                             }
                             );
@@ -83,20 +84,20 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    Session session = database.Session.ToList().LastOrDefault(x => x.TokenID.Trim().Equals(Session.TokenID.Trim()));
+                    Session session = database.Sessions.ToList().LastOrDefault(x => x.TokenID.Trim().Equals(Session.TokenID.Trim()));
                     if (session != null)
                     {
-                        database.Session.Remove(session);
+                        database.Sessions.Remove(session);
 
                         //SAVE ACTIVITY
-                        database.UserActivity.Add(new UserActivity()
+                        database.UserActivities.Add(new UserActivity()
                         {
-                            StoreID = session.StoreID
-                            ,
-                            UserID = session.UserID
-                            ,
+                         //   StoreID = session.StoreID
+                         //   ,
+                         //UserID = session.UserID
+                         // ,
                             Activity = "LOGOUT"
                         }
                             );
@@ -120,9 +121,9 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    Session session = database.Session.ToList().FirstOrDefault(x => x.TokenID.Trim().Equals(token.Trim()));
+                    Session session = database.Sessions.ToList().FirstOrDefault(x => x.TokenID.Trim().Equals(token.Trim()));
                     if (session != null)
                     {
                         return session;

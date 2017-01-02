@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -12,12 +13,21 @@ namespace CompanyPOS.Controllers
 {
     public class CategoryController : ApiController
     {
+        // GET: api/Products 
+        public IQueryable<Category> GetCategories()
+        {
+            using (CompanyPosDBContext database = new CompanyPosDBContext())
+            {
+                return database.Categories;
+            }
+        }      
+
         // GET: api/Category
         public HttpResponseMessage Get(string token)
         {
          try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -25,7 +35,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and CategoryID
-                        var data = database.Category.ToList().Where(x => (x.StoreID == session.StoreID));
+                        var data = database.Categories.ToList().Where(x => (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -59,7 +69,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -67,7 +77,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and CategoryID
-                        var data = database.Category.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        var data = database.Categories.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -103,7 +113,7 @@ namespace CompanyPOS.Controllers
             string errorStatus = " ";
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
 
@@ -116,7 +126,7 @@ namespace CompanyPOS.Controllers
                         session.LastUpdate = DateTime.Now;
 
                         errorStatus += " Before Find similar category || ";
-                        var currentCategory = database.Category.ToList().FirstOrDefault(x => x.Name == Category.Name && (x.StoreID == session.StoreID));
+                        var currentCategory = database.Categories.ToList().FirstOrDefault(x => x.Name.ToLower().Trim() == Category.Name.ToLower().Trim() && (x.StoreID == session.StoreID));
                         if (currentCategory != null)
                         {
                             database.SaveChanges();
@@ -126,16 +136,16 @@ namespace CompanyPOS.Controllers
                         else
                         {
                             Category.StoreID = session.StoreID;
-                            database.Category.Add(Category);
+                            database.Categories.Add(Category);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE Category"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE Category"
+                            //});
 
                             errorStatus += " Before adding in the db || ";
                             database.SaveChanges();
@@ -170,7 +180,6 @@ namespace CompanyPOS.Controllers
             }
         }
 
-
         // PUT: api/Category/5
         //UPDATE
         public HttpResponseMessage Put(int id, [FromBody]Category Category, string token)
@@ -178,7 +187,7 @@ namespace CompanyPOS.Controllers
 
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -188,7 +197,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentCategory = database.Category.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentCategory = database.Categories.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (currentCategory != null)
                         {
@@ -196,14 +205,14 @@ namespace CompanyPOS.Controllers
                             currentCategory.Value = Category.Value;
                             
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE Category"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE Category"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
@@ -247,7 +256,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -257,7 +266,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var Category = database.Category.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var Category = database.Categories.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (Category == null)
                         {
@@ -267,16 +276,16 @@ namespace CompanyPOS.Controllers
                         else
                         {
 
-                            database.Category.Remove(Category);
+                            database.Categories.Remove(Category);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "DELETE Category"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "DELETE Category"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");

@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -16,9 +17,10 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    var InvoiceList = database.Invoice.Where(x => x.StoreID == StoreID && x.SaleID == SaleID).ToList();
+                    //var InvoiceList = database.Invoices.Where(x => x.Sale.StoreID == StoreID && x.SaleID == SaleID).ToList();
+                    var InvoiceList = database.Invoices.Where(x => x.SaleID == SaleID).ToList();
 
                     return InvoiceList;
                 }
@@ -34,12 +36,12 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    database.Invoice.Add(new Invoice()
+                    database.Invoices.Add(new Invoice()
                     {
-                        StoreID = StoreID
-                        ,
+                        //StoreID = StoreID
+                        //,
                         SaleID = SaleID
                         , 
                         Date = Date
@@ -72,13 +74,14 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    var Invoice = database.Invoice.FirstOrDefault(x => x.ID == InvoiceID && x.StoreID == StoreID);
+                    //var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID && x.Sale.StoreID == StoreID);
+                    var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID );
 
                     if (Invoice != null)
                     {
-                        database.Invoice.Remove(Invoice);
+                        database.Invoices.Remove(Invoice);
                         database.SaveChanges();
                     }
 
@@ -102,9 +105,10 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    var Invoice = database.Invoice.FirstOrDefault(x => x.ID == InvoiceID && x.StoreID == StoreID);
+                    //var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID && x.Sale.StoreID == StoreID);
+                    var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID );
 
 
                     if (Invoice != null)
@@ -134,7 +138,7 @@ namespace CompanyPOS.Controllers
         //{
         //    try
         //    {
-        //        using (CompanyPOSEntities database = new CompanyPOSEntities())
+        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
         //        {
         //            SessionController sessionController = new SessionController();
         //            Session session = sessionController.Autenticate(token);
@@ -142,7 +146,7 @@ namespace CompanyPOS.Controllers
         //            if (session != null)
         //            {
         //                //Validate storeID and InvoiceID
-        //                var data = database.Invoice.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+        //                var data = database.Invoices.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
         //                if (data != null)
         //                {
         //                    //Save last  update
@@ -177,7 +181,7 @@ namespace CompanyPOS.Controllers
         //{
         //    try
         //    {
-        //        using (CompanyPOSEntities database = new CompanyPOSEntities())
+        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
         //        {
         //            SessionController sessionController = new SessionController();
         //            Session session = sessionController.Autenticate(token);
@@ -187,7 +191,7 @@ namespace CompanyPOS.Controllers
         //                //Save last  update
         //                session.LastUpdate = DateTime.Now;
 
-        //                var currentInvoice = database.Invoice.ToList().FirstOrDefault(x => (x. == Invoice.MenuID) && (x.hPos == Invoice.hPos) && (x.vPos == Invoice.vPos) && (x.StoreID == session.StoreID));
+        //                var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => (x. == Invoice.MenuID) && (x.hPos == Invoice.hPos) && (x.vPos == Invoice.vPos) && (x.StoreID == session.StoreID));
         //                if (currentInvoice != null)
         //                {
         //                    database.SaveChanges();
@@ -197,9 +201,9 @@ namespace CompanyPOS.Controllers
         //                else
         //                {
         //                    Invoice.StoreID = session.StoreID;
-        //                    database.Invoice.Add(Invoice);
+        //                    database.Invoices.Add(Invoice);
         //                    //SAVE ACTIVITY
-        //                    database.UserActivity.Add(new UserActivity()
+        //                    database.UserActivities.Add(new UserActivity()
         //                    {
         //                        StoreID = session.StoreID
         //                        ,
@@ -245,7 +249,7 @@ namespace CompanyPOS.Controllers
         //{
         //    try
         //    {
-        //        using (CompanyPOSEntities database = new CompanyPOSEntities())
+        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
         //        {
         //            SessionController sessionController = new SessionController();
         //            Session session = sessionController.Autenticate(token);
@@ -255,7 +259,7 @@ namespace CompanyPOS.Controllers
         //                //Save last  update
         //                session.LastUpdate = DateTime.Now;
 
-        //                var currentInvoice = database.Invoice.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+        //                var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
         //                if (currentInvoice != null)
         //                {
@@ -265,7 +269,7 @@ namespace CompanyPOS.Controllers
         //                    currentInvoice.Page = Invoice.Page;
 
         //                    //SAVE ACTIVITY
-        //                    database.UserActivity.Add(new UserActivity()
+        //                    database.UserActivities.Add(new UserActivity()
         //                    {
         //                        StoreID = session.StoreID
         //                        ,
@@ -316,7 +320,7 @@ namespace CompanyPOS.Controllers
         //{
         //    try
         //    {
-        //        using (CompanyPOSEntities database = new CompanyPOSEntities())
+        //        using (CompanyPOS_DBContext database = new CompanyPOS_DBContext())
         //        {
         //            SessionController sessionController = new SessionController();
         //            Session session = sessionController.Autenticate(token);
@@ -326,7 +330,7 @@ namespace CompanyPOS.Controllers
         //                //Save last  update
         //                session.LastUpdate = DateTime.Now;
 
-        //                var Invoice = database.Invoice.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+        //                var Invoice = database.Invoices.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
         //                if (Invoice == null)
         //                {
@@ -336,9 +340,9 @@ namespace CompanyPOS.Controllers
         //                else
         //                {
 
-        //                    database.Invoice.Remove(Invoice);
+        //                    database.Invoices.Remove(Invoice);
         //                    //SAVE ACTIVITY
-        //                    database.UserActivity.Add(new UserActivity()
+        //                    database.UserActivities.Add(new UserActivity()
         //                    {
         //                        StoreID = session.StoreID
         //                        ,

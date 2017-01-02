@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -17,10 +18,14 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                CompanyPosRepository repository = new CompanyPosRepository();
+                var Companies = repository.GetCompanies();
+                
+                
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     //Validate storeID and CompanyID
-                    var data = database.CompanySet.ToList();
+                    var data = database.Companies.ToList();
                     if (data != null)
                     {
                         var message = Request.CreateResponse(HttpStatusCode.OK, data);
@@ -45,11 +50,11 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
 
                     //Validate storeID and CompanyID
-                    var data = database.CompanySet.ToList().FirstOrDefault(x => (x.Id == id));
+                    var data = database.Companies.ToList().FirstOrDefault(x => (x.Id == id));
                     if (data != null)
                     {
                         var message = Request.CreateResponse(HttpStatusCode.OK, data);
@@ -75,12 +80,12 @@ namespace CompanyPOS.Controllers
             string errorStatus = " ";
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
 
                     errorStatus += " Before Find similar Company || ";
-                    var currentCompany = database.CompanySet.ToList().FirstOrDefault(x => x.Name == Company.Name);
+                    var currentCompany = database.Companies.ToList().FirstOrDefault(x => x.Name == Company.Name);
                     if (currentCompany != null)
                     {
                         database.SaveChanges();
@@ -89,7 +94,7 @@ namespace CompanyPOS.Controllers
                     }
                     else
                     {
-                        database.CompanySet.Add(Company);
+                        database.Companies.Add(Company);
 
                         errorStatus += " Before adding in the db || ";
                         database.SaveChanges();
@@ -124,10 +129,10 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
 
-                    var currentCompany = database.CompanySet.ToList().FirstOrDefault(x => x.Id == id);
+                    var currentCompany = database.Companies.ToList().FirstOrDefault(x => x.Id == id);
 
                     if (currentCompany != null)
                     {
@@ -169,9 +174,9 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    var Company = database.CompanySet.ToList().FirstOrDefault(x => x.Id == id);
+                    var Company = database.Companies.ToList().FirstOrDefault(x => x.Id == id);
                     if (Company == null)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.NotFound,
@@ -179,7 +184,7 @@ namespace CompanyPOS.Controllers
                     }
                     else
                     {
-                        database.CompanySet.Remove(Company);
+                        database.Companies.Remove(Company);
                         database.SaveChanges();
                         var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
                         return message;

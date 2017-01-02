@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -17,7 +18,7 @@ namespace CompanyPOS.Controllers
     { 
           try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -25,7 +26,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and SaleID
-                        var data = database.Sale.ToList().Where(x => (x.StoreID == session.StoreID)).ToList();
+                        var data = database.Sales.ToList().Where(x => (x.StoreID == session.StoreID)).ToList();
                         if (data != null)
                         {
                             //Save last  update
@@ -59,7 +60,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -67,7 +68,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and SaleID
-                        var data = database.Sale.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        var data = database.Sales.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -102,7 +103,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -115,8 +116,10 @@ namespace CompanyPOS.Controllers
 
                         ///Update this
                         ///
-                        var currentSale = database.Sale.ToList().FirstOrDefault(x => x.ShiftID == Sale.ShiftID && (x.StoreID == session.StoreID));
-                        
+                       // var currentSale = database.Sales.ToList().FirstOrDefault(x => x.ShiftID == Sale.ShiftID && (x.StoreID == session.StoreID));
+                        var currentSale = database.Sales.ToList().FirstOrDefault(x =>  x.StoreID == session.StoreID);
+
+
                         if (currentSale != null)
                         {
                             database.SaveChanges();
@@ -126,16 +129,16 @@ namespace CompanyPOS.Controllers
                         else
                         {
                             Sale.StoreID = session.StoreID;
-                            database.Sale.Add(Sale);
+                            database.Sales.Add(Sale);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE Sale"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE Sale"
+                            //});
                             database.SaveChanges();
 
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
@@ -175,7 +178,7 @@ namespace CompanyPOS.Controllers
 
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -185,7 +188,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentSale = database.Sale.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentSale = database.Sales.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (currentSale != null)
                         {
@@ -195,14 +198,14 @@ namespace CompanyPOS.Controllers
                             //currentSale.Description = Sale.Description;
 
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE Sale"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE Sale"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
@@ -246,7 +249,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -256,7 +259,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var Sale = database.Sale.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var Sale = database.Sales.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (Sale == null)
                         {
@@ -266,16 +269,16 @@ namespace CompanyPOS.Controllers
                         else
                         {
 
-                            database.Sale.Remove(Sale);
+                            database.Sales.Remove(Sale);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "DELETE Sale"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "DELETE Sale"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");

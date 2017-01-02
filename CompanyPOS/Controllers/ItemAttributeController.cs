@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -24,15 +25,18 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
                     if (session != null)
                     {
-                        //Validate storeID and ItemAttributeID
-                        var data = database.ItemAttribute.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        //Validate storeID
+                        var Items = database.Items.FirstOrDefault(x => x.StoreID == session.StoreID);
+
+                        // ItemAttributeID
+                        var data = Items.ItemAttributes.ToList().FirstOrDefault(x => (x.ID == id));
                         if (data != null)
                         {
                             //Save last  update
@@ -63,11 +67,11 @@ namespace CompanyPOS.Controllers
 
         // POST: api/ItemAttribute
         //CREATE
-        public HttpResponseMessage Post([FromBody]ItemAttribute ItemAttribute, string token)
+        public HttpResponseMessage Post([FromBody]ItemAttribute ItemAttribute, string token, int ItemID)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -77,7 +81,10 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentItemAttribute = database.ItemAttribute.ToList().FirstOrDefault(x => (x.ItemID == ItemAttribute.ItemID) && (x.Name == ItemAttribute.Name) && (x.StoreID == session.StoreID));
+                        //Validate storeID
+                        var Item = database.Items.FirstOrDefault(x => x.StoreID == session.StoreID && x.ID == ItemID);
+                        var currentItemAttribute = Item.ItemAttributes.ToList().FirstOrDefault(x => (x.Name == ItemAttribute.Name));
+
                         if (currentItemAttribute != null)
                         {
                             database.SaveChanges();
@@ -86,17 +93,19 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            ItemAttribute.StoreID = session.StoreID;
-                            database.ItemAttribute.Add(ItemAttribute);
+                            Item.ItemAttributes.Add(ItemAttribute);
+
+                            //database.ItemAttributes.Add(ItemAttribute);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE ItemPos"
-                            });
+
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE ItemPos"
+                            //});
                             database.SaveChanges();
 
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
@@ -129,14 +138,13 @@ namespace CompanyPOS.Controllers
             }
         }
 
-
         // PUT: api/ItemAttribute/5
         //UPDATE
         public HttpResponseMessage Put(int id, [FromBody]ItemAttribute ItemAttribute, string token)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -146,25 +154,28 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentItemAttribute = database.ItemAttribute.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        //Validate storeID
+                        var Item = database.Items.FirstOrDefault(x => x.StoreID == session.StoreID && x.ID == id);
+
+                        var currentItemAttribute = Item.ItemAttributes.ToList().FirstOrDefault(x => x.ID == id);
 
                         if (currentItemAttribute != null)
                         {
                             currentItemAttribute.Name = ItemAttribute.Name;
                             currentItemAttribute.Price = ItemAttribute.Price;
-                            currentItemAttribute.ItemID = ItemAttribute.ItemID;
+                            // currentItemAttribute.ItemID = ItemAttribute.ItemID;
                             currentItemAttribute.Value = ItemAttribute.Value;
                             currentItemAttribute.Visible = ItemAttribute.Visible;
 
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE ItPagePos"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE ItPagePos"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
@@ -208,7 +219,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -218,7 +229,10 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var ItemAttribute = database.ItemAttribute.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        //Validate storeID
+                        var Item = database.Items.FirstOrDefault(x => x.StoreID == session.StoreID && x.ID == id);
+
+                        var ItemAttribute = Item.ItemAttributes.ToList().FirstOrDefault(x => x.ID == id);
 
                         if (ItemAttribute == null)
                         {
@@ -227,17 +241,16 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-
-                            database.ItemAttribute.Remove(ItemAttribute);
+                            database.ItemAttributes.Remove(ItemAttribute);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "DELETE ItPagPos"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "DELETE ItPagPos"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");

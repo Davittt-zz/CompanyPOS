@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -24,7 +25,7 @@ namespace CompanyPOS.Controllers
                     ,Int32.Parse(dPart[3])
                     ,Int32.Parse(dPart[4])
                     ,Int32.Parse(dPart[5]));
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -32,7 +33,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and ShiftID
-                        var data = database.Shift.ToList().Where(x => (x.TimeStart <= date) && (x.TimeEnd >= date) && (x.StoreID == session.StoreID));
+                        var data = database.Shifts.ToList().Where(x => (x.TimeStart <= date) && (x.TimeEnd >= date) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -66,7 +67,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -74,7 +75,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and ShiftID
-                        var data = database.Shift.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        var data = database.Shifts.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -109,7 +110,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -119,7 +120,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        //var currentShift = database.Shift.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID));
+                        //var currentShift = database.Shifts.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID));
                         //if (currentShift != null)
                         //{
                         //    database.SaveChanges();
@@ -129,16 +130,16 @@ namespace CompanyPOS.Controllers
                         //else
                         //{
                             Shift.StoreID = session.StoreID;
-                            database.Shift.Add(Shift);
+                            database.Shifts.Add(Shift);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE Shift"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE Shift"
+                            //});
                             database.SaveChanges();
 
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
@@ -178,7 +179,7 @@ namespace CompanyPOS.Controllers
 
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -188,7 +189,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentShift = database.Shift.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var currentShift = database.Shifts.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (currentShift != null)
                         {
@@ -196,14 +197,14 @@ namespace CompanyPOS.Controllers
                             currentShift.TimeEnd   = Shift.TimeEnd  ;
                             currentShift.TimeStart = Shift.TimeStart;
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE Shift"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE Shift"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
@@ -247,7 +248,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -257,7 +258,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var Shift = database.Shift.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+                        var Shift = database.Shifts.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (Shift == null)
                         {
@@ -267,16 +268,16 @@ namespace CompanyPOS.Controllers
                         else
                         {
 
-                            database.Shift.Remove(Shift);
+                            database.Shifts.Remove(Shift);
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "DELETE Shift"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "DELETE Shift"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");

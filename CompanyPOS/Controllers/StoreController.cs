@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -13,25 +14,45 @@ namespace CompanyPOS.Controllers
     public class StoreController : ApiController
     {
         // GET: api/Store
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        public HttpResponseMessage Get()
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    List<Store> storeList = database.Stores.ToList();
 
+                    if (storeList != null)
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.OK, storeList);
+                        return message;
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         // GET: api/Store/5
         public HttpResponseMessage GetRead(string token, int id)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
                     if (session != null)
                     {
-                        Store store = database.Store.ToList().FirstOrDefault(x => (x.ID == id) );
+                        Store store = database.Stores.ToList().FirstOrDefault(x => (x.ID == id));
                         if (store != null)
                         {
                             //Save last  update
@@ -66,17 +87,19 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
                     if (session != null)
                     {
-                        Store currentStore = database.Store.ToList().FirstOrDefault(x => x.Name == store.Name);
+                        Store currentStore = database.Stores.ToList().FirstOrDefault(x => x.Name == store.Name);
                         if (currentStore != null)
                         {
                             //Save last  update
+                            currentStore.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.ID).CompanyID;
+
                             session.LastUpdate = DateTime.Now;
                             database.SaveChanges();
 
@@ -85,21 +108,32 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            database.Store.Add(store);
-                            //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
+                            var User = database.Users.FirstOrDefault(x => (x.UserLevel == "admin")
+                                && x.ID == session.UserID);
+                            if (User != null)
                             {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE STORE"
-                            }
-                                );
-                            database.SaveChanges();
+                                store.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.ID).CompanyID;
+                                database.Stores.Add(store);
+                                //SAVE ACTIVITY
+                                //database.UserActivities.Add(new UserActivity()
+                                //{
+                                //    StoreID = session.StoreID
+                                //    ,
+                                //    UserID = session.UserID
+                                //    ,
+                                //    Activity = "CREATE STORE"
+                                //}
+                                //    );
+                                database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
-                            return message;
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                                return message;
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "The user does not have privileges for this operation");
+                                return message;
+                            }
                         }
                     }
                     else

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DATA;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -18,6 +20,12 @@ namespace CompanyPOS
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+           // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CompanyPosDBContext>());
+            //Database.SetInitializer(new DropCreateDatabaseAlways<CompanyPosDBContext>());
+
+            Database.SetInitializer(new CompanyPosDBContextSeeder());
+
         }
     }
 }

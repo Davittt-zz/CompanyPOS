@@ -121,7 +121,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -156,6 +155,9 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="CompanyPosDBContext.cs" />
+    <Compile Include="CompanyPosDBContextSeeder.cs" />
+    <Compile Include="CompanyPosRepository.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\HomeController.cs">
@@ -164,9 +166,6 @@
     <Compile Include="Controllers\ItemAttributeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
-    <Compile Include="Controllers\ItemPurchaseController.cs" />
-    <Compile Include="Controllers\ItemPagePositionController.cs" />
-    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\SaleController.cs" />
     <Compile Include="Controllers\SessionController.cs">
       <SubType>Code</SubType>
@@ -184,6 +183,23 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemAttribute.cs" />
+    <Compile Include="Models\ItemPagePosition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ItemPurchase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Sale.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Shift.cs" />
+    <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -244,12 +260,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DATA\DATA.csproj">
-      <Project>{a0c1aec4-7e0b-4368-83dc-81e77fdd583a}</Project>
-      <Name>DATA</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

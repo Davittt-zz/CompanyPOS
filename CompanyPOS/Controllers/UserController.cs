@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -12,31 +13,58 @@ namespace CompanyPOS.Controllers
 {
     public class UserController : ApiController
     {
+        public HttpResponseMessage Getall()
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    var ListUsers = database.Users.ToList();
+                    var message = Request.CreateResponse(HttpStatusCode.OK, ListUsers);
+                    return message;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
         public HttpResponseMessage GetStoreUsers(string token)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
+                    var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
+
                     if (session != null)
                     {
-                        //Validate storeID and UserID
-                        Users user = database.Users.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID));
-                        if (user != null)
+                        if (SessionUser.UserLevel.ToLower() == "admin")
                         {
-                            //Save last  update
-                            session.LastUpdate = DateTime.Now;
-                            database.SaveChanges();
+                            //Validate storeID and UserID
+                            List<User> userList = database.Users.Where(x => (x.StoreID == session.StoreID)).ToList();
+                            if (userList != null)
+                            {
+                                //Save last  update
+                                session.LastUpdate = DateTime.Now;
+                                database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, user);
-                            return message;
+                                var message = Request.CreateResponse(HttpStatusCode.OK, userList);
+                                return message;
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+                                return message;
+                            }
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+                            var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
                             return message;
                         }
                     }
@@ -60,27 +88,38 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
+
+                    var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
+
                     if (session != null)
                     {
-                        //Validate storeID and UserID
-                        Users user = database.Users.ToList().FirstOrDefault(x => (x.CompanyID == companyID));
-                        if (user != null)
+                        if (SessionUser.UserLevel.ToLower() == "admin")
                         {
-                            //Save last  update
-                            session.LastUpdate = DateTime.Now;
-                            database.SaveChanges();
+                            //Validate storeID and UserID
+                            List<User> userList = database.Users.Where(x => (x.CompanyID == companyID)).ToList();
+                            if (userList != null)
+                            {
+                                //Save last  update
+                                session.LastUpdate = DateTime.Now;
+                                database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.OK, user);
-                            return message;
+                                var message = Request.CreateResponse(HttpStatusCode.OK, userList);
+                                return message;
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+                                return message;
+                            }
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+                            var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
                             return message;
                         }
                     }
@@ -103,15 +142,19 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
                     if (session != null)
                     {
+                        var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
+
                         //Validate storeID and UserID
-                        Users user = database.Users.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+                        User user = database.Users.ToList().FirstOrDefault(x => (x.ID == id)
+                            && ((x.StoreID == session.StoreID) || ((SessionUser.Type.ToLower() == "owner") && SessionUser.CompanyID == x.CompanyID))
+                            );
                         if (user != null)
                         {
                             //Save last  update
@@ -142,11 +185,11 @@ namespace CompanyPOS.Controllers
 
         // POST: api/User
         //CREATE
-        public HttpResponseMessage Post([FromBody]Users user, string token)
+        public HttpResponseMessage Post([FromBody]User user, string token, int? storeID)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -165,29 +208,41 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            user.StoreID = session.StoreID;
+                            //Save last  update
+                            var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.ID).CompanyID;
+                            user.CompanyID = currentCompanyID;
 
-                            if (user.CompanyID == currentUser.CompanyID)
+                            if (storeID == null)
                             {
-                                database.Users.Add(user);
-                                //SAVE ACTIVITY
-                                database.UserActivity.Add(new UserActivity()
+                                user.StoreID = session.StoreID;
+                            }
+                            else
+                            {
+                                var newStore = database.Companies.FirstOrDefault(x => x.Id == user.CompanyID).Stores.First(y => y.ID == storeID);
+                                if (newStore != null)
                                 {
-                                    StoreID = session.StoreID
-                                    ,
-                                    UserID = session.UserID
-                                    ,
-                                    Activity = "CREATE USER"
-                                });
-                                database.SaveChanges();
+                                    user.StoreID = newStore.ID;
+                                }
+                                else
+                                {
+                                    return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID");
+                                }
+                            }
 
-                                var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
-                                return message;
-                            }
-                            else {
-                                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You can't create users from a different Company");
-                                return message;
-                            }
+                            database.Users.Add(user);
+                            //SAVE ACTIVITY
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE USER"
+                            //});
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "Create Success");
+                            return message;
                         }
                     }
                     else
@@ -218,11 +273,11 @@ namespace CompanyPOS.Controllers
 
         // PUT: api/User/5
         //UPDATE
-        public HttpResponseMessage Put(int id, [FromBody]Users user, string token)
+        public HttpResponseMessage Put(int id, [FromBody]User user, string token)
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -246,14 +301,14 @@ namespace CompanyPOS.Controllers
                             currentUser.Email = user.Email;
 
                             //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE USER"
-                            });
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "CREATE USER"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
@@ -297,7 +352,7 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                using (CompanyPOSEntities database = new CompanyPOSEntities())
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
@@ -311,21 +366,22 @@ namespace CompanyPOS.Controllers
 
                         if (user == null)
                         {
-                             return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-                                     "User with Id = " + id.ToString() + " not found to delete");
-                        }else
+                            return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                                    "User with Id = " + id.ToString() + " not found to delete");
+                        }
+                        else
                         {
-                        
-                        database.Users.Remove(user);
-                                                   //SAVE ACTIVITY
-                            database.UserActivity.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "DELETE USER"
-                            });
+
+                            database.Users.Remove(user);
+                            //SAVE ACTIVITY
+                            //database.UserActivities.Add(new UserActivity()
+                            //{
+                            //    StoreID = session.StoreID
+                            //    ,
+                            //    UserID = session.UserID
+                            //    ,
+                            //    Activity = "DELETE USER"
+                            //});
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
