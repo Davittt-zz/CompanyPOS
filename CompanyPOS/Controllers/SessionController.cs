@@ -2,6 +2,8 @@
 using DATA;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,23 +13,41 @@ namespace CompanyPOS.Controllers
 {
     public class SessionController : ApiController
     {
-
         //GET
         //api/Session/
         public HttpResponseMessage GetAll()
         {
+            string flow = "Before coneect to database || ";
+
             try
             {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
+                    flow += "Before search for sessions";
+
                     var session = database.Sessions.ToList();
                     var message = Request.CreateResponse(HttpStatusCode.OK, session);
                     return message;
                 }
             }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                                                validationError.PropertyName,
+                                                validationError.ErrorMessage);
+
+                        flow += validationError.ErrorMessage + "\n";
+                    }
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx + flow);
+            }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + flow);
             }
 
         }
@@ -75,10 +95,10 @@ namespace CompanyPOS.Controllers
                         //SAVE ACTIVITY
                         database.UserActivities.Add(new UserActivity()
                             {
-                                // StoreID = session.StoreID
-                                // ,
-                                // UserID = session.UserID
-                                // ,
+                                StoreID = session.StoreID
+                                 ,
+                                UserID = session.UserID
+                                 ,
                                 Activity = "LOGIN"
                             }
                             );

@@ -15,8 +15,8 @@ namespace CompanyPOS.Controllers
     {
         // GET: api/Sale
         public HttpResponseMessage GetAll(string token)
-    { 
-          try
+        {
+            try
             {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
@@ -110,16 +110,10 @@ namespace CompanyPOS.Controllers
 
                     if (session != null)
                     {
-                        //Save last  update
+                        //Save last update
                         session.LastUpdate = DateTime.Now;
 
-
-                        ///Update this
-                        ///
-                       // var currentSale = database.Sales.ToList().FirstOrDefault(x => x.ShiftID == Sale.ShiftID && (x.StoreID == session.StoreID));
-                        var currentSale = database.Sales.ToList().FirstOrDefault(x =>  x.StoreID == session.StoreID);
-
-
+                        var currentSale = database.Sales.ToList().FirstOrDefault(x => (x.Title == Sale.Title) && (x.StoreID == session.StoreID));
                         if (currentSale != null)
                         {
                             database.SaveChanges();
@@ -128,21 +122,31 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            Sale.StoreID = session.StoreID;
-                            database.Sales.Add(Sale);
-                            //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE Sale"
-                            //});
-                            database.SaveChanges();
+                            var shiftToFind = database.Shifts.FirstOrDefault(x => x.ID == Sale.ShiftID && session.StoreID == x.StoreID);
+                            if ((shiftToFind != null) && (shiftToFind.Status == "OPEN"))
+                            {
+                                Sale.StoreID = session.StoreID;
+                                Sale.Date = DateTime.Now;
+                                database.Sales.Add(Sale);
+                                //SAVE ACTIVITY
+                                database.UserActivities.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    ,
+                                    UserID = session.UserID
+                                    ,
+                                    Activity = "CREATE Sale"
+                                });
+                                database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-                            return message;
+                                var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+                                return message;
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Shift not found or not OPEN");
+                                return message;
+                            }
                         }
                     }
                     else
@@ -175,7 +179,6 @@ namespace CompanyPOS.Controllers
         //UPDATE
         public HttpResponseMessage Put(int id, [FromBody]Sale Sale, string token)
         {
-
             try
             {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
@@ -192,24 +195,37 @@ namespace CompanyPOS.Controllers
 
                         if (currentSale != null)
                         {
-                            //currentSale.Name = Sale.Name;
-                            //currentSale.UnitPrice = Sale.UnitPrice;
-                            //currentSale.CategoryID = Sale.CategoryID;
-                            //currentSale.Description = Sale.Description;
+                            var shiftToFind = database.Shifts.FirstOrDefault(x => x.ID == Sale.ShiftID && session.StoreID == x.StoreID);
+                            if ((shiftToFind != null) && (shiftToFind.Status == "OPEN"))
+                            {
+                                currentSale.Title = Sale.Title;
+                                currentSale.DiscountAmount = Sale.DiscountAmount;
+                                currentSale.DiscountRate = Sale.DiscountRate;
+                                currentSale.TaxAmunt = Sale.TaxAmunt;
+                                currentSale.TaxRate = Sale.TaxRate;
+                                currentSale.TotalPrice = Sale.TotalPrice;
+                                currentSale.SubtotalPrice = Sale.SubtotalPrice;
+                                currentSale.Status = Sale.Status;
+                                currentSale.UserID = Sale.UserID;
+                                currentSale.ShiftID = Sale.ShiftID;
 
-                            //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE Sale"
-                            //});
+                                //SAVE ACTIVITY
+                                database.UserActivities.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    , UserID = session.UserID
+                                    , Activity = "CREATE Sale"
+                                });
 
-                            database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-                            return message;
+                                database.SaveChanges();
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
+                                return message;
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.OK, "Shift not found or not OPEN");
+                                return message;
+                            }
                         }
                         else
                         {
@@ -271,14 +287,14 @@ namespace CompanyPOS.Controllers
 
                             database.Sales.Remove(Sale);
                             //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "DELETE Sale"
-                            //});
+                            database.UserActivities.Add(new UserActivity()
+                            {
+                                StoreID = session.StoreID
+                                ,
+                                UserID = session.UserID
+                                ,
+                                Activity = "DELETE Sale"
+                            });
 
                             database.SaveChanges();
                             var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
@@ -310,5 +326,5 @@ namespace CompanyPOS.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-      }
+    }
 }

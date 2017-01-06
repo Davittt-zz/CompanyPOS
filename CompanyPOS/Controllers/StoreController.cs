@@ -98,7 +98,7 @@ namespace CompanyPOS.Controllers
                         if (currentStore != null)
                         {
                             //Save last  update
-                            currentStore.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.ID).CompanyID;
+                            currentStore.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID).CompanyID;
 
                             session.LastUpdate = DateTime.Now;
                             database.SaveChanges();
@@ -112,18 +112,18 @@ namespace CompanyPOS.Controllers
                                 && x.ID == session.UserID);
                             if (User != null)
                             {
-                                store.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.ID).CompanyID;
+                                store.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID).CompanyID;
                                 database.Stores.Add(store);
                                 //SAVE ACTIVITY
-                                //database.UserActivities.Add(new UserActivity()
-                                //{
-                                //    StoreID = session.StoreID
-                                //    ,
-                                //    UserID = session.UserID
-                                //    ,
-                                //    Activity = "CREATE STORE"
-                                //}
-                                //    );
+                               database.UserActivities.Add(new UserActivity()
+                               {
+                                   StoreID = session.StoreID
+                                   ,
+                                   UserID = session.UserID
+                                   ,
+                                   Activity = "CREATE STORE"
+                               }
+                                   );
                                 database.SaveChanges();
 
                                 var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");

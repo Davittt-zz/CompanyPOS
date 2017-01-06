@@ -229,20 +229,28 @@ namespace CompanyPOS.Controllers
                                 }
                             }
 
-                            database.Users.Add(user);
-                            //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "CREATE USER"
-                            //});
-                            database.SaveChanges();
+                            if (user.Type != "OWNER")
+                            {
+                                database.Users.Add(user);
+                                //SAVE ACTIVITY
+                                database.UserActivities.Add(new UserActivity()
+                                {
+                                    StoreID = session.StoreID
+                                    ,
+                                    UserID = session.UserID
+                                    ,
+                                    Activity = "CREATE USER"
+                                });
+                                database.SaveChanges();
 
-                            var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-                            return message;
+                                var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+                                return message;
+                            }
+                            else
+                            {
+                                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You cannot create an Owner");
+                                return message;
+                            }
                         }
                     }
                     else

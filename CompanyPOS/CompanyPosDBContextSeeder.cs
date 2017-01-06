@@ -8,7 +8,7 @@ using System.Web;
 
 namespace CompanyPOS
 {
-     public class CompanyPosDBContextSeeder : DropCreateDatabaseIfModelChanges<CompanyPosDBContext>
+    public class CompanyPosDBContextSeeder : DropCreateDatabaseIfModelChanges<CompanyPosDBContext>
     //public class CompanyPosDBContextSeeder : DropCreateDatabaseAlways<CompanyPosDBContext>
     {
         protected override void Seed(CompanyPosDBContext context)
@@ -54,7 +54,6 @@ namespace CompanyPOS
             //Create Session
             Session session = new Session()
             {
-
                 Created = DateTime.Now
                 ,
                 LastUpdate = DateTime.Now
@@ -63,11 +62,56 @@ namespace CompanyPOS
                 ,
                 UserID = context.Stores.First().Users.First().ID
                 ,
-                TokenID = "11554895561" 
+                TokenID = "11554895561"
             };
 
             context.Sessions.Add(session);
+            context.SaveChanges();
+            Shift shift = new Shift()
+            {
+                Status = "OPEN"
+                ,
+                TimeEnd = DateTime.Now.AddYears(1)
+                ,
+                TimeStart = DateTime.Now.AddYears(-1)
+                ,
+                StoreID = context.Stores.First().ID
+            };
 
+            context.Shifts.Add(shift);
+            context.SaveChanges();
+            Sale sale = new Sale()
+            {
+                Title = "New Sale"
+                ,
+                Date = DateTime.Now
+                ,
+                DiscountAmount = 10
+                ,
+                DiscountRate = 0
+                ,
+                StoreID = context.Stores.First().ID
+            };
+
+            context.Sales.Add(sale);
+            context.SaveChanges();
+            ItemPurchase itemPurchase = new ItemPurchase()
+            {
+                Discount = "0"
+                ,
+                ItemID = context.Items.First().ID
+                ,
+                Quantity = 1
+                ,
+                StoreID = context.Stores.First().ID
+                ,
+                TotalPrice = "100"
+                ,
+                SaleID = context.Sales.First().ID
+            };
+
+            context.ItemPurchases.Add(itemPurchase);
+            context.SaveChanges();
             base.Seed(context);
         }
     }
