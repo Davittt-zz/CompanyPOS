@@ -22,8 +22,8 @@ namespace CompanyPOS
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
            // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CompanyPosDBContext>());
-          //  Database.SetInitializer(new DropCreateDatabaseAlways<CompanyPosDBContext>());
-          //  Database.SetInitializer(new CompanyPosDBContextSeeder());
+           // Database.SetInitializer(new DropCreateDatabaseAlways<CompanyPosDBContext>());
+           // Database.SetInitializer(new CompanyPosDBContextSeeder());
 
         }
     }

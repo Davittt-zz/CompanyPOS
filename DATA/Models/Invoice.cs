@@ -1,4 +1,4 @@
-namespace CompanyPOS.Models
+namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;

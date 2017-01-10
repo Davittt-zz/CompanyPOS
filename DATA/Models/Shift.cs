@@ -1,4 +1,4 @@
-namespace CompanyPOS.Models
+namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace CompanyPOS.Models
         public string Status { get; set; }
         public Nullable<System.DateTime> TimeStart { get; set; }
         public Nullable<System.DateTime> TimeEnd { get; set; }
-        
+
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; }

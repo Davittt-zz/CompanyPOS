@@ -1,5 +1,5 @@
-﻿using CompanyPOS.Models;
-using DATA;
+﻿using DATA;
+using DATA.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;

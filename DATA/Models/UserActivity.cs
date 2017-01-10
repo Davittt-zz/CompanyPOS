@@ -1,4 +1,4 @@
-namespace CompanyPOS.Models
+namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;
@@ -11,9 +11,9 @@ namespace CompanyPOS.Models
         public string Username { get; set; }
         public string Activity { get; set; }
 
-       public int StoreID { get; set; }
-       //[ForeignKey("StoreID")]
-       //public virtual Store Store { get; set; }
+        public int StoreID { get; set; }
+        //[ForeignKey("StoreID")]
+        //public virtual Store Store { get; set; }
 
         public int UserID { get; set; }
         //[ForeignKey("UserID")]

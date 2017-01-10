@@ -50,92 +50,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Category.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Company.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CompanyPOSModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CompanyPOSModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CompanyPOSModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CompanyPOSModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CompanyPOSModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Invoice.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Item.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ItemAttribute.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ItemPagePosition.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ItemPurchase.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Menu.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="CompanyPosDBContext.cs" />
+    <Compile Include="CompanyPosDBContextSeeder.cs" />
+    <Compile Include="CompanyPosRepository.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemAttribute.cs" />
+    <Compile Include="Models\ItemPagePosition.cs" />
+    <Compile Include="Models\ItemPurchase.cs" />
+    <Compile Include="Models\Menu.cs" />
+    <Compile Include="Models\Sale.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Shift.cs" />
+    <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserActivity.cs" />
     <Compile Include="MyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sale.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Session.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Shift.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Store.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="StringTrimmerInterceptor.cs" />
-    <Compile Include="UserActivity.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Users.cs">
-      <DependentUpon>CompanyPOSModel.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EntityDeploy Include="CompanyPOSModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CompanyPOSModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.Config" />
-    <None Include="CompanyPOSModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CompanyPOSModel.edmx</DependentUpon>
-      <LastGenOutput>CompanyPOSModel.Context.cs</LastGenOutput>
-    </None>
-    <None Include="CompanyPOSModel.edmx.diagram">
-      <DependentUpon>CompanyPOSModel.edmx</DependentUpon>
-    </None>
-    <None Include="CompanyPOSModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CompanyPOSModel.edmx</DependentUpon>
-      <LastGenOutput>CompanyPOSModel.cs</LastGenOutput>
-    </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

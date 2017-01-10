@@ -1,6 +1,6 @@
-﻿using CompanyPOS.Models;
-using DATA;
-using System;
+﻿using DATA;
+using DATA.Models;
+using System;       
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Diagnostics;

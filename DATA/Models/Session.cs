@@ -1,9 +1,9 @@
 
-namespace CompanyPOS.Models
+namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Session
     {
         public int ID { get; set; }

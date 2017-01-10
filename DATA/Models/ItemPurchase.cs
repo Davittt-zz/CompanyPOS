@@ -1,5 +1,5 @@
 
-namespace CompanyPOS.Models
+namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;
@@ -13,15 +13,15 @@ namespace CompanyPOS.Models
         public string TotalPrice { get; set; }
 
         public int ItemID { get; set; }
-      //  [ForeignKey("ItemID")]
-      //  public virtual Item Item { get; set; }
-      //
+        //  [ForeignKey("ItemID")]
+        //  public virtual Item Item { get; set; }
+        //
         public int StoreID { get; set; }
-      //  [ForeignKey("StoreID")]
-      //  public virtual Store Store { get; set; }
-      //
+        //  [ForeignKey("StoreID")]
+        //  public virtual Store Store { get; set; }
+        //
         public int SaleID { get; set; }
-      //  [ForeignKey("SaleID")]
-      //  public virtual Sale Sale { get; set; }
+        //  [ForeignKey("SaleID")]
+        //  public virtual Sale Sale { get; set; }
     }
 }

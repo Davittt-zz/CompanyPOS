@@ -1,4 +1,4 @@
-namespace CompanyPOS.Models
+namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;
@@ -11,11 +11,11 @@ namespace CompanyPOS.Models
         //    this.UserActivity = new HashSet<UserActivity>();
         //    this.Sale = new HashSet<Sale>();
         //}
-    
+
         public int ID { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
-       // public string TypeID { get; set; }
+        // public string TypeID { get; set; }
         public string Password { get; set; }
         public string UserLevel { get; set; }
         public string Username { get; set; }
