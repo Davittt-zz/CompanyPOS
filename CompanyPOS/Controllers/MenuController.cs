@@ -169,7 +169,6 @@ namespace CompanyPOS.Controllers
         // UPDATE
         public HttpResponseMessage Put(int id, [FromBody]Menu menu, string token)
         {
-
             try
             {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
