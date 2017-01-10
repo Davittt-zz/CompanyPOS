@@ -2,11 +2,11 @@
 
 namespace DATA
 {
-    public class MyConfiguration : DbConfiguration
-    {
-        public MyConfiguration()
-        {
-            AddInterceptor(new StringTrimmerInterceptor());
-        }
-    }
+    //public class MyConfiguration : DbConfiguration
+    //{
+    //    public MyConfiguration()
+    //    {
+    //        AddInterceptor(new StringTrimmerInterceptor());
+    //    }
+    //}
 }
