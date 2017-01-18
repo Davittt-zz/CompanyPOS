@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace DATA.Models
 {
     using System;
@@ -9,6 +11,25 @@ namespace DATA.Models
         public int ID { get; set; }
         public Nullable<System.DateTime> Date { get; set; }
         public string PaymentMethod { get; set; }
+
+        [NotMapped]
+        public string _date
+        {
+            get { return Date.ToString(); }
+            set
+            {
+                try
+                {
+                    var inputDate = string.Join("/", value.Split(new Char[] { '-' }).Take(3).Reverse());
+                    var inputTime = string.Join(":", value.Split(new Char[] { '-' }).Skip(3));
+                    Date = Convert.ToDateTime(inputDate + " " + inputTime);
+                }
+                catch (Exception Ex)
+                {
+                    Date = null;
+                }
+            }
+        }
 
         public int StoreID { get; set; }
         //[ForeignKey("StoreID")]

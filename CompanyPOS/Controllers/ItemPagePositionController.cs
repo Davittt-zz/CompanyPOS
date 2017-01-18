@@ -14,7 +14,7 @@ namespace CompanyPOS.Controllers
     public class ItemPagePositionController : ApiController
     {
         // GET: api/Menu
-        public HttpResponseMessage Get(string token)
+        public HttpResponseMessage GetAll(string token)
         {
             try
             {
@@ -213,8 +213,8 @@ namespace CompanyPOS.Controllers
                         if (currentItemPagePosition != null)
                         {
                             currentItemPagePosition.hPos = ItemPagePosition.hPos;
-                            currentItemPagePosition.vPos = ItemPagePosition.Page;
-                            currentItemPagePosition.ItemID = ItemPagePosition.ItemID;
+                            currentItemPagePosition.vPos = ItemPagePosition.vPos;
+                            //currentItemPagePosition.ItemID = ItemPagePosition.ItemID;
                             currentItemPagePosition.Page = ItemPagePosition.Page;
 
                             //SAVE ACTIVITY

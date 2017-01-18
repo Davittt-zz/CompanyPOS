@@ -1,6 +1,6 @@
 ﻿using DATA;
 using DATA.Models;
-using System;       
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
@@ -43,7 +43,7 @@ namespace CompanyPOS.Controllers
                         //StoreID = StoreID
                         //,
                         SaleID = SaleID
-                        , 
+                        ,
                         Date = Date
                         ,
                         PaymentMethod = PaymentMethod
@@ -77,7 +77,7 @@ namespace CompanyPOS.Controllers
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     //var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID && x.Sale.StoreID == StoreID);
-                    var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID );
+                    var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID);
 
                     if (Invoice != null)
                     {
@@ -108,7 +108,7 @@ namespace CompanyPOS.Controllers
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     //var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID && x.Sale.StoreID == StoreID);
-                    var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID );
+                    var Invoice = database.Invoices.FirstOrDefault(x => x.ID == InvoiceID);
 
 
                     if (Invoice != null)
@@ -174,9 +174,51 @@ namespace CompanyPOS.Controllers
             }
         }
 
+        //  GET: api/Invoice/
+        public HttpResponseMessage GetAll(string token)
+        {
+            try
+            {
+                using (CompanyPosDBContext database = new CompanyPosDBContext())
+                {
+                    SessionController sessionController = new SessionController();
+                    Session session = sessionController.Autenticate(token);
+
+                    if (session != null)
+                    {
+                        //Validate storeID and InvoiceID
+                        var data = database.Invoices.ToList();
+                        if (data != null)
+                        {
+                            //Save last  update
+                            session.LastUpdate = DateTime.Now;
+                            database.SaveChanges();
+
+                            var message = Request.CreateResponse(HttpStatusCode.OK, data);
+                            return message;
+                        }
+                        else
+                        {
+                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found");
+                            return message;
+                        }
+                    }
+                    else
+                    {
+                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+                        return message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
         // POST: api/Invoice
         //CREATE
-        public HttpResponseMessage Post(int SaleID, [FromBody]Invoice Invoice, string token)
+        public HttpResponseMessage Post(int saleId, [FromBody]Invoice Invoice, string token)
         {
             try
             {
@@ -190,7 +232,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => (x.SaleID == SaleID) && (x.StoreID == session.StoreID));
+                        var currentInvoice = database.Invoices.ToList().FirstOrDefault(x => (x.SaleID == saleId) && (x.StoreID == session.StoreID));
                         if (currentInvoice != null)
                         {
                             database.SaveChanges();
@@ -199,27 +241,40 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                            if (!(database.Sales.Any(x=> x.ID == currentInvoice.SaleID && x.StoreID == currentInvoice.SaleID)))
+                            if (!(database.Invoices.Any(x => x.SaleID == saleId && x.StoreID == session.StoreID)))
                             {
-                                Invoice.StoreID = session.StoreID;
-                                database.Invoices.Add(Invoice);
-                                //SAVE ACTIVITY
-                                database.UserActivities.Add(new UserActivity()
+                                if ((database.Sales.Any(x => x.ID == saleId)))
                                 {
-                                    StoreID = session.StoreID
-                                    ,
-                                    UserID = session.UserID
-                                    ,
-                                    Activity = "CREATE Invoice"
-                                });
-                                database.SaveChanges();
+                                    if (Invoice.Date == null)
+                                    {
+                                        return Request.CreateResponse(HttpStatusCode.OK, "Date not found.");
+                                    }
 
-                                var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-                                return message; 
-                            } 
-                            else {
-                                var message = Request.CreateResponse(HttpStatusCode.OK, "Sale has already an Invoice");
-                                return message;
+                                    Invoice.StoreID = session.StoreID;
+                                    Invoice.SaleID = saleId;
+
+                                    database.Invoices.Add(Invoice);
+                                    //SAVE ACTIVITY
+                                    database.UserActivities.Add(new UserActivity()
+                                    {
+                                        StoreID = session.StoreID
+                                        ,
+                                        UserID = session.UserID
+                                        ,
+                                        Activity = "CREATE Invoice"
+                                    });
+                                    database.SaveChanges();
+
+                                    return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+                                }
+                                else
+                                {
+                                    return Request.CreateResponse(HttpStatusCode.OK, "Sale not found.");
+                                }
+                            }
+                            else
+                            {
+                                return Request.CreateResponse(HttpStatusCode.OK, "Sale has already an Invoice");
                             }
                         }
                     }
@@ -242,6 +297,11 @@ namespace CompanyPOS.Controllers
                     }
                 }
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+            }
+            catch (System.FormatException ex)
+            {
+                var message = Request.CreateResponse(HttpStatusCode.BadRequest, @"Bad Datetime format, it must be (YYYY-MM-DD-hh-mm-ss)");
+                return message;
             }
             catch (Exception ex)
             {
@@ -270,7 +330,11 @@ namespace CompanyPOS.Controllers
                         if (currentInvoice != null)
                         {
                             currentInvoice.PaymentMethod = Invoice.PaymentMethod;
-                            currentInvoice.Date = Invoice.Date;
+
+                            if (Invoice.Date == null)
+                            {
+                                return Request.CreateResponse(HttpStatusCode.OK, "Date not found.");
+                            }
 
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()
@@ -283,19 +347,17 @@ namespace CompanyPOS.Controllers
                             });
 
                             database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-                            return message;
+                            return Request.CreateResponse(HttpStatusCode.OK, "Update Success");
+
                         }
                         else
                         {
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Invoice Not found");
-                            return message;
+                            return Request.CreateResponse(HttpStatusCode.OK, "Invoice Not found");
                         }
                     }
                     else
                     {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
+                        return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
                     }
                 }
             }

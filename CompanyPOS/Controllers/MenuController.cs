@@ -185,9 +185,9 @@ namespace CompanyPOS.Controllers
 
                         if (currentMenu != null)
                         {
-                            if (currentMenu.Name.ToLower() != menu.Name.Trim().ToLower())
-                            {
-                                currentMenu.Name = menu.Name;
+                          //  if (currentMenu.Name.ToLower() != menu.Name.Trim().ToLower())
+                          //  {
+                          //      currentMenu.Name = menu.Name;
                                 currentMenu.Page = menu.Page;
                                 // currentMenu.StoreID = menu.StoreID;
                                 currentMenu.Description = menu.Description;
@@ -205,11 +205,11 @@ namespace CompanyPOS.Controllers
                                 database.SaveChanges();
                                 var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
                                 return message;
-                            }
-                            else {
-                                var message = Request.CreateResponse(HttpStatusCode.OK, "There is a menu with the same name");
-                                return message;
-                            }
+                            //}
+                            //else {
+                            //    var message = Request.CreateResponse(HttpStatusCode.OK, "There is a menu with the same name");
+                            //    return message;
+                            //}
 
                         }
                         else
