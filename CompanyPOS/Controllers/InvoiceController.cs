@@ -247,7 +247,7 @@ namespace CompanyPOS.Controllers
                                 {
                                     if (Invoice.Date == null)
                                     {
-                                        return Request.CreateResponse(HttpStatusCode.OK, "Date not found.");
+                                        return Request.CreateResponse(HttpStatusCode.OK, "Date not found." + Invoice.errorMessage);
                                     }
 
                                     Invoice.StoreID = session.StoreID;
@@ -300,7 +300,7 @@ namespace CompanyPOS.Controllers
             }
             catch (System.FormatException ex)
             {
-                var message = Request.CreateResponse(HttpStatusCode.BadRequest, @"Bad Datetime format, it must be (YYYY-MM-DD-hh-mm-ss)");
+                var message = Request.CreateResponse(HttpStatusCode.BadRequest, @"Bad Datetime format, it must be (YYYY-DD-MM-hh-mm-ss)");
                 return message;
             }
             catch (Exception ex)

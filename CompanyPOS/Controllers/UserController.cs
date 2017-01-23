@@ -194,6 +194,7 @@ namespace CompanyPOS.Controllers
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
+                    
                     if (session != null)
                     {
                         //Save last  update
@@ -208,10 +209,17 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
+                           
                             //Save last  update
-                            var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.ID).CompanyID;
-                            user.CompanyID = currentCompanyID;
+                            var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID);
 
+                            if (currentCompanyID == null)
+                            {
+                                return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID" + " SessionId: " + session.ID);
+                            }
+                            else {
+                                user.CompanyID = currentCompanyID.CompanyID;
+                            }
                             if (storeID == null)
                             {
                                 user.StoreID = session.StoreID;
@@ -271,11 +279,11 @@ namespace CompanyPOS.Controllers
                                                 validationError.ErrorMessage);
                     }
                 }
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx + "    " + dbEx.Message);
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + "    " +ex.Message);
             }
         }
 
@@ -300,14 +308,14 @@ namespace CompanyPOS.Controllers
                         if (currentUser != null)
                         {
                             currentUser.Name = user.Name;
-                            //currentUser.Type = user.Type;
-                            //currentUser.TypeID = user.TypeID;
-                            // currentUser.Password = user.Password;
-                            // currentUser.StoreID = user.StoreID;
                             currentUser.UserLevel = user.UserLevel;
                             currentUser.Username = user.Username;
                             currentUser.Email = user.Email;
 
+                            if (user.Password != null) 
+                            {
+                               currentUser.Password = user.Password;
+                            }
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()
                             {

@@ -13,6 +13,9 @@ namespace DATA.Models
         public string PaymentMethod { get; set; }
 
         [NotMapped]
+        public string errorMessage { get; set; }
+
+        [NotMapped]
         public string _date
         {
             get { return Date.ToString(); }
@@ -23,9 +26,12 @@ namespace DATA.Models
                     var inputDate = string.Join("/", value.Split(new Char[] { '-' }).Take(3).Reverse());
                     var inputTime = string.Join(":", value.Split(new Char[] { '-' }).Skip(3));
                     Date = Convert.ToDateTime(inputDate + " " + inputTime);
+
+                    errorMessage = " Todo piola";
                 }
                 catch (Exception Ex)
                 {
+                    errorMessage = Ex.Message;
                     Date = null;
                 }
             }
