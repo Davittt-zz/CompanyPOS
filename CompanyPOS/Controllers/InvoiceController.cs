@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace CompanyPOS.Controllers
 {
@@ -447,5 +448,19 @@ namespace CompanyPOS.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-    }
+    
+		// GET: api/Products/5 
+		[ResponseType(typeof(Invoice))]
+		public IHttpActionResult GetInvoice(int id)
+		{
+			Invoice invoice = new Invoice() { 
+			ID=1234567, Date= DateTime.Now};
+			if (invoice == null)
+			{
+				return NotFound();
+			}
+
+			return Ok(invoice); 
+		}
+	}
 }

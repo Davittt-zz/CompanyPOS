@@ -13,7 +13,7 @@ namespace CompanyPOS.Controllers
 {
     public class ItemPagePositionController : ApiController
     {
-        // GET: api/Menu
+		// GET: api/ItemPagePosition
         public HttpResponseMessage GetAll(string token)
         {
             try
@@ -25,7 +25,7 @@ namespace CompanyPOS.Controllers
 
                     if (session != null)
                     {
-                        //Validate storeID and MenuID
+                        //Validate storeID
                         var data = database.ItemPagePositions.ToList().Where(x => (x.StoreID == session.StoreID));
                         if (data != null)
                         {
@@ -124,7 +124,7 @@ namespace CompanyPOS.Controllers
                         if (currentItemPagePosition != null)
                         {
                             database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a ItemPagePosition with this name");
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a ItemPagePosition in this position");
                             return message;
                         }
                         else
@@ -134,7 +134,7 @@ namespace CompanyPOS.Controllers
                             var currentItem = database.Items.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.ItemID);
                             if (currentItem != null)
                             {
-                                var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.MenuID);
+								var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.MenuID);
 
                                 if (currentMenu != null)
                                 {

@@ -13,14 +13,30 @@ namespace CompanyPOS.Controllers
 {
     public class UserController : ApiController
     {
+        //class simplePair
+        //{
+        //    public User user { get; set; }
+        //    public Session session { get; set; }
+        //}
+
         public HttpResponseMessage Getall()
         {
             try
             {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
-                    var ListUsers = database.Users.ToList();
-                    var message = Request.CreateResponse(HttpStatusCode.OK, ListUsers);
+                    List<User> listUsers = database.Users.ToList();
+                    List<Session> listSession = database.Sessions.ToList();
+
+
+                    //var query = listUsers.AsQueryable().Join(listSession,
+                    //                         user => user.StoreID,
+                    //                         session => session.StoreID,
+                    //                         (user, session) => new simplePair { user = user, session = session }
+                    //                         );
+
+
+                    var message = Request.CreateResponse(HttpStatusCode.OK, listUsers);
                     return message;
                 }
             }
@@ -194,7 +210,7 @@ namespace CompanyPOS.Controllers
                     SessionController sessionController = new SessionController();
                     Session session = sessionController.Autenticate(token);
 
-                    
+
                     if (session != null)
                     {
                         //Save last  update
@@ -209,7 +225,7 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
-                           
+
                             //Save last  update
                             var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID);
 
@@ -217,7 +233,8 @@ namespace CompanyPOS.Controllers
                             {
                                 return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID" + " SessionId: " + session.ID);
                             }
-                            else {
+                            else
+                            {
                                 user.CompanyID = currentCompanyID.CompanyID;
                             }
                             if (storeID == null)
@@ -283,7 +300,7 @@ namespace CompanyPOS.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + "    " +ex.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + "    " + ex.Message);
             }
         }
 
@@ -312,9 +329,9 @@ namespace CompanyPOS.Controllers
                             currentUser.Username = user.Username;
                             currentUser.Email = user.Email;
 
-                            if (user.Password != null) 
+                            if (user.Password != null)
                             {
-                               currentUser.Password = user.Password;
+                                currentUser.Password = user.Password;
                             }
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()

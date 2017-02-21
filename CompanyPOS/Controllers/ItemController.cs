@@ -13,7 +13,49 @@ namespace CompanyPOS.Controllers
 {
     public class ItemController : ApiController
     {
-        // GET: api/Item
+		// GET: api/Item/5
+		public HttpResponseMessage GetAll(string token)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+
+					if (session != null)
+					{
+						//Validate storeID and ItemID
+						var data = database.Items.ToList().Where(x => (x.StoreID == session.StoreID));
+						if (data != null)
+						{
+							//Save last  update
+							session.LastUpdate = DateTime.Now;
+							database.SaveChanges();
+
+							var message = Request.CreateResponse(HttpStatusCode.OK, data);
+							return message;
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Item not found");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
+		
+		// GET: api/Item
         //public IEnumerable<string> Get()
         //{
         //    return new string[] { "value1", "value2" };

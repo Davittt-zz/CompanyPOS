@@ -22,9 +22,10 @@ namespace CompanyPOS
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
            // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CompanyPosDBContext>());
-           // Database.SetInitializer(new DropCreateDatabaseAlways<CompanyPosDBContext>());
-           // Database.SetInitializer(new CompanyPosDBContextSeeder());
-
+           //Database.SetInitializer(new DropCreateDatabaseAlways<CompanyPosDBContext>());
+           
+		   //Run this when you need add some change 
+		   //Database.SetInitializer(new CompanyPosDBContextSeeder());
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Web;
 namespace CompanyPOS
 {
     public class CompanyPosDBContextSeeder : DropCreateDatabaseIfModelChanges<CompanyPosDBContext>
-    //public class CompanyPosDBContextSeeder : DropCreateDatabaseAlways<CompanyPosDBContext>
+   // public class CompanyPosDBContextSeeder : DropCreateDatabaseAlways<CompanyPosDBContext>
     {
         protected override void Seed(CompanyPosDBContext context)
         {

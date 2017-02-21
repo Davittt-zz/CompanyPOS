@@ -2,6 +2,7 @@
 using DATA.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and MenuID
-                        var data = database.Menues.ToList().Where(x => (x.StoreID == session.StoreID));
+						var data = database.Menues.ToList().Where(x => (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -68,7 +69,7 @@ namespace CompanyPOS.Controllers
                     if (session != null)
                     {
                         //Validate storeID and MenuID
-                        var data = database.Menues.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+						var data = database.Menues.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
                         if (data != null)
                         {
                             //Save last  update
@@ -99,7 +100,7 @@ namespace CompanyPOS.Controllers
 
         // POST: api/Menu
         // CREATE
-        public HttpResponseMessage Post([FromBody]Menu menu, string token)
+		public HttpResponseMessage Post([FromBody]Menu Menu, string token)
         {
             try
             {
@@ -113,17 +114,17 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.Name == menu.Name && (x.StoreID == session.StoreID));
+						var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.StoreID == session.StoreID);
                         if (currentMenu != null)
                         {
                             database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a menu with this name");
+                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is already a menu on this store");
                             return message;
                         }
                         else
                         {
-                            menu.StoreID = session.StoreID;
-                            database.Menues.Add(menu);
+							Menu.StoreID = session.StoreID;
+							database.Menues.Add(Menu);
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()
                             {
@@ -167,7 +168,7 @@ namespace CompanyPOS.Controllers
 
         // PUT: api/Menu/5
         // UPDATE
-        public HttpResponseMessage Put(int id, [FromBody]Menu menu, string token)
+		public HttpResponseMessage Put(int id, [FromBody]Menu Menu, string token)
         {
             try
             {
@@ -181,16 +182,11 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
                         if (currentMenu != null)
                         {
-                          //  if (currentMenu.Name.ToLower() != menu.Name.Trim().ToLower())
-                          //  {
-                          //      currentMenu.Name = menu.Name;
-                                currentMenu.Page = menu.Page;
-                                // currentMenu.StoreID = menu.StoreID;
-                                currentMenu.Description = menu.Description;
+                                 currentMenu.Description = Menu.Description;
 
                                 //SAVE ACTIVITY
                                 database.UserActivities.Add(new UserActivity()
@@ -205,12 +201,6 @@ namespace CompanyPOS.Controllers
                                 database.SaveChanges();
                                 var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
                                 return message;
-                            //}
-                            //else {
-                            //    var message = Request.CreateResponse(HttpStatusCode.OK, "There is a menu with the same name");
-                            //    return message;
-                            //}
-
                         }
                         else
                         {
@@ -248,68 +238,59 @@ namespace CompanyPOS.Controllers
         // DELETE
         public HttpResponseMessage Delete(int id, string token)
         {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
 
-                    if (session != null)
-                    {
-                        //Save last  update
-                        session.LastUpdate = DateTime.Now;
+					if (session != null)
+					{
+						//Save last  update
+						session.LastUpdate = DateTime.Now;
 
-                        var menu = database.Menues.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						Menu menu = database.Menues.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-                        if (menu == null)
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-                                    "Menu with Id = " + id.ToString() + " not found to delete");
-                        }
-                        else
-                        {
+						if (menu == null)
+						{
+							return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+									"Menu with Id = " + id.ToString() + " not found to delete");
+						}
+						else
+						{
+							database.Menues.Remove(menu);
+							//SAVE ACTIVITY
+							database.UserActivities.Add(new UserActivity()
+							{
+								StoreID = session.StoreID
+								,
+								UserID = session.UserID
+								,
+								Activity = "DELETE MENU"
+							});
 
-                            database.Menues.Remove(menu);
-                            //SAVE ACTIVITY
-                            database.UserActivities.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "DELETE MENU"
-                            });
-
-                            database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        Trace.TraceInformation("Property: {0} Error: {1}",
-                                                validationError.PropertyName,
-                                                validationError.ErrorMessage);
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
+							database.SaveChanges();
+							var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+	
+			}
+			catch (DbUpdateException dbEx)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
         }
     }
 }
