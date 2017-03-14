@@ -18,6 +18,6 @@ namespace DATA.Models
 
 		public int MenuID { get; set; }
 
-		public virtual ICollection<ItemPagePosition> ItemPagePositions { get; set; }
+		//public virtual ICollection<ItemPagePosition> ItemPagePositions { get; set; }
 	}
 }

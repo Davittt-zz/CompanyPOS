@@ -61,6 +61,7 @@
     <Compile Include="Models\ItemPagePosition.cs" />
     <Compile Include="Models\ItemPurchase.cs" />
     <Compile Include="Models\Menu.cs" />
+    <Compile Include="Models\MenuPage.cs" />
     <Compile Include="Models\Sale.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Shift.cs" />

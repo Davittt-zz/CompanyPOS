@@ -25,7 +25,8 @@ namespace CompanyPOS
            //Database.SetInitializer(new DropCreateDatabaseAlways<CompanyPosDBContext>());
            
 		   //Run this when you need add some change 
-		   //Database.SetInitializer(new CompanyPosDBContextSeeder());
-        }
+		   Database.SetInitializer(new CompanyPosDBContextSeeder());
+	
+		}
     }
 }

@@ -49,9 +49,7 @@ namespace CompanyPOS.Controllers
 			{
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + flow);
 			}
-
 		}
-
 
 		// POST api/Session/Login
 		// [Route("Login")]

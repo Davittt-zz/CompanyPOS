@@ -15,6 +15,8 @@ namespace DATA
         { 
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
+
+			//Database.SetInitializer<CompanyPosDBContext>(null);
         }
 
         public DbSet<Category> Categories { get; set; }

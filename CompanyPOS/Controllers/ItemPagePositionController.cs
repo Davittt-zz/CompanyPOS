@@ -108,6 +108,7 @@ namespace CompanyPOS.Controllers
         //CREATE
         public HttpResponseMessage Post([FromBody]ItemPagePosition ItemPagePosition, string token)
         {
+			string Message = "";
             try
             {
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
@@ -120,6 +121,7 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
+						Message = "Before  var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));";
                         var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));
                         if (currentItemPagePosition != null)
                         {
@@ -129,15 +131,20 @@ namespace CompanyPOS.Controllers
                         }
                         else
                         {
+							Message = "Before ItemPagePosition.StoreID = session.StoreID;";
                             ItemPagePosition.StoreID = session.StoreID;
+
 
                             var currentItem = database.Items.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.ItemID);
                             if (currentItem != null)
                             {
+								Message = "Before database.Menues.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.MenuID);";
+
 								var currentMenu = database.Menues.ToList().FirstOrDefault(x => x.ID == ItemPagePosition.MenuID);
 
                                 if (currentMenu != null)
                                 {
+
                                     database.ItemPagePositions.Add(ItemPagePosition);
                                     //SAVE ACTIVITY
                                     database.UserActivities.Add(new UserActivity()
@@ -148,6 +155,9 @@ namespace CompanyPOS.Controllers
                                         ,
                                         Activity = "CREATE ItemPos"
                                     });
+
+									Message = "Before  database.SaveChanges();";
+
                                     database.SaveChanges();
 
                                     var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
@@ -184,11 +194,11 @@ namespace CompanyPOS.Controllers
                                                 validationError.ErrorMessage);
                     }
                 }
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx + " --- " + Message);
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " --- " + Message);
             }
         }
 
@@ -215,7 +225,7 @@ namespace CompanyPOS.Controllers
                             currentItemPagePosition.hPos = ItemPagePosition.hPos;
                             currentItemPagePosition.vPos = ItemPagePosition.vPos;
                             //currentItemPagePosition.ItemID = ItemPagePosition.ItemID;
-                            currentItemPagePosition.Page = ItemPagePosition.Page;
+                           // currentItemPagePosition.Page = ItemPagePosition.Page;
 
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()

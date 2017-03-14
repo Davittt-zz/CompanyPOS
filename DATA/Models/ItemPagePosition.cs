@@ -9,9 +9,10 @@ namespace DATA.Models
         public int ID { get; set; }
         public Nullable<int> hPos { get; set; }
         public Nullable<int> vPos { get; set; }
-        public Nullable<int> Page { get; set; }
+      //  public Nullable<int> Page { get; set; }
 
         public int MenuID { get; set; }
+
         // [ForeignKey("MenuID")]
         // public virtual Menu Menu { get; set; }
         //
@@ -22,5 +23,7 @@ namespace DATA.Models
         public int ItemID { get; set; }
         // [ForeignKey("ItemID")]
         // public virtual Item Item { get; set; }
+
+		public int MenuPage_ID { get; set; }
     }
 }
