@@ -17,14 +17,10 @@ namespace CompanyPOS.Controllers
 		//api/Session/
 		public HttpResponseMessage GetAll()
 		{
-			string flow = "Before coneect to database || ";
-
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
-					flow += "Before search for sessions";
-
 					var session = database.Sessions.ToList();
 					var message = Request.CreateResponse(HttpStatusCode.OK, session);
 					return message;
@@ -39,15 +35,13 @@ namespace CompanyPOS.Controllers
 						Trace.TraceInformation("Property: {0} Error: {1}",
 												validationError.PropertyName,
 												validationError.ErrorMessage);
-
-						flow += validationError.ErrorMessage + "\n";
 					}
 				}
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx + flow);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
 			}
 			catch (Exception ex)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + flow);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
 

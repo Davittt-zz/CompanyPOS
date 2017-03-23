@@ -26,6 +26,7 @@ namespace CompanyPOS
            
 		   //Run this when you need add some change 
 		  //Database.SetInitializer(new CompanyPosDBContextSeeder());
+			Database.SetInitializer<CompanyPosDBContext>(null);
 		}
     }
 }

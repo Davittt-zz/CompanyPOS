@@ -28,13 +28,11 @@ namespace CompanyPOS.Controllers
                     List<User> listUsers = database.Users.ToList();
                     List<Session> listSession = database.Sessions.ToList();
 
-
                     //var query = listUsers.AsQueryable().Join(listSession,
                     //                         user => user.StoreID,
                     //                         session => session.StoreID,
                     //                         (user, session) => new simplePair { user = user, session = session }
                     //                         );
-
 
                     var message = Request.CreateResponse(HttpStatusCode.OK, listUsers);
                     return message;
@@ -324,10 +322,12 @@ namespace CompanyPOS.Controllers
 
                         if (currentUser != null)
                         {
-                            currentUser.Name = user.Name;
+							currentUser.LastName = user.LastName;
                             currentUser.UserLevel = user.UserLevel;
                             currentUser.Username = user.Username;
                             currentUser.Email = user.Email;
+							currentUser.FirstName = user.FirstName;
+							currentUser.Phone = user.Phone;
 
                             if (user.Password != null)
                             {
