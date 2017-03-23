@@ -158,9 +158,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
-    <Compile Include="Controllers\HomeController.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Controllers\ItemAttributeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
@@ -243,7 +240,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DATA\DATA.csproj">

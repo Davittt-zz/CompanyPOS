@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="CompanyPosDBContext.cs" />
     <Compile Include="CompanyPosDBContextSeeder.cs" />
-    <Compile Include="CompanyPosRepository.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\Invoice.cs" />

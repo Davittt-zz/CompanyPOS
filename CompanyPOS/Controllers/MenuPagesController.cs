@@ -124,7 +124,7 @@ namespace CompanyPOS.Controllers
 						{
 
 							var menuList = database.MenuPages.ToList().FindAll(x => x.StoreID == session.StoreID);
-							
+
 							if ((menuList == null) || (menuList.Count == 0))
 							{
 								menuPage.Page = 1;
@@ -133,13 +133,12 @@ namespace CompanyPOS.Controllers
 
 								if (menu == null)
 								{
-									return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-											"Menu with not found");
+									return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Menu not found");
 								}
-								else {
+								else
+								{
 									menuPage.MenuID = menu.ID;
 								}
-							
 							}
 							else
 							{
@@ -287,13 +286,13 @@ namespace CompanyPOS.Controllers
 						{
 							database.MenuPages.Remove(menu);
 
-							var menuePages =  from menuPage in database.MenuPages
-											  where ((menuPage.Page > menu.Page) && (menuPage.StoreID == session.StoreID))
-											  select menuPage ;
+							var menuePages = from menuPage in database.MenuPages
+											 where ((menuPage.Page > menu.Page) && (menuPage.StoreID == session.StoreID))
+											 select menuPage;
 
 							foreach (var item in menuePages)
-								item.Page = item.Page - 1 ;
-							
+								item.Page = item.Page - 1;
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

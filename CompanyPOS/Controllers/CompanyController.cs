@@ -18,10 +18,6 @@ namespace CompanyPOS.Controllers
         {
             try
             {
-                CompanyPosRepository repository = new CompanyPosRepository();
-                var Companies = repository.GetCompanies();
-                
-                
                 using (CompanyPosDBContext database = new CompanyPosDBContext())
                 {
                     //Validate storeID and CompanyID
@@ -43,8 +39,7 @@ namespace CompanyPOS.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-
-
+		
         // GET: api/Company/5
         public HttpResponseMessage GetCompany(int id)
         {

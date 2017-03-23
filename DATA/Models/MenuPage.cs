@@ -15,7 +15,6 @@ namespace DATA.Models
 		public Nullable<int> Page { get; set; }
 
 		public int StoreID { get; set; }
-
 		public int MenuID { get; set; }
 
 		//public virtual ICollection<ItemPagePosition> ItemPagePositions { get; set; }

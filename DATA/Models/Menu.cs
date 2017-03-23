@@ -8,10 +8,8 @@ namespace DATA.Models
     public class Menu
     {
         public int ID { get; set; }
-
 		public string Name { get; set; }
         public string Description { get; set; }
-
 		public int StoreID { get; set; }
     }
 }

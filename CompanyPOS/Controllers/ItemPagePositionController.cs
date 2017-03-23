@@ -122,7 +122,12 @@ namespace CompanyPOS.Controllers
                         session.LastUpdate = DateTime.Now;
 
 						Message = "Before  var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));";
-                        var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));
+                        var currentItemPagePosition = database.ItemPagePositions
+							.ToList()
+							.FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) &&  (x.MenuPage_ID == x.MenuPage_ID)
+																						&& (x.hPos == ItemPagePosition.hPos) 
+																						&& (x.vPos == ItemPagePosition.vPos) 
+																						&& (x.StoreID == session.StoreID));
                         if (currentItemPagePosition != null)
                         {
                             database.SaveChanges();
@@ -217,16 +222,31 @@ namespace CompanyPOS.Controllers
                     {
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
+						                    
+						//First I check if the new positions are free
+						var currentItemPagePosition = database.ItemPagePositions
+						   .ToList()
+						   .FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.MenuPage_ID == x.MenuPage_ID)
+																					   && (x.hPos == ItemPagePosition.hPos)
+																					   && (x.vPos == ItemPagePosition.vPos)
+																					   && (x.StoreID == session.StoreID));
+						if (currentItemPagePosition != null)
+						{
+							database.SaveChanges();
+							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a ItemPagePosition in this position");
+							return message;
+						}
 
-                        var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						//Get the currentItemPagePosition to update
+						currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.ID == id )
+							    && (x.MenuPage_ID == x.MenuPage_ID)
+								&& (x.StoreID == session.StoreID));
 
                         if (currentItemPagePosition != null)
                         {
                             currentItemPagePosition.hPos = ItemPagePosition.hPos;
                             currentItemPagePosition.vPos = ItemPagePosition.vPos;
-                            //currentItemPagePosition.ItemID = ItemPagePosition.ItemID;
-                           // currentItemPagePosition.Page = ItemPagePosition.Page;
-
+                          
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()
                             {

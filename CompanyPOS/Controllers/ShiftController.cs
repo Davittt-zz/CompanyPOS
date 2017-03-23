@@ -55,8 +55,7 @@ namespace CompanyPOS.Controllers
             }
         }
 
-
-        // GET: api/Shift
+		// GET: api/Shift
         public HttpResponseMessage Get(string token, string period)
         {
             try
@@ -163,15 +162,16 @@ namespace CompanyPOS.Controllers
                         //Save last  update
                         session.LastUpdate = DateTime.Now;
 
-                        //var currentShift = database.Shifts.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID));
-                        //if (currentShift != null)
-                        //{
-                        //    database.SaveChanges();
-                        //    var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Shift with this name");
-                        //    return message;
-                        //}
-                        //else
-                        //{
+						var currentShift = database.Shifts.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID) && (x.Status == "OPEN"));
+						
+						if (currentShift != null)
+						{
+						    database.SaveChanges();
+						    var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Shift with the status OPEN in the store");
+						    return message;
+						}
+                        else
+                        {
                             Shift.StoreID = session.StoreID;
                             database.Shifts.Add(Shift);
                             //SAVE ACTIVITY
@@ -187,7 +187,7 @@ namespace CompanyPOS.Controllers
 
                             var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
                             return message;
-                     //   }
+                        }
                     }
                     else
                     {
@@ -239,6 +239,8 @@ namespace CompanyPOS.Controllers
                             currentShift.Status    = Shift.Status   ;
                             currentShift.TimeEnd   = Shift.TimeEnd  ;
                             currentShift.TimeStart = Shift.TimeStart;
+							currentShift.OpeningAmount = Shift.OpeningAmount;
+							currentShift.ClosingAmount = Shift.ClosingAmount;
                             //SAVE ACTIVITY
                             //database.UserActivities.Add(new UserActivity()
                             //{
