@@ -23,6 +23,8 @@ namespace CompanyPOS
             config.Formatters.Remove(config.Formatters.XmlFormatter);
            // config.Formatters.XmlFormatter.UseXmlSerializer = false;
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
-        }
+
+		
+		}
     }
 }
