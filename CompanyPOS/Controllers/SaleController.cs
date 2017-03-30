@@ -127,6 +127,9 @@ namespace CompanyPOS.Controllers
                             {
                                 Sale.StoreID = session.StoreID;
                                 Sale.Date = DateTime.Now;
+								//Create Transaction Number
+								Sale.TransactionNumber = Math.Abs((decimal)DateTime.Now.GetHashCode() * 1000 + (decimal)DateTime.Now.AddDays(-7).GetHashCode()).ToString();
+
                                 database.Sales.Add(Sale);
                                 //SAVE ACTIVITY
                                 database.UserActivities.Add(new UserActivity()

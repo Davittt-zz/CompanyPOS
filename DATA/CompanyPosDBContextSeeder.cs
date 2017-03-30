@@ -41,7 +41,7 @@ namespace CompanyPOS
                          }
                      }, Users = new List<User> {
                          new User(){
-                             Name = "Owner X" , Username = "ownerX" , Password = "test", Type = "Owner" , UserLevel = "admin" 
+                             LastName = "Owner X" , Username = "ownerX" , Password = "test", Type = "Owner" , UserLevel = "admin" 
                          }
                      }
                   },  

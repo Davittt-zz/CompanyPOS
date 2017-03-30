@@ -324,7 +324,7 @@ namespace CompanyPOS.Controllers
                         {
                             currentItemPurchase.Quantity = ItemPurchase.Quantity;
                             currentItemPurchase.TotalPrice = ItemPurchase.TotalPrice;
-
+							currentItemPurchase.Status = ItemPurchase.Status;
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()
                             {

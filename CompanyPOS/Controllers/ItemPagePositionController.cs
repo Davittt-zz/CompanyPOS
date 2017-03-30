@@ -124,7 +124,7 @@ namespace CompanyPOS.Controllers
 						Message = "Before  var currentItemPagePosition = database.ItemPagePositions.ToList().FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.hPos == ItemPagePosition.hPos) && (x.vPos == ItemPagePosition.vPos) && (x.StoreID == session.StoreID));";
                         var currentItemPagePosition = database.ItemPagePositions
 							.ToList()
-							.FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) &&  (x.MenuPage_ID == x.MenuPage_ID)
+							.FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.MenuPage_ID == ItemPagePosition.MenuPage_ID)
 																						&& (x.hPos == ItemPagePosition.hPos) 
 																						&& (x.vPos == ItemPagePosition.vPos) 
 																						&& (x.StoreID == session.StoreID));
@@ -226,7 +226,7 @@ namespace CompanyPOS.Controllers
 						//First I check if the new positions are free
 						var currentItemPagePosition = database.ItemPagePositions
 						   .ToList()
-						   .FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.MenuPage_ID == x.MenuPage_ID)
+						   .FirstOrDefault(x => (x.MenuID == ItemPagePosition.MenuID) && (x.MenuPage_ID == ItemPagePosition.MenuPage_ID)
 																					   && (x.hPos == ItemPagePosition.hPos)
 																					   && (x.vPos == ItemPagePosition.vPos)
 																					   && (x.StoreID == session.StoreID));
