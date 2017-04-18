@@ -11,440 +11,443 @@ using System.Web.Http;
 
 namespace CompanyPOS.Controllers
 {
-    public class UserController : ApiController
-    {
-        //class simplePair
-        //{
-        //    public User user { get; set; }
-        //    public Session session { get; set; }
-        //}
+	public class UserController : ApiController
+	{
+		//class simplePair
+		//{
+		//    public User user { get; set; }
+		//    public Session session { get; set; }
+		//}
 
-        public HttpResponseMessage Getall()
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    List<User> listUsers = database.Users.ToList();
-                    List<Session> listSession = database.Sessions.ToList();
+		public HttpResponseMessage Getall()
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					List<User> listUsers = database.Users.ToList();
+					List<Session> listSession = database.Sessions.ToList();
 
-                    //var query = listUsers.AsQueryable().Join(listSession,
-                    //                         user => user.StoreID,
-                    //                         session => session.StoreID,
-                    //                         (user, session) => new simplePair { user = user, session = session }
-                    //                         );
+					//var query = listUsers.AsQueryable().Join(listSession,
+					//                         user => user.StoreID,
+					//                         session => session.StoreID,
+					//                         (user, session) => new simplePair { user = user, session = session }
+					//                         );
 
-                    var message = Request.CreateResponse(HttpStatusCode.OK, listUsers);
-                    return message;
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
+					var message = Request.CreateResponse(HttpStatusCode.OK, listUsers);
+					return message;
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
 
-        public HttpResponseMessage GetStoreUsers(string token)
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
+		public HttpResponseMessage GetStoreUsers(string token)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
 
-                    var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
+					var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
 
-                    if (session != null)
-                    {
-                        if (SessionUser.UserLevel.ToLower() == "admin")
-                        {
-                            //Validate storeID and UserID
-                            List<User> userList = database.Users.Where(x => (x.StoreID == session.StoreID)).ToList();
-                            if (userList != null)
-                            {
-                                //Save last  update
-                                session.LastUpdate = DateTime.Now;
-                                database.SaveChanges();
+					if (session != null)
+					{
+						if (SessionUser.UserLevel.ToLower() == "admin")
+						{
+							//Validate storeID and UserID
+							List<User> userList = database.Users.Where(x => (x.StoreID == session.StoreID)).ToList();
+							if (userList != null)
+							{
+								//Save last  update
+								session.LastUpdate = DateTime.Now;
+								database.SaveChanges();
 
-                                var message = Request.CreateResponse(HttpStatusCode.OK, userList);
-                                return message;
-                            }
-                            else
-                            {
-                                var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
-                                return message;
-                            }
-                        }
-                        else
-                        {
-                            var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
+								var message = Request.CreateResponse(HttpStatusCode.OK, userList);
+								return message;
+							}
+							else
+							{
+								var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+								return message;
+							}
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
 
-        // GET: api/Store/5
-        //READ
-        //It should have permissions
-        public HttpResponseMessage GetCompanyUsers(string token, int companyID)
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
-
-
-                    var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
-
-                    if (session != null)
-                    {
-                        if (SessionUser.UserLevel.ToLower() == "admin")
-                        {
-                            //Validate storeID and UserID
-                            List<User> userList = database.Users.Where(x => (x.CompanyID == companyID)).ToList();
-                            if (userList != null)
-                            {
-                                //Save last  update
-                                session.LastUpdate = DateTime.Now;
-                                database.SaveChanges();
-
-                                var message = Request.CreateResponse(HttpStatusCode.OK, userList);
-                                return message;
-                            }
-                            else
-                            {
-                                var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
-                                return message;
-                            }
-                        }
-                        else
-                        {
-                            var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-        // GET: api/Store/5
-        //READ
-        public HttpResponseMessage Get(string token, int id)
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
-
-                    if (session != null)
-                    {
-                        var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
-
-                        //Validate storeID and UserID
-                        User user = database.Users.ToList().FirstOrDefault(x => (x.ID == id)
-                            && ((x.StoreID == session.StoreID) || ((SessionUser.Type.ToLower() == "owner") && SessionUser.CompanyID == x.CompanyID))
-                            );
-                        if (user != null)
-                        {
-                            //Save last  update
-                            session.LastUpdate = DateTime.Now;
-                            database.SaveChanges();
-
-                            var message = Request.CreateResponse(HttpStatusCode.OK, user);
-                            return message;
-                        }
-                        else
-                        {
-                            var message = Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-        // POST: api/User
-        //CREATE
-        public HttpResponseMessage Post([FromBody]User user, string token, int? storeID)
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
+		// GET: api/Store/5
+		//READ
+		//It should have permissions
+		public HttpResponseMessage GetCompanyUsers(string token, int companyID)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
 
 
-                    if (session != null)
-                    {
-                        //Save last  update
-                        session.LastUpdate = DateTime.Now;
+					var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
 
-                        var currentUser = database.Users.ToList().FirstOrDefault(x => x.Username == user.Username && (x.StoreID == session.StoreID));
-                        if (currentUser != null)
-                        {
-                            database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "There is a user with this name");
-                            return message;
-                        }
-                        else
-                        {
+					if (session != null)
+					{
+						if (SessionUser.UserLevel.ToLower() == "admin")
+						{
+							//Validate storeID and UserID
+							List<User> userList = database.Users.Where(x => (x.CompanyID == companyID)).ToList();
+							if (userList != null)
+							{
+								//Save last  update
+								session.LastUpdate = DateTime.Now;
+								database.SaveChanges();
 
-                            //Save last  update
-                            var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID);
+								var message = Request.CreateResponse(HttpStatusCode.OK, userList);
+								return message;
+							}
+							else
+							{
+								var message = Request.CreateResponse(HttpStatusCode.NotFound, "Users not found");
+								return message;
+							}
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
 
-                            if (currentCompanyID == null)
-                            {
-                                return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID" + " SessionId: " + session.ID);
-                            }
-                            else
-                            {
-                                user.CompanyID = currentCompanyID.CompanyID;
-                            }
-                            if (storeID == null)
-                            {
-                                user.StoreID = session.StoreID;
-                            }
-                            else
-                            {
-                                var newStore = database.Companies.FirstOrDefault(x => x.Id == user.CompanyID).Stores.First(y => y.ID == storeID);
-                                if (newStore != null)
-                                {
-                                    user.StoreID = newStore.ID;
-                                }
-                                else
-                                {
-                                    return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID");
-                                }
-                            }
+		// GET: api/Store/5
+		//READ
+		public HttpResponseMessage Get(string token, int id)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
 
-                            if (user.Type != "OWNER")
-                            {
-                                database.Users.Add(user);
-                                //SAVE ACTIVITY
-                                database.UserActivities.Add(new UserActivity()
-                                {
-                                    StoreID = session.StoreID
-                                    ,
-                                    UserID = session.UserID
-                                    ,
-                                    Activity = "CREATE USER"
-                                });
-                                database.SaveChanges();
+					if (session != null)
+					{
+						var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
 
-                                var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-                                return message;
-                            }
-                            else
-                            {
-                                var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You cannot create an Owner");
-                                return message;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        Trace.TraceInformation("Property: {0} Error: {1}",
-                                                validationError.PropertyName,
-                                                validationError.ErrorMessage);
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx + "    " + dbEx.Message);
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + "    " + ex.Message);
-            }
-        }
+						//Validate storeID and UserID
+						User user = database.Users.ToList().FirstOrDefault(x => (x.ID == id)
+							&& ((x.StoreID == session.StoreID) || ((SessionUser.Type.ToLower() == "owner") && SessionUser.CompanyID == x.CompanyID))
+							);
+						if (user != null)
+						{
+							//Save last  update
+							session.LastUpdate = DateTime.Now;
+							database.SaveChanges();
 
-        // PUT: api/User/5
-        //UPDATE
-        public HttpResponseMessage Put(int id, [FromBody]User user, string token)
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
+							var message = Request.CreateResponse(HttpStatusCode.OK, user);
+							return message;
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
 
-                    if (session != null)
-                    {
-                        //Save last  update
-                        session.LastUpdate = DateTime.Now;
+		// POST: api/User
+		//CREATE
+		public HttpResponseMessage Post([FromBody]User user, string token, int? storeID)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
 
-                        var currentUser = database.Users.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-                        if (currentUser != null)
-                        {
+					if (session != null)
+					{
+						//Save last  update
+						session.LastUpdate = DateTime.Now;
+
+						var currentUser = database.Users.ToList().FirstOrDefault(x => x.Username == user.Username && (x.StoreID == session.StoreID));
+						if (currentUser != null)
+						{
+							database.SaveChanges();
+							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a user with this name");
+							return message;
+						}
+						else
+						{
+
+							//Save last  update
+							var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID);
+
+							if (currentCompanyID == null)
+							{
+								return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID" + " SessionId: " + session.ID);
+							}
+							else
+							{
+								user.CompanyID = currentCompanyID.CompanyID;
+							}
+							if (storeID == null)
+							{
+								user.StoreID = session.StoreID;
+							}
+							else
+							{
+								var newStore = database.Companies.FirstOrDefault(x => x.Id == user.CompanyID).Stores.First(y => y.ID == storeID);
+								if (newStore != null)
+								{
+									user.StoreID = newStore.ID;
+								}
+								else
+								{
+									return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID");
+								}
+							}
+
+							if (user.Type != "OWNER")
+							{
+								database.Users.Add(user);
+								//SAVE ACTIVITY
+								//database.UserActivities.Add(new UserActivity()
+								//{
+								//	StoreID = session.StoreID
+								//	,
+								//	UserID = session.UserID
+								//	,
+								//	Activity = "CREATE USER",
+								//	Date = DateTime.Now
+								//});
+								database.SaveChanges();
+
+								var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+								return message;
+							}
+							else
+							{
+								var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You cannot create an Owner");
+								return message;
+							}
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (var validationErrors in dbEx.EntityValidationErrors)
+				{
+					foreach (var validationError in validationErrors.ValidationErrors)
+					{
+						Trace.TraceInformation("Property: {0} Error: {1}",
+												validationError.PropertyName,
+												validationError.ErrorMessage);
+					}
+				}
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx + "    " + dbEx.Message);
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + "    " + ex.Message);
+			}
+		}
+
+		// PUT: api/User/5
+		//UPDATE
+		public HttpResponseMessage Put(int id, [FromBody]User user, string token)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+
+					if (session != null)
+					{
+						//Save last  update
+						session.LastUpdate = DateTime.Now;
+
+						var currentUser = database.Users.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+
+						if (currentUser != null)
+						{
 							currentUser.LastName = user.LastName;
-                            currentUser.UserLevel = user.UserLevel;
-                            currentUser.Username = user.Username;
-                            currentUser.Email = user.Email;
+							currentUser.UserLevel = user.UserLevel;
+							currentUser.Username = user.Username;
+							currentUser.Email = user.Email;
 							currentUser.FirstName = user.FirstName;
 							currentUser.Phone = user.Phone;
 
-                            if (user.Password != null)
-                            {
-                                currentUser.Password = user.Password;
-                            }
-                            //SAVE ACTIVITY
-                            database.UserActivities.Add(new UserActivity()
-                            {
-                                StoreID = session.StoreID
-                                ,
-                                UserID = session.UserID
-                                ,
-                                Activity = "CREATE USER"
-                            });
+							if (user.Password != null)
+							{
+								currentUser.Password = user.Password;
+							}
+							//SAVE ACTIVITY
+							database.UserActivities.Add(new UserActivity()
+							{
+								StoreID = session.StoreID
+								,
+								UserID = session.UserID
+								,
+								Activity = "CREATE USER",
+								Date = DateTime.Now
+							});
 
-                            database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-                            return message;
-                        }
-                        else
-                        {
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "User Not found");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        Trace.TraceInformation("Property: {0} Error: {1}",
-                                                validationError.PropertyName,
-                                                validationError.ErrorMessage);
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
+							database.SaveChanges();
+							var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
+							return message;
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.OK, "User Not found");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (var validationErrors in dbEx.EntityValidationErrors)
+				{
+					foreach (var validationError in validationErrors.ValidationErrors)
+					{
+						Trace.TraceInformation("Property: {0} Error: {1}",
+												validationError.PropertyName,
+												validationError.ErrorMessage);
+					}
+				}
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
 
-        // DELETE: api/User/5
-        //DELETE
-        public HttpResponseMessage Delete(int id, string token)
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    SessionController sessionController = new SessionController();
-                    Session session = sessionController.Autenticate(token);
+		// DELETE: api/User/5
+		//DELETE
+		public HttpResponseMessage Delete(int id, string token)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
 
-                    if (session != null)
-                    {
-                        //Save last  update
-                        session.LastUpdate = DateTime.Now;
+					if (session != null)
+					{
+						//Save last  update
+						session.LastUpdate = DateTime.Now;
 
-                        var user = database.Users.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						var user = database.Users.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-                        if (user == null)
-                        {
-                            return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-                                    "User with Id = " + id.ToString() + " not found to delete");
-                        }
-                        else
-                        {
+						if (user == null)
+						{
+							return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+									"User with Id = " + id.ToString() + " not found to delete");
+						}
+						else
+						{
 
-                            database.Users.Remove(user);
-                            //SAVE ACTIVITY
-                            //database.UserActivities.Add(new UserActivity()
-                            //{
-                            //    StoreID = session.StoreID
-                            //    ,
-                            //    UserID = session.UserID
-                            //    ,
-                            //    Activity = "DELETE USER"
-                            //});
+							database.Users.Remove(user);
+							//SAVE ACTIVITY
+							database.UserActivities.Add(new UserActivity()
+							{
+								StoreID = session.StoreID
+								,
+								UserID = session.UserID
+								,
+								Activity = "DELETE USER",
+								Date = DateTime.Now
+							});
 
-                            database.SaveChanges();
-                            var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
-                            return message;
-                        }
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        Trace.TraceInformation("Property: {0} Error: {1}",
-                                                validationError.PropertyName,
-                                                validationError.ErrorMessage);
-                    }
-                }
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-    }
+							database.SaveChanges();
+							var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (var validationErrors in dbEx.EntityValidationErrors)
+				{
+					foreach (var validationError in validationErrors.ValidationErrors)
+					{
+						Trace.TraceInformation("Property: {0} Error: {1}",
+												validationError.PropertyName,
+												validationError.ErrorMessage);
+					}
+				}
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
+	}
 }

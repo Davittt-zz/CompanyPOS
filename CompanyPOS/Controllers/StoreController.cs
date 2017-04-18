@@ -121,7 +121,8 @@ namespace CompanyPOS.Controllers
                                    ,
                                    UserID = session.UserID
                                    ,
-                                   Activity = "CREATE STORE"
+								   Activity = "CREATE STORE",
+								   Date = DateTime.Now
                                }
                                    );
                                 database.SaveChanges();

@@ -22,8 +22,15 @@ namespace DATA.Models
 
         public int ID { get; set; }
         public string Name { get; set; }
+		public int CompanyID { get; set; }
 
-        public int CompanyID { get; set; }
+		public string Address { get; set; }
+		public string Email { get; set; }
+		public string Phone { get; set; }
+		public string BankAccount { get; set; }
+		public string Bulstat_Eik { get; set; }
+
+
         // public virtual Company Company { get; set; }
         //public virtual ICollection<Menu> Menues { get; set; }
         //public virtual ICollection<ItemPagePosition> ItemPagePositions { get; set; }

@@ -91,7 +91,8 @@ namespace CompanyPOS.Controllers
 								 ,
 								UserID = session.UserID
 								 ,
-								Activity = "LOGIN"
+								Activity = "LOGIN",
+								Date = DateTime.Now
 							}
 							);
 						database.SaveChanges();
@@ -130,8 +131,11 @@ namespace CompanyPOS.Controllers
 						database.UserActivities.Add(new UserActivity()
 						{
 							StoreID = session.StoreID
-						   ,UserID = session.UserID
-						   ,Activity = "LOGOUT"
+						   ,
+							UserID = session.UserID
+						   ,
+							Activity = "LOGOUT",
+							Date = DateTime.Now
 						}
 							);
 

@@ -17,7 +17,6 @@ C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CopanyP
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CopanyPOS\DATA\obj\Debug\DATA.csprojResolveAssemblyReference.cache
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CopanyPOS\DATA\obj\Debug\DATA.dll
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CopanyPOS\DATA\obj\Debug\DATA.pdb
-C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\DATA.dll.config
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\DATA.dll
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\DATA.pdb
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\EntityFramework.dll

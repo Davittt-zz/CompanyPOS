@@ -156,7 +156,8 @@ namespace CompanyPOS.Controllers
 								,
 								UserID = session.UserID
 								,
-								Activity = "CREATE MENU"
+								Activity = "CREATE MENU",
+								Date = DateTime.Now
 							});
 							database.SaveChanges();
 
@@ -220,7 +221,8 @@ namespace CompanyPOS.Controllers
 								,
 								UserID = session.UserID
 								,
-								Activity = "CREATE MENU"
+								Activity = "CREATE MENU",
+								Date = DateTime.Now
 							});
 
 							database.SaveChanges();
@@ -300,7 +302,8 @@ namespace CompanyPOS.Controllers
 								,
 								UserID = session.UserID
 								,
-								Activity = "DELETE MENU"
+								Activity = "DELETE MENU",
+								Date = DateTime.Now
 							});
 
 							database.SaveChanges();
