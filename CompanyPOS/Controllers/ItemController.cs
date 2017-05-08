@@ -107,14 +107,11 @@ namespace CompanyPOS.Controllers
 		//CREATE
 		public HttpResponseMessage Post([FromBody]Item Item, string token)
 		{
-			string errorStatus = " ";
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
 					SessionController sessionController = new SessionController();
-
-					errorStatus += " Before Atutentication || ";
 					Session session = sessionController.Autenticate(token);
 
 					if (session != null)
@@ -122,7 +119,6 @@ namespace CompanyPOS.Controllers
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
 
-						errorStatus += " Before finding similar item || ";
 						var currentItem = database.Items.ToList().FirstOrDefault(x => x.Name == Item.Name && (x.StoreID == session.StoreID));
 						if (currentItem != null)
 						{
@@ -148,10 +144,7 @@ namespace CompanyPOS.Controllers
 									Activity = "CREATE Item",
 									Date = DateTime.Now
 								});
-
-								errorStatus += " Before adding in the db || ";
 								database.SaveChanges();
-
 								var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
 								return message;
 							}
@@ -184,7 +177,7 @@ namespace CompanyPOS.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " || " + errorStatus);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
 
@@ -192,7 +185,6 @@ namespace CompanyPOS.Controllers
 		//UPDATE
 		public HttpResponseMessage Put(int id, [FromBody]Item Item, string token)
 		{
-
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
@@ -213,7 +205,7 @@ namespace CompanyPOS.Controllers
 							currentItem.UnitPrice = Item.UnitPrice;
 							currentItem.CategoryID = Item.CategoryID;
 							currentItem.Description = Item.Description;
-
+							currentItem.ActiveForSale = Item.ActiveForSale;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

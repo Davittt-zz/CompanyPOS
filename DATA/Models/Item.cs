@@ -17,8 +17,9 @@ namespace DATA.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public Nullable<float> UnitPrice { get; set; }
-
         public string Description { get; set; }
+		
+		public bool ActiveForSale { get; set; }  
 
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
