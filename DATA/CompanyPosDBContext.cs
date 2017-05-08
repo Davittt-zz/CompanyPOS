@@ -26,15 +26,15 @@ namespace DATA
         public DbSet<ItemAttribute> ItemAttributes { get; set; }
         public DbSet<ItemPagePosition> ItemPagePositions { get; set; }
         public DbSet<ItemPurchase> ItemPurchases { get; set; }
-
 		public DbSet<MenuPage> MenuPages { get; set; }
         public DbSet<Menu> Menues { get; set; }
-
-        public DbSet<Sale> Sales { get; set; }
+		public DbSet<Sale> Sales { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserActivity> UserActivities { get; set; }
-    }
+
+		public DbSet<PurchaseAttribute> PurchaseAttributes { get; set; }
+	}
 }
