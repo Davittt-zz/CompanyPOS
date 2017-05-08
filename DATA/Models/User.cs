@@ -13,11 +13,14 @@ namespace DATA.Models
 		public string Phone { get; set; }
         public string Type { get; set; }
 
-
         public string Password { get; set; }
         public string UserLevel { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
+
+		//If true User is Active, Inactive is false
+		public bool Status { get; set; }
+
         public Nullable<int> CompanyID { get; set; }
 
         public int StoreID { get; set; }

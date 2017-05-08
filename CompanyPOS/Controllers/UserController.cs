@@ -329,6 +329,7 @@ namespace CompanyPOS.Controllers
 							currentUser.Email = user.Email;
 							currentUser.FirstName = user.FirstName;
 							currentUser.Phone = user.Phone;
+							currentUser.Status = user.Status;
 
 							if (user.Password != null)
 							{

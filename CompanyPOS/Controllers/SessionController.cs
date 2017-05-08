@@ -50,67 +50,73 @@ namespace CompanyPOS.Controllers
 		[HttpPost]
 		public HttpResponseMessage PostLogin([FromBody] User user)
 		{
-			string flow = "Before coneect to database || ";
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
-					flow += "Before search for users";
-					if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
+					if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Status == true))
 					{
-						//Get user's data
-						User userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
-
-						Session session = (database.Sessions.ToList().FirstOrDefault(x => x.UserID == userEntity.ID));
-
-						if (session == null)
+						if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
 						{
-							session = new Session();
-							//Save SessionC:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\CompanyPOS\Controllers\SessionController.cs
-							session.StoreID = userEntity.StoreID;
-							session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
-							session.UserID = userEntity.ID;
-							session.Created = DateTime.Now;
-							session.LastUpdate = session.Created;
-							database.Sessions.Add(session);
+							//Get user's data
+							User userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
+
+							Session session = (database.Sessions.ToList().FirstOrDefault(x => x.UserID == userEntity.ID));
+
+							if (session == null)
+							{
+								session = new Session();
+								//Save SessionC:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\CompanyPOS\Controllers\SessionController.cs
+								session.StoreID = userEntity.StoreID;
+								session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
+								session.UserID = userEntity.ID;
+								session.Created = DateTime.Now;
+								session.LastUpdate = session.Created;
+								database.Sessions.Add(session);
+							}
+							else
+							{
+								session.StoreID = userEntity.StoreID;
+								session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
+								session.UserID = userEntity.ID;
+								session.LastUpdate = DateTime.Now;
+								//not add because us an Update
+								//database.Sessions.Add(session);
+							}
+
+							//SAVE ACTIVITY
+							database.UserActivities.Add(new UserActivity()
+								{
+									StoreID = session.StoreID
+									 ,
+									UserID = session.UserID
+									 ,
+									Activity = "LOGIN",
+									Date = DateTime.Now
+								}
+								);
+							database.SaveChanges();
+
+							var message = Request.CreateResponse(HttpStatusCode.Created, session);
+							message.Headers.Location = new Uri(Request.RequestUri + "/" + session.ID.ToString());
+							return message;
 						}
 						else
 						{
-							session.StoreID = userEntity.StoreID;
-							session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
-							session.UserID = userEntity.ID;
-							session.LastUpdate = DateTime.Now;
-							//not add because us an Update
-							//   database.Sessions.Add(session);
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "User or password invalid");
+							return message;
 						}
-
-						//SAVE ACTIVITY
-						database.UserActivities.Add(new UserActivity()
-							{
-								StoreID = session.StoreID
-								 ,
-								UserID = session.UserID
-								 ,
-								Activity = "LOGIN",
-								Date = DateTime.Now
-							}
-							);
-						database.SaveChanges();
-
-						var message = Request.CreateResponse(HttpStatusCode.Created, session);
-						message.Headers.Location = new Uri(Request.RequestUri + "/" + session.ID.ToString());
-						return message;
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.NotFound, "User or password invalid");
+						var message = Request.CreateResponse(HttpStatusCode.NotFound, "User invalid or Inactive");
 						return message;
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " " + flow);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
 
