@@ -125,6 +125,7 @@
     <Folder Include="Areas\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Home\" />
+    <Folder Include="Views\PurchaseAttribute\" />
     <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +134,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Classes\UseSSLAttribute.cs" />
+    <Compile Include="Controllers\TimeTableController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\ItemAttributeController.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="Controllers\ItemPurchaseController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\MenuPagesController.cs" />
+    <Compile Include="Controllers\PurchaseAttributeController.cs" />
     <Compile Include="Controllers\SaleController.cs" />
     <Compile Include="Controllers\SessionController.cs">
       <SubType>Code</SubType>

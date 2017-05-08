@@ -23,10 +23,9 @@ namespace CompanyPOS.Controllers
 					return ItemPurchaseList;
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return null;
-				//  return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
 

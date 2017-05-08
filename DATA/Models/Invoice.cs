@@ -9,7 +9,7 @@ namespace DATA.Models
     public class Invoice
     {
         public int ID { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
+        public DateTime Date { get; set; }
         public string PaymentMethod { get; set; }
 
         [NotMapped]
@@ -21,19 +21,7 @@ namespace DATA.Models
             get { return Date.ToString(); }
             set
             {
-                try
-                {
-                    var inputDate = string.Join("/", value.Split(new Char[] { '-' }).Take(3).Reverse());
-                    var inputTime = string.Join(":", value.Split(new Char[] { '-' }).Skip(3));
-                    Date = Convert.ToDateTime(inputDate + " " + inputTime);
-
-                    errorMessage = " Todo piola";
-                }
-                catch (Exception Ex)
-                {
-                    errorMessage = Ex.Message;
-                    Date = null;
-                }
+				 Date = TimeTools.GetDate(value);
             }
         }
 
