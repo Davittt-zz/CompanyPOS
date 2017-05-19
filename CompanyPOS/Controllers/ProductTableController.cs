@@ -11,9 +11,18 @@ using System.Web.Http;
 
 namespace CompanyPOS.Controllers
 {
-	public class TimeTableController : ApiController
+	public class ProductTableController : ApiController
 	{
-		// GET: api/TimeTable
+		// GET: api/Products 
+		public IQueryable<ProductTable> GetProductTable()
+		{
+			using (CompanyPosDBContext database = new CompanyPosDBContext())
+			{
+				return database.ProductTables;
+			}
+		}
+
+		// GET: api/ProductTable
 		public HttpResponseMessage Get(string token)
 		{
 			try
@@ -25,8 +34,8 @@ namespace CompanyPOS.Controllers
 
 					if (session != null)
 					{
-						//Validate storeID and TimeTableID
-						var data = database.TimeTables.ToList().Where(x => (x.StoreID == session.StoreID));
+						//Validate storeID and ProductTableID
+						var data = database.ProductTables.ToList().Where(x => (x.StoreID == session.StoreID));
 
 						if (data != null)
 						{
@@ -39,7 +48,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "TimeTable not found");
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "ProductTable not found");
 							return message;
 						}
 					}
@@ -56,7 +65,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// GET: api/TimeTable/5
+		// GET: api/ProductTable/5
 		public HttpResponseMessage Get(string token, int id)
 		{
 			try
@@ -68,8 +77,8 @@ namespace CompanyPOS.Controllers
 
 					if (session != null)
 					{
-						//Validate storeID and TimeTableID
-						var data = database.TimeTables.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+						//Validate storeID and ProductTableID
+						var data = database.ProductTables.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
 						if (data != null)
 						{
 							//Save last  update
@@ -81,7 +90,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "TimeTable not found");
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "ProductTable not found");
 							return message;
 						}
 					}
@@ -98,52 +107,9 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// GET: api/TimeTable/5
-		public HttpResponseMessage GetByUser(string token, string  UserId)
-		{
-			try
-			{
-				using (CompanyPosDBContext database = new CompanyPosDBContext())
-				{
-					SessionController sessionController = new SessionController();
-					Session session = sessionController.Autenticate(token);
-
-					if (session != null)
-					{
-						//Validate storeID and TimeTableID
-						var data = database.TimeTables.ToList().FirstOrDefault(x => (x.UserID.ToString() == UserId) && (x.StoreID == session.StoreID));
-						if (data != null)
-						{
-							//Save last  update
-							session.LastUpdate = DateTime.Now;
-							database.SaveChanges();
-
-							var message = Request.CreateResponse(HttpStatusCode.OK, data);
-							return message;
-						}
-						else
-						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
-							return message;
-						}
-					}
-					else
-					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-			}
-		}
-
-
-		// POST: api/TimeTable
+		// POST: api/ProductTable
 		//CREATE
-		public HttpResponseMessage Post([FromBody]TimeTable TimeTable, string token)
+		public HttpResponseMessage Post([FromBody]ProductTable ProductTable, string token)
 		{
 			try
 			{
@@ -156,42 +122,25 @@ namespace CompanyPOS.Controllers
 					{
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
-
-						var user = database.Users.ToList().FirstOrDefault(x =>
-							(x.ID == TimeTable.UserID) && (x.StoreID == TimeTable.StoreID) && (x.CompanyID == TimeTable.CompanyID));
-
-						// If there is no combination, some of the parameters are wrong or missed
-						if (user == null)
-						{
-							return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "User in (Store,Company) not found");
-						}
-
-						var currentTimeTable = database.TimeTables.ToList().FirstOrDefault(
-							x => x.TimeIn.Equals(TimeTable.TimeIn) && x.TimeOut.Equals(TimeTable.TimeOut));
-
-						if (currentTimeTable != null)
+						var currentProductTable = database.ProductTables.ToList().FirstOrDefault(x => x.Name.ToLower().Trim() == ProductTable.Name.ToLower().Trim() && (x.StoreID == session.StoreID));
+						if (currentProductTable != null)
 						{
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a TimeTable with this TimeIn/Out Configuration");
+							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a ProductTable with this name");
 							return message;
 						}
 						else
 						{
-							TimeTable.StoreID = session.StoreID;
-							TimeTable.Date = DateTime.Now;
-							TimeTable.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID).CompanyID;
-							database.TimeTables.Add(TimeTable);
-
+							ProductTable.StoreID = session.StoreID;
+							ProductTable.LastUpdated = DateTime.Now;
+							database.ProductTables.Add(ProductTable);
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
 								StoreID = session.StoreID
-								,
-								UserID = session.UserID
-								,
-								Activity = "CREATE TimeTable"
-								,
-								Date = DateTime.Now
+								, UserID = session.UserID
+								, Activity = "CREATE ProductTable"
+								, Date = DateTime.Now
 							});
 							database.SaveChanges();
 							var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
@@ -224,9 +173,9 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// PUT: api/TimeTable/5
+		// PUT: api/ProductTable/5
 		//UPDATE
-		public HttpResponseMessage Put(int id, [FromBody]TimeTable TimeTable, string token)
+		public HttpResponseMessage Put(int id, [FromBody]ProductTable ProductTable, string token)
 		{
 			try
 			{
@@ -240,25 +189,21 @@ namespace CompanyPOS.Controllers
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
 
-						var currentTimeTable = database.TimeTables.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						var currentProductTable = database.ProductTables.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-						if (currentTimeTable != null)
+						if (currentProductTable != null)
 						{
-							currentTimeTable.TimeIn = TimeTable.TimeIn;
-							currentTimeTable.TimeOut = TimeTable.TimeOut;
-							currentTimeTable.Date = DateTime.Now;
-							currentTimeTable.CompanyID = TimeTable.CompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID).CompanyID;
+							currentProductTable.Name = ProductTable.Name;
+							currentProductTable.InStock = ProductTable.InStock;
+							currentProductTable.LastUpdated = DateTime.Now;
 
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
 								StoreID = session.StoreID
-								,
-								UserID = session.UserID
-								,
-								Activity = "CREATE TimeTable"
-								,
-								Date = DateTime.Now
+								,UserID = session.UserID
+								,Activity = "CREATE ProductTable"
+								,Date = DateTime.Now
 							});
 
 							database.SaveChanges();
@@ -267,7 +212,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.OK, "TimeTable Not found");
+							var message = Request.CreateResponse(HttpStatusCode.OK, "ProductTable Not found");
 							return message;
 						}
 					}
@@ -297,7 +242,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// DELETE: api/TimeTable/5
+		// DELETE: api/ProductTable/5
 		//DELETE
 		public HttpResponseMessage Delete(int id, string token)
 		{
@@ -313,27 +258,23 @@ namespace CompanyPOS.Controllers
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
 
-						var TimeTable = database.TimeTables.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						var ProductTable = database.ProductTables.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-						if (TimeTable == null)
+						if (ProductTable == null)
 						{
 							return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-									"TimeTable with Id = " + id.ToString() + " not found to delete");
+									"ProductTable with Id = " + id.ToString() + " not found to delete");
 						}
 						else
 						{
-
-							database.TimeTables.Remove(TimeTable);
+							database.ProductTables.Remove(ProductTable);
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
 								StoreID = session.StoreID
-								,
-								UserID = session.UserID
-								,
-								Activity = "DELETE TimeTable"
-								,
-								Date = DateTime.Now
+								,UserID = session.UserID
+								,Activity = "DELETE ProductTable"
+								,Date = DateTime.Now
 							});
 
 							database.SaveChanges();

@@ -14,51 +14,65 @@ namespace CompanyPOS.Controllers
 	public class CompanyController : ApiController
 	{
 		// GET: api/Company/
-		public HttpResponseMessage GetAll()
-		{
-			try
-			{
-				using (CompanyPosDBContext database = new CompanyPosDBContext())
-				{
-					//Validate storeID and CompanyID
-					var data = database.Companies.ToList();
-					if (data != null)
-					{
-						var message = Request.CreateResponse(HttpStatusCode.OK, data);
-						return message;
-					}
-					else
-					{
-						var message = Request.CreateResponse(HttpStatusCode.NotFound, "Companies not found");
-						return message;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-			}
-		}
+		//public HttpResponseMessage GetAll()
+		//{
+		//	try
+		//	{
+		//		using (CompanyPosDBContext database = new CompanyPosDBContext())
+		//		{
+		//			//Validate storeID and CompanyID
+		//			var data = database.Companies.ToList();
+		//			if (data != null)
+		//			{
+		//				var message = Request.CreateResponse(HttpStatusCode.OK, data);
+		//				return message;
+		//			}
+		//			else
+		//			{
+		//				var message = Request.CreateResponse(HttpStatusCode.NotFound, "Companies not found");
+		//				return message;
+		//			}
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+		//	}
+		//}
 
 		// GET: api/Company/5
-		public HttpResponseMessage GetCompany(int id)
+		public HttpResponseMessage GetCompany(int id, string token)
 		{
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
-
-					//Validate storeID and CompanyID
-					var data = database.Companies.ToList().FirstOrDefault(x => (x.Id == id));
-					if (data != null)
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+					if (session != null)
 					{
-						var message = Request.CreateResponse(HttpStatusCode.OK, data);
-						return message;
+						var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
+						if (SessionUser.UserLevel.ToLower() == "admin")
+						{
+							//Validate storeID and CompanyID
+							var data = database.Companies.ToList().FirstOrDefault(x => (x.Id == id));
+							if (data != null)
+							{
+								return Request.CreateResponse(HttpStatusCode.OK, data);
+							}
+							else
+							{
+								return Request.CreateResponse(HttpStatusCode.NotFound, "Company not found");
+							}
+						}
+						else
+						{
+							return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
+						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.NotFound, "Company not found");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}

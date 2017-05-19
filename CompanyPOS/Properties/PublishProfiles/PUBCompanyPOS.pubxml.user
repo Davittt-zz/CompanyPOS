@@ -86,13 +86,13 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/05/2017 15:38:40</publishTime>
     </File>
     <File Include="bin/CompanyPOS.dll">
-      <publishTime>04/14/2017 17:17:14</publishTime>
+      <publishTime>05/19/2017 15:49:06</publishTime>
     </File>
     <File Include="bin/CompanyPOS.pdb">
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="bin/DATA.dll">
-      <publishTime>02/04/2017 19:14:07</publishTime>
+      <publishTime>05/16/2017 15:46:49</publishTime>
     </File>
     <File Include="bin/DATA.pdb">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -260,7 +260,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/12/2016 15:23:19</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/14/2017 14:16:25</publishTime>
+      <publishTime>05/16/2017 15:47:10</publishTime>
     </File>
   </ItemGroup>
 </Project>

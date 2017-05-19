@@ -123,15 +123,37 @@ namespace CompanyPOS.Controllers
 		}
 
 		// GET: api/ItemPurchase
-		public HttpResponseMessage Get()
+		public HttpResponseMessage GetAll(string token)
 		{
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
-					var data = database.ItemPurchases.ToList();
-					var message = Request.CreateResponse(HttpStatusCode.OK, data);
-					return message;
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+					if (session != null)
+					{
+						//Validate storeID and ItemPurchaseID
+						var data = database.ItemPurchases.ToList().Where(x => (x.StoreID == session.StoreID));
+						if (data != null)
+						{
+							//Save last  update
+							session.LastUpdate = DateTime.Now;
+							database.SaveChanges();
+							var message = Request.CreateResponse(HttpStatusCode.OK, data);
+							return message;
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "ItemPurchase not found");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
 				}
 			}
 			catch (Exception ex)
@@ -152,7 +174,7 @@ namespace CompanyPOS.Controllers
 					if (session != null)
 					{
 						//Validate storeID and ItemPurchaseID
-						var data = database.ItemPurchases.ToList().FirstOrDefault(x => (x.SaleID == saleId) && (x.StoreID == session.StoreID));
+						var data = database.ItemPurchases.ToList().Select(x => (x.SaleID == saleId) && (x.StoreID == session.StoreID));
 						if (data != null)
 						{
 							//Save last  update

@@ -127,6 +127,47 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
+		//  GET: api/Invoice/
+		public HttpResponseMessage GetAll(string token)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+
+					if (session != null)
+					{
+						var data = database.Invoices.ToList().Where(x => (x.StoreID == session.StoreID));
+						if (data != null)
+						{
+							//Save last  update
+							session.LastUpdate = DateTime.Now;
+							database.SaveChanges();
+
+							var message = Request.CreateResponse(HttpStatusCode.OK, data);
+							return message;
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
+
 		// GET: api/Invoice
 		//public IEnumerable<string> Get()
 		//{
@@ -175,48 +216,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		//  GET: api/Invoice/
-		public HttpResponseMessage GetAll(string token)
-		{
-			try
-			{
-				using (CompanyPosDBContext database = new CompanyPosDBContext())
-				{
-					SessionController sessionController = new SessionController();
-					Session session = sessionController.Autenticate(token);
-
-					if (session != null)
-					{
-						//Validate storeID and InvoiceID
-						var data = database.Invoices.ToList();
-						if (data != null)
-						{
-							//Save last  update
-							session.LastUpdate = DateTime.Now;
-							database.SaveChanges();
-
-							var message = Request.CreateResponse(HttpStatusCode.OK, data);
-							return message;
-						}
-						else
-						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found");
-							return message;
-						}
-					}
-					else
-					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-			}
-		}
-
+	
 		// POST: api/Invoice
 		//CREATE
 		public HttpResponseMessage Post(int saleId, [FromBody]Invoice Invoice, string token)

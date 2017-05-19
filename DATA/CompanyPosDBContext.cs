@@ -15,7 +15,6 @@ namespace DATA
 		{
 			this.Configuration.LazyLoadingEnabled = false;
 			this.Configuration.ProxyCreationEnabled = false;
-
 			//Database.SetInitializer<CompanyPosDBContext>(null);
 		}
 
@@ -37,6 +36,6 @@ namespace DATA
 
 		public DbSet<PurchaseAttribute> PurchaseAttributes { get; set; }
 		public DbSet<TimeTable> TimeTables { get; set; }
-
+		public DbSet<ProductTable> ProductTables { get; set; }
 	}
 }

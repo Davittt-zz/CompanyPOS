@@ -15,15 +15,32 @@ namespace CompanyPOS.Controllers
 	{
 		//GET
 		//api/Session/
-		public HttpResponseMessage GetAll()
+		public HttpResponseMessage GetAll(string token)
 		{
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
-					var session = database.Sessions.ToList();
-					var message = Request.CreateResponse(HttpStatusCode.OK, session);
-					return message;
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+					if (session != null)
+					{
+						var SessionUser = database.Users.FirstOrDefault(x => x.ID == session.UserID);
+						if (SessionUser.UserLevel.ToLower() == "admin")
+						{
+							var sessionList = database.Sessions.ToList();
+							var message = Request.CreateResponse(HttpStatusCode.OK, sessionList);
+							return message;
+						}
+						else
+						{
+							return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "You don't have privileges");
+						}
+					}
+					else
+					{
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+					}
 				}
 			}
 			catch (DbEntityValidationException dbEx)

@@ -13,24 +13,23 @@ namespace CompanyPOS.Controllers
 {
 	public class UserActivityController : ApiController
 	{
-		
-		public HttpResponseMessage GetAll()
-		{
-			try
-			{
-				using (CompanyPosDBContext database = new CompanyPosDBContext())
-				{
-					List<UserActivity> listUserActivities = database.UserActivities.ToList();
-					List<Session> listSession = database.Sessions.ToList();
-					var message = Request.CreateResponse(HttpStatusCode.OK, listUserActivities);
-					return message;
-				}
-			}
-			catch (Exception ex)
-			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-			}
-		}
+		//public HttpResponseMessage GetAll()
+		//{
+		//	try
+		//	{
+		//		using (CompanyPosDBContext database = new CompanyPosDBContext())
+		//		{
+		//			List<UserActivity> listUserActivities = database.UserActivities.ToList();
+		//			List<Session> listSession = database.Sessions.ToList();
+		//			var message = Request.CreateResponse(HttpStatusCode.OK, listUserActivities);
+		//			return message;
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+		//	}
+		//}
 
 		public HttpResponseMessage GetStoreUserActivities(string token)
 		{
@@ -136,6 +135,7 @@ namespace CompanyPOS.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
+		
 		// GET: api/Store/5
 		//READ
 		public HttpResponseMessage Get(string token, int id)

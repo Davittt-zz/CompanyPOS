@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CompanyPosDBContext.cs" />
     <Compile Include="CompanyPosDBContextSeeder.cs" />
+    <Compile Include="Models\ProductTable.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\TimeTable.cs" />
     <Compile Include="Models\Company.cs" />
