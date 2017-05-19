@@ -231,6 +231,8 @@ namespace CompanyPOS.Controllers
 						{
 							currentPurchaseAttribute.Quantity = PurchaseAttribute.Quantity;
 							currentPurchaseAttribute.TotalPrice = PurchaseAttribute.TotalPrice;
+							currentPurchaseAttribute.AttributeID = PurchaseAttribute.AttributeID;
+							
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -297,6 +299,8 @@ namespace CompanyPOS.Controllers
 						{
 							currentPurchaseAttribute.Quantity = PurchaseAttribute.Quantity;
 							currentPurchaseAttribute.TotalPrice = PurchaseAttribute.TotalPrice;
+							currentPurchaseAttribute.AttributeID = PurchaseAttribute.AttributeID;
+							
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

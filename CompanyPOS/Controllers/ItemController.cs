@@ -206,6 +206,7 @@ namespace CompanyPOS.Controllers
 							currentItem.CategoryID = Item.CategoryID;
 							currentItem.Description = Item.Description;
 							currentItem.ActiveForSale = Item.ActiveForSale;
+							currentItem.Color = Item.Color ?? currentItem.Color;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

@@ -11,6 +11,7 @@ namespace DATA.Models
 		public int ID { get; set; }
 		public int Quantity { get; set; }
 		public string TotalPrice { get; set; }
+		public int AttributeID { get; set; }
 		public int ItemPurchaseID { get; set; }
 		public int StoreID { get; set; }
 	}
