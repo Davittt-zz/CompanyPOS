@@ -13,32 +13,32 @@ namespace CompanyPOS.Controllers
 {
     public class StoreController : ApiController
     {
-        // GET: api/Store
-        public HttpResponseMessage Get()
-        {
-            try
-            {
-                using (CompanyPosDBContext database = new CompanyPosDBContext())
-                {
-                    List<Store> storeList = database.Stores.ToList();
+		//// GET: api/Store
+		//public HttpResponseMessage Get()
+		//{
+		//	try
+		//	{
+		//		using (CompanyPosDBContext database = new CompanyPosDBContext())
+		//		{
+		//			List<Store> storeList = database.Stores.ToList();
 
-                    if (storeList != null)
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.OK, storeList);
-                        return message;
-                    }
-                    else
-                    {
-                        var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-                        return message;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
+		//			if (storeList != null)
+		//			{
+		//				var message = Request.CreateResponse(HttpStatusCode.OK, storeList);
+		//				return message;
+		//			}
+		//			else
+		//			{
+		//				var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+		//				return message;
+		//			}
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+		//	}
+		//}
 
         // GET: api/Store/5
         public HttpResponseMessage GetRead(string token, int id)

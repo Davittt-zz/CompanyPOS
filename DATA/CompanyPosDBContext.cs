@@ -37,5 +37,8 @@ namespace DATA
 		public DbSet<PurchaseAttribute> PurchaseAttributes { get; set; }
 		public DbSet<TimeTable> TimeTables { get; set; }
 		public DbSet<ProductTable> ProductTables { get; set; }
+
+		public DbSet<Associate> Associates { get; set; }
+		public DbSet<Fakturi> Fakturies { get; set; }
 	}
 }

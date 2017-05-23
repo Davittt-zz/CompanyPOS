@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using CompanyPOS.Models;
+using DATA;
 using DATA.Models;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,18 @@ using System.Web.Http;
 
 namespace CompanyPOS.Controllers
 {
-	public class CategoryController : ApiController
+	public class AssociateController : ApiController, IRestWebservice<Associate>
 	{
 		//// GET: api/Products 
-		//public IQueryable<Category> GetCategories()
+		//public IQueryable<Associate> GetAssociates()
 		//{
 		//	using (CompanyPosDBContext database = new CompanyPosDBContext())
 		//	{
-		//		return database.Categories;
+		//		return database.Associates;
 		//	}
 		//}
 
-		// GET: api/Category
+		// GET: api/Associate
 		public HttpResponseMessage Get(string token)
 		{
 			try
@@ -34,8 +35,8 @@ namespace CompanyPOS.Controllers
 
 					if (session != null)
 					{
-						//Validate storeID and CategoryID
-						var data = database.Categories.ToList().Where(x => (x.StoreID == session.StoreID));
+						//Validate storeID and AssociateID
+						var data = database.Associates.ToList().Where(x => (x.StoreID == session.StoreID));
 
 						if (data != null)
 						{
@@ -48,7 +49,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Category not found");
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Associate not found");
 							return message;
 						}
 					}
@@ -65,7 +66,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// GET: api/Category/5
+		// GET: api/Associate/5
 		public HttpResponseMessage Get(string token, int id)
 		{
 			try
@@ -77,8 +78,8 @@ namespace CompanyPOS.Controllers
 
 					if (session != null)
 					{
-						//Validate storeID and CategoryID
-						var data = database.Categories.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+						//Validate storeID and AssociateID
+						var data = database.Associates.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
 						if (data != null)
 						{
 							//Save last  update
@@ -90,7 +91,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Category not found");
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Associate not found");
 							return message;
 						}
 					}
@@ -107,37 +108,32 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// POST: api/Category
+		// POST: api/Associate
 		//CREATE
-		public HttpResponseMessage Post([FromBody]Category Category, string token)
+		public HttpResponseMessage Post([FromBody]Associate Associate, string token)
 		{
-			string errorStatus = " ";
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
 					SessionController sessionController = new SessionController();
-
-					errorStatus += " Before Atutentication || ";
 					Session session = sessionController.Autenticate(token);
 
 					if (session != null)
 					{
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
-
-						errorStatus += " Before Find similar category || ";
-						var currentCategory = database.Categories.ToList().FirstOrDefault(x => x.Name.ToLower().Trim() == Category.Name.ToLower().Trim() && (x.StoreID == session.StoreID));
-						if (currentCategory != null)
+						var currentAssociate = database.Associates.ToList().FirstOrDefault(x => x.Name.ToLower().Trim() == Associate.Name.ToLower().Trim() && (x.StoreID == session.StoreID));
+						if (currentAssociate != null)
 						{
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Category with this name");
+							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Associate with this name");
 							return message;
 						}
 						else
 						{
-							Category.StoreID = session.StoreID;
-							database.Categories.Add(Category);
+							Associate.StoreID = session.StoreID;
+							database.Associates.Add(Associate);
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -145,16 +141,12 @@ namespace CompanyPOS.Controllers
 								,
 								UserID = session.UserID
 								,
-								Activity = "CREATE Category"
+								Activity = "CREATE Associate"
 								,
 								Date = DateTime.Now
 							});
-
-							errorStatus += " Before adding in the db || ";
 							database.SaveChanges();
-
-							var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
 						}
 					}
 					else
@@ -179,15 +171,14 @@ namespace CompanyPOS.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex + " || " + errorStatus);
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex );
 			}
 		}
 
-		// PUT: api/Category/5
+		// PUT: api/Associate/5
 		//UPDATE
-		public HttpResponseMessage Put(int id, [FromBody]Category Category, string token)
+		public HttpResponseMessage Put(int id, [FromBody]Associate Associate, string token)
 		{
-
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
@@ -200,12 +191,18 @@ namespace CompanyPOS.Controllers
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
 
-						var currentCategory = database.Categories.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						var currentAssociate = database.Associates.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-						if (currentCategory != null)
+						if (currentAssociate != null)
 						{
-							currentCategory.Name = Category.Name;
-							currentCategory.Value = Category.Value;
+							currentAssociate.Name		 = Associate.Name;
+							currentAssociate.Address	 = Associate.Address ?? currentAssociate.Address;
+							currentAssociate.Bulstat	 = Associate.Bulstat ?? currentAssociate.Bulstat;
+							currentAssociate.City		 = Associate.City ?? currentAssociate.City;
+							currentAssociate.Country	 = Associate.Country ?? currentAssociate.Country;
+							currentAssociate.Email		 = Associate.Email ?? currentAssociate.Email;
+							currentAssociate.PhoneNumber = Associate.PhoneNumber ?? currentAssociate.PhoneNumber;
+							currentAssociate.PostalCode  = Associate.PostalCode ?? currentAssociate.PostalCode;
 
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
@@ -214,7 +211,7 @@ namespace CompanyPOS.Controllers
 								,
 								UserID = session.UserID
 								,
-								Activity = "CREATE Category"
+								Activity = "CREATE Associate"
 							,
 								Date = DateTime.Now
 							});
@@ -225,7 +222,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.OK, "Category Not found");
+							var message = Request.CreateResponse(HttpStatusCode.OK, "Associate Not found");
 							return message;
 						}
 					}
@@ -255,7 +252,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// DELETE: api/Category/5
+		// DELETE: api/Associate/5
 		//DELETE
 		public HttpResponseMessage Delete(int id, string token)
 		{
@@ -271,17 +268,17 @@ namespace CompanyPOS.Controllers
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
 
-						var Category = database.Categories.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
+						var Associate = database.Associates.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
-						if (Category == null)
+						if (Associate == null)
 						{
 							return Request.CreateErrorResponse(HttpStatusCode.NotFound,
-									"Category with Id = " + id.ToString() + " not found to delete");
+									"Associate with Id = " + id.ToString() + " not found to delete");
 						}
 						else
 						{
 
-							database.Categories.Remove(Category);
+							database.Associates.Remove(Associate);
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -289,7 +286,7 @@ namespace CompanyPOS.Controllers
 								,
 								UserID = session.UserID
 								,
-								Activity = "DELETE Category"
+								Activity = "DELETE Associate"
 								,
 								Date = DateTime.Now
 							});

@@ -27,7 +27,7 @@ namespace CompanyPOS.Controllers
 					if (session != null)
 					{
 						//Validate storeID and PurchaseAttributeID
-						var data = database.PurchaseAttributes.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID));
+						var data = database.PurchaseAttributes.ToList().Where(x => (x.StoreID == session.StoreID));
 						if (data != null)
 						{
 							//Save last  update
@@ -154,12 +154,12 @@ namespace CompanyPOS.Controllers
 						if (currentPurchaseAttribute != null)
 						{
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a PurchaseAttribute assosiated with the same Item");
+							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a PurchaseAttribute associated with the same Item");
 							return message;
 						}
 						else
 						{
-							if (database.Items.Any(x => x.ID == PurchaseAttribute.ItemPurchaseID))
+							if (database.ItemPurchases.Any(x => x.ID == PurchaseAttribute.ItemPurchaseID))
 							{
 									PurchaseAttribute.StoreID = session.StoreID;
 									database.PurchaseAttributes.Add(PurchaseAttribute);
@@ -180,15 +180,13 @@ namespace CompanyPOS.Controllers
 							}
 							else
 							{
-								var message = Request.CreateResponse(HttpStatusCode.OK, "Item not found");
-								return message;
+								return Request.CreateResponse(HttpStatusCode.OK, "Item Purchase not found with this ItemPurchaseID");
 							}
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -244,19 +242,16 @@ namespace CompanyPOS.Controllers
 								Date = DateTime.Now
 							});
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "Update Success");
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.OK, "PurchaseAttribute Not found");
-							return message;
+							return  Request.CreateResponse(HttpStatusCode.OK, "PurchaseAttribute Not found");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -312,19 +307,16 @@ namespace CompanyPOS.Controllers
 								Date = DateTime.Now
 							});
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "Update Success");
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.OK, "PurchaseAttribute Not found");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "PurchaseAttribute Not found");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}

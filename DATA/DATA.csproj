@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CompanyPosDBContext.cs" />
     <Compile Include="CompanyPosDBContextSeeder.cs" />
+    <Compile Include="Models\Associate.cs" />
     <Compile Include="Models\ProductTable.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\TimeTable.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Shift.cs" />
     <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\Fakturi.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserActivity.cs" />
     <Compile Include="MyConfiguration.cs" />
