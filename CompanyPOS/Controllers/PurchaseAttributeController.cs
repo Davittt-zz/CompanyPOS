@@ -14,7 +14,7 @@ using System.Web.Mvc;
 namespace CompanyPOS.Controllers
 {
 	public class PurchaseAttributeController : ApiController
-    {
+	{
 		// GET: api/PurchaseAttribute
 		public HttpResponseMessage Get(string token)
 		{
@@ -150,39 +150,39 @@ namespace CompanyPOS.Controllers
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
 
-						var currentPurchaseAttribute = database.PurchaseAttributes.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID) && (x.ItemPurchaseID == PurchaseAttribute.ItemPurchaseID));
-						if (currentPurchaseAttribute != null)
+						//var currentPurchaseAttribute = database.PurchaseAttributes.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID) && (x.ItemPurchaseID == PurchaseAttribute.ItemPurchaseID));
+						//if (currentPurchaseAttribute != null)
+						//{
+						//	database.SaveChanges();
+						//	var message = Request.CreateResponse(HttpStatusCode.OK, "There is a PurchaseAttribute associated with the same Item");
+						//	return message;
+						//}
+						//else
+						//{
+						if (database.ItemPurchases.Any(x => x.ID == PurchaseAttribute.ItemPurchaseID))
 						{
+							PurchaseAttribute.StoreID = session.StoreID;
+							database.PurchaseAttributes.Add(PurchaseAttribute);
+							//SAVE ACTIVITY
+							database.UserActivities.Add(new UserActivity()
+							{
+								StoreID = session.StoreID
+								,
+								UserID = session.UserID
+								,
+								Activity = "CREATE PurchaseAtt",
+								Date = DateTime.Now
+							});
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a PurchaseAttribute associated with the same Item");
+
+							var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
 							return message;
 						}
 						else
 						{
-							if (database.ItemPurchases.Any(x => x.ID == PurchaseAttribute.ItemPurchaseID))
-							{
-									PurchaseAttribute.StoreID = session.StoreID;
-									database.PurchaseAttributes.Add(PurchaseAttribute);
-									//SAVE ACTIVITY
-									database.UserActivities.Add(new UserActivity()
-									{
-										StoreID = session.StoreID
-										,
-										UserID = session.UserID
-										,
-										Activity = "CREATE PurchaseAtt",
-										Date = DateTime.Now
-									});
-									database.SaveChanges();
-
-									var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-									return message;
-							}
-							else
-							{
-								return Request.CreateResponse(HttpStatusCode.OK, "Item Purchase not found with this ItemPurchaseID");
-							}
+							return Request.CreateResponse(HttpStatusCode.OK, "Item Purchase not found with this ItemPurchaseID");
 						}
+						//}
 					}
 					else
 					{
@@ -230,7 +230,7 @@ namespace CompanyPOS.Controllers
 							currentPurchaseAttribute.Quantity = PurchaseAttribute.Quantity;
 							currentPurchaseAttribute.TotalPrice = PurchaseAttribute.TotalPrice;
 							currentPurchaseAttribute.AttributeID = PurchaseAttribute.AttributeID;
-							
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -246,7 +246,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							return  Request.CreateResponse(HttpStatusCode.OK, "PurchaseAttribute Not found");
+							return Request.CreateResponse(HttpStatusCode.OK, "PurchaseAttribute Not found");
 						}
 					}
 					else
@@ -295,7 +295,7 @@ namespace CompanyPOS.Controllers
 							currentPurchaseAttribute.Quantity = PurchaseAttribute.Quantity;
 							currentPurchaseAttribute.TotalPrice = PurchaseAttribute.TotalPrice;
 							currentPurchaseAttribute.AttributeID = PurchaseAttribute.AttributeID;
-							
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

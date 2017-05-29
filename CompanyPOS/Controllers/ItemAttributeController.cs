@@ -27,13 +27,11 @@ namespace CompanyPOS.Controllers
 					{
 						//Validate storeID
 						var ItemsAttributeList = database.ItemAttributes.Where(x => x.StoreID == session.StoreID).ToList();
-						var message = Request.CreateResponse(HttpStatusCode.OK, ItemsAttributeList);
-						return message;
+						return Request.CreateResponse(HttpStatusCode.OK, ItemsAttributeList);
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -64,19 +62,16 @@ namespace CompanyPOS.Controllers
 							session.LastUpdate = DateTime.Now;
 							database.SaveChanges();
 
-							var message = Request.CreateResponse(HttpStatusCode.OK, ItemAttribute);
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, ItemAttribute);
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "ItemAttribute not found");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.NotFound, "ItemAttribute not found");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -131,20 +126,17 @@ namespace CompanyPOS.Controllers
 								});
 
 								database.SaveChanges();
-								var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-								return message;
+								return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
 							}
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.OK, "Item not found");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "Item not found");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -154,9 +146,7 @@ namespace CompanyPOS.Controllers
 				{
 					foreach (var validationError in validationErrors.ValidationErrors)
 					{
-						Trace.TraceInformation("Property: {0} Error: {1}",
-												validationError.PropertyName,
-												validationError.ErrorMessage);
+						Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
 					}
 				}
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
@@ -194,7 +184,7 @@ namespace CompanyPOS.Controllers
 							currentItemAttribute.Price = ItemAttribute.Price;
 							currentItemAttribute.Value = ItemAttribute.Value;
 							currentItemAttribute.Visible = ItemAttribute.Visible;
-
+							currentItemAttribute.ProductID = (ItemAttribute.ProductID > 0) ? ItemAttribute.ProductID : currentItemAttribute.ProductID;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -207,19 +197,16 @@ namespace CompanyPOS.Controllers
 							});
 
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "Update Success");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "Update Success");
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.OK, "ItemAttribute Not found");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "ItemAttribute Not found");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -229,9 +216,7 @@ namespace CompanyPOS.Controllers
 				{
 					foreach (var validationError in validationErrors.ValidationErrors)
 					{
-						Trace.TraceInformation("Property: {0} Error: {1}",
-												validationError.PropertyName,
-												validationError.ErrorMessage);
+						Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
 					}
 				}
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);
@@ -281,14 +266,12 @@ namespace CompanyPOS.Controllers
 							});
 
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.OK, "Delete Success");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -298,9 +281,7 @@ namespace CompanyPOS.Controllers
 				{
 					foreach (var validationError in validationErrors.ValidationErrors)
 					{
-						Trace.TraceInformation("Property: {0} Error: {1}",
-												validationError.PropertyName,
-												validationError.ErrorMessage);
+						Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
 					}
 				}
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, dbEx);

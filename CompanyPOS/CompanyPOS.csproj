@@ -134,6 +134,7 @@
     <Compile Include="Classes\UseSSLAttribute.cs" />
     <Compile Include="Controllers\AssociateController.cs" />
     <Compile Include="Controllers\FakturiController.cs" />
+    <Compile Include="Controllers\ProductAmountsController.cs" />
     <Compile Include="Controllers\ProductTableController.cs" />
     <Compile Include="Controllers\TimeTableController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />

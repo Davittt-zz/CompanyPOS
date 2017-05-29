@@ -19,5 +19,8 @@ namespace DATA.Models
         public int StoreID { get; set; }
         // [ForeignKey("StoreID")]
         //public virtual Store Store { get; set; }
+
+		//Optional
+		public int ProductID { get; set; }
     }
 }
