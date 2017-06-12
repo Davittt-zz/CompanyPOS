@@ -133,6 +133,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Classes\UseSSLAttribute.cs" />
     <Compile Include="Controllers\AssociateController.cs" />
+    <Compile Include="Controllers\FakturiArticleController.cs" />
     <Compile Include="Controllers\FakturiController.cs" />
     <Compile Include="Controllers\ProductAmountsController.cs" />
     <Compile Include="Controllers\ProductTableController.cs" />

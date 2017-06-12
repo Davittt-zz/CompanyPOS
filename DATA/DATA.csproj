@@ -53,6 +53,7 @@
     <Compile Include="CompanyPosDBContext.cs" />
     <Compile Include="CompanyPosDBContextSeeder.cs" />
     <Compile Include="Models\Associate.cs" />
+    <Compile Include="Models\FakturiArticle.cs" />
     <Compile Include="Models\ProductAmount.cs" />
     <Compile Include="Models\ProductTable.cs" />
     <Compile Include="Models\Category.cs" />

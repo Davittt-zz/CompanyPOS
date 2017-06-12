@@ -81,8 +81,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// POST: api/ItemAttribute
-		//CREATE
+		// POST: api/ItemAttribute (CREATE)
 		public HttpResponseMessage Post([FromBody]ItemAttribute ItemAttribute, string token, int ItemID)
 		{
 			try
@@ -159,7 +158,7 @@ namespace CompanyPOS.Controllers
 
 		// PUT: api/ItemAttribute/5
 		//UPDATE
-		public HttpResponseMessage Put(int Id, [FromBody]ItemAttribute ItemAttribute, string token)
+		public HttpResponseMessage Put(int Id, [FromBody]ItemAttribute Item, string token)
 		{
 			try
 			{
@@ -176,15 +175,17 @@ namespace CompanyPOS.Controllers
 						//Validate storeID
 						//var Item = database.Items.FirstOrDefault(x => x.StoreID == session.StoreID && x.ID == Id);
 
-						var currentItemAttribute = database.ItemAttributes.ToList().FirstOrDefault(x => x.ID == Id && (x.StoreID == session.StoreID));
+						var currentItem = database.ItemAttributes.ToList().FirstOrDefault(x => x.ID == Id && (x.StoreID == session.StoreID));
 
-						if (currentItemAttribute != null)
+						if (currentItem != null)
 						{
-							currentItemAttribute.Name = ItemAttribute.Name;
-							currentItemAttribute.Price = ItemAttribute.Price;
-							currentItemAttribute.Value = ItemAttribute.Value;
-							currentItemAttribute.Visible = ItemAttribute.Visible;
-							currentItemAttribute.ProductID = (ItemAttribute.ProductID > 0) ? ItemAttribute.ProductID : currentItemAttribute.ProductID;
+							currentItem.Name = Item.Name;
+							currentItem.Price = Item.Price;
+							currentItem.Value = Item.Value;
+							currentItem.Visible = Item.Visible;
+							currentItem.ProductID = (Item.ProductID > 0) ? Item.ProductID : currentItem.ProductID;
+							currentItem.Tax = Item.Tax;
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

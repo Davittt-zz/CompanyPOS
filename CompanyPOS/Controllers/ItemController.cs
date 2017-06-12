@@ -103,8 +103,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// POST: api/Item
-		//CREATE
+		// POST: api/Item (CREATE)
 		public HttpResponseMessage Post([FromBody]Item Item, string token)
 		{
 			try
@@ -181,8 +180,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// PUT: api/Item/5
-		//UPDATE
+		// PUT: api/Item/5 (UPDATE)
 		public HttpResponseMessage Put(int id, [FromBody]Item Item, string token)
 		{
 			try
@@ -207,6 +205,7 @@ namespace CompanyPOS.Controllers
 							currentItem.Description = Item.Description;
 							currentItem.ActiveForSale = Item.ActiveForSale;
 							currentItem.Color = Item.Color ?? currentItem.Color;
+							currentItem.Tax = Item.Tax ;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -254,8 +253,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// DELETE: api/Item/5
-		//DELETE
+		// DELETE: api/Item/5 (DELETE)
 		public HttpResponseMessage Delete(int id, string token)
 		{
 			try

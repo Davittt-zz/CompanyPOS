@@ -15,7 +15,7 @@ using System.Web.Mvc;
 namespace CompanyPOS.Controllers
 {
 	public class FakturiController : ApiController, IRestWebservice<Fakturi>
-    {
+	{
 		public HttpResponseMessage Get(string token)
 		{
 			try
@@ -28,10 +28,15 @@ namespace CompanyPOS.Controllers
 					if (session != null)
 					{
 						//Validate storeID and FakturiID
-						var data = database.Fakturies.ToList().Where(x => (x.StoreID == session.StoreID));
+						var data = database.Fakturies.ToList().Where(x => (x.StoreID == session.StoreID)).ToList();
 
-						if ((data != null) && (data.Count()>0) )
- 						{
+						//le agrego la lista de c/u
+						data.ForEach(
+						x => x.Items = database.FakturiArticles.Where(y => y.FakturiID == x.ID).ToList()
+						);
+
+						if ((data != null) && (data.Count() > 0))
+						{
 							//Save last  update
 							session.LastUpdate = DateTime.Now;
 							database.SaveChanges();
@@ -69,6 +74,9 @@ namespace CompanyPOS.Controllers
 					{
 						//Validate storeID and FakturiID
 						var data = database.Fakturies.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+						//le agrego la lista de c/u
+						data.Items = database.FakturiArticles.Where(y => y.FakturiID == data.ID).ToList();
+
 						if (data != null)
 						{
 							//Save last  update
@@ -110,8 +118,58 @@ namespace CompanyPOS.Controllers
 					{
 						//Validate storeID and FakturiID
 						var data = database.Fakturies.ToList().FirstOrDefault(x => (x.AssociatesID == Int32.Parse(AssociatedId)) && (x.StoreID == session.StoreID));
+						//le agrego la lista de c/u
+						data.Items = database.FakturiArticles.Where(y => y.FakturiID == data.ID).ToList();
+
 						if (data != null)
 						{
+							//Save last  update
+							session.LastUpdate = DateTime.Now;
+							database.SaveChanges();
+
+							var message = Request.CreateResponse(HttpStatusCode.OK, data);
+							return message;
+						}
+						else
+						{
+							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Fakturi not found");
+							return message;
+						}
+					}
+					else
+					{
+						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
+						return message;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+			}
+		}
+
+		public HttpResponseMessage Get(string token, string InvoiceNumber, bool active = true)
+		{
+			try
+			{
+				using (CompanyPosDBContext database = new CompanyPosDBContext())
+				{
+					SessionController sessionController = new SessionController();
+					Session session = sessionController.Autenticate(token);
+
+					if (session != null)
+					{
+						//Validate storeID and FakturiID
+						var data = database.Fakturies.ToList().FirstOrDefault(x => (x.InvoiceNumber == InvoiceNumber)
+							&& (x.StoreID == session.StoreID));
+
+						//le agrego la lista de c/u
+						data.Items = database.FakturiArticles.Where(y => y.FakturiID == data.ID).ToList();
+
+						if (data != null)
+						{
+							data.Items = database.FakturiArticles.Where(x => x.FakturiID == data.ID).ToList();
 							//Save last  update
 							session.LastUpdate = DateTime.Now;
 							database.SaveChanges();
@@ -165,7 +223,12 @@ namespace CompanyPOS.Controllers
 					if (session != null)
 					{
 						//Validate storeID and FakturiID
-						var data = database.Fakturies.ToList().Where(x => (x.Date <= endDate) && (x.Date >= startDate) && (x.StoreID == session.StoreID));
+						var data = database.Fakturies.Where(x => (x.Date <= endDate) && (x.Date >= startDate) && (x.StoreID == session.StoreID)).ToList();
+						//le agrego la lista de c/u
+						data.ForEach(
+						x => x.Items = database.FakturiArticles.Where(y => y.FakturiID == x.ID).ToList()
+						);
+
 						if (data != null)
 						{
 							//Save last  update
@@ -211,7 +274,7 @@ namespace CompanyPOS.Controllers
 						if (currentFakturi != null)
 						{
 							database.SaveChanges();
-							return  Request.CreateResponse(HttpStatusCode.OK, "There is a Fakturi with this Invoice Number");
+							return Request.CreateResponse(HttpStatusCode.OK, "There is a Fakturi with this Invoice Number");
 						}
 						else
 						{
@@ -257,7 +320,7 @@ namespace CompanyPOS.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
-			   
+
 		public HttpResponseMessage Put(int id, Fakturi Item, string token)
 		{
 			try
@@ -278,17 +341,12 @@ namespace CompanyPOS.Controllers
 						{
 							currentFakturi.InvoiceNumber = Item.InvoiceNumber ?? currentFakturi.InvoiceNumber;
 							currentFakturi.AssociatesID = Item.AssociatesID;
-							currentFakturi.Date = Item.Date ;
+							currentFakturi.Date = Item.Date;
 							currentFakturi.PaymentType = Item.PaymentType ?? currentFakturi.PaymentType;
 							currentFakturi.Details = Item.Details ?? currentFakturi.Details;
-							currentFakturi.Unit = Item.Unit ?? currentFakturi.Unit;
-							currentFakturi.Item = Item.Item ?? currentFakturi.Item;
-							currentFakturi.Qty = Item.Qty;
-							currentFakturi.Price = Item.Price ?? currentFakturi.Price;
-							currentFakturi.Tax = Item.Tax ?? currentFakturi.Tax;
-							currentFakturi.Price = Item.Price ?? currentFakturi.Price;
 							currentFakturi.Notes = Item.Notes ?? currentFakturi.Notes;
 							currentFakturi.Date = DateTime.Now;
+							currentFakturi.Total = Item.Total ?? currentFakturi.Total;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -336,7 +394,7 @@ namespace CompanyPOS.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
-			   
+
 		public HttpResponseMessage Delete(int id, string token)
 		{
 			try

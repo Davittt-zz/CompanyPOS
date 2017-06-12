@@ -11,6 +11,7 @@ namespace DATA.Models
         public string Value { get; set; }
         public Nullable<float> Price { get; set; }
         public Nullable<bool> Visible { get; set; }
+		public int Tax { get; set; }
 
         public int ItemID { get; set; }
         //[ForeignKey("ItemID")]

@@ -108,7 +108,8 @@ namespace CompanyPOS.Controllers
 									 ,
 									UserID = session.UserID
 									 ,
-									Activity = "LOGIN",
+									Activity = "LOGIN"
+									,
 									Date = DateTime.Now
 								}
 								);

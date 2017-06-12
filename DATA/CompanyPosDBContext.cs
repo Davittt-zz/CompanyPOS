@@ -40,6 +40,7 @@ namespace DATA
 
 		public DbSet<Associate> Associates { get; set; }
 		public DbSet<Fakturi> Fakturies { get; set; }
+		public DbSet<FakturiArticle> FakturiArticles { get; set; }
 		public DbSet<ProductAmount> ProductAmounts { get; set; }
 	}
 }

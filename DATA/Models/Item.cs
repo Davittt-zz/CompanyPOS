@@ -6,26 +6,13 @@ namespace DATA.Models
 
     public class Item
     {
-        //public Item()
-        //{
-        //    this.ItemPagePosition = new HashSet<ItemPagePosition>();
-        //    this.ItemAttribute = new HashSet<ItemAttribute>();
-        //    this.ItemPurchase = new HashSet<ItemPurchase>();
-        //    this.Sale = new HashSet<Sale>();
-        //}
-
-
         public int ID { get; set; }
-        
 		public string Name { get; set; }
-
         public Nullable<float> UnitPrice { get; set; }
-
         public string Description { get; set; }
-		
 		public bool ActiveForSale { get; set; }
-
 		public string Color { get; set; } 
+		public int Tax {get;set;}
 
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
