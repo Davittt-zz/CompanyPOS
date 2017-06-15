@@ -166,6 +166,7 @@ namespace CompanyPOS.Controllers
 						{
 							//Save last  update
 							session.LastUpdate = DateTime.Now;
+
 							database.SaveChanges();
 
 							var message = Request.CreateResponse(HttpStatusCode.OK, user);
@@ -220,6 +221,11 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
+							if (database.Users.ToList().Any(x => (x.ClerkNum == user.ClerkNum) && (x.StoreID == session.StoreID)))
+							{
+								return Request.CreateResponse(HttpStatusCode.OK, "ClerkNum Already exists");
+							}
+
 							//Save last  update
 							var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID);
 
@@ -321,10 +327,14 @@ namespace CompanyPOS.Controllers
 						var currentCompanyID = database.Stores.FirstOrDefault(x => x.ID == session.StoreID);
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
+
 						var currentUser = database.Users.ToList().FirstOrDefault(x => x.ID == id && (x.StoreID == session.StoreID));
 
 						if (currentUser != null)
 						{
+							if ( database.Users.ToList().Any(x => (x.ClerkNum == user.ClerkNum) && (x.StoreID == session.StoreID))){
+							 return  Request.CreateResponse(HttpStatusCode.OK, "ClerkNum Already exists");
+							}
 							currentUser.LastName = user.LastName;
 							currentUser.UserLevel = user.UserLevel;
 							currentUser.Username = user.Username;
@@ -333,6 +343,9 @@ namespace CompanyPOS.Controllers
 							currentUser.Phone = user.Phone;
 							currentUser.Status = user.Status;
 							currentUser.UUID = user.UUID;
+
+							currentUser.ClerkNum = user.ClerkNum;
+							
 							currentUser.CompanyID = currentUser.CompanyID ?? Int32.Parse(currentCompanyID.CompanyID.ToString());
 
 							if (user.Password != null)
