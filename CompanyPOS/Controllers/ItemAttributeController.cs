@@ -105,8 +105,7 @@ namespace CompanyPOS.Controllers
 
 							if ((currentItemAttribute != null) && (currentItemAttribute.ToList().Exists(x => (x.Name == ItemAttribute.Name))))
 							{
-								var message = Request.CreateResponse(HttpStatusCode.OK, "There is an ItemAttribute with this name");
-								return message;
+								return Request.CreateResponse(HttpStatusCode.OK, "There is an ItemAttribute with this name");
 							}
 							else
 							{

@@ -87,8 +87,7 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// POST: api/ProductAmount
-		//CREATE
+		// POST: api/ProductAmount (CREATE)
 		public HttpResponseMessage Post([FromBody]ProductAmount ProductAmount, string token)
 		{
 			try
@@ -208,10 +207,9 @@ namespace CompanyPOS.Controllers
 								if (currentProductAmount != null)
 								{
 									currentProductAmount.Name = ProductAmount.Name;
-									currentProductAmount.Amount = ProductAmount.Name ?? currentProductAmount.Amount;
+									currentProductAmount.Amount = ProductAmount.Amount ?? currentProductAmount.Amount;
 									currentProductAmount.Unit = ProductAmount.Unit ?? currentProductAmount.Unit;
-
-
+									
 									//SAVE ACTIVITY
 									database.UserActivities.Add(new UserActivity()
 									{

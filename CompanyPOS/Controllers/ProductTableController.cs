@@ -196,7 +196,8 @@ namespace CompanyPOS.Controllers
 							currentProductTable.Name = ProductTable.Name;
 							currentProductTable.InStock = ProductTable.InStock;
 							currentProductTable.LastUpdated = DateTime.Now;
-
+							currentProductTable.Unit = ProductTable.Unit;
+							
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

@@ -12,7 +12,7 @@ namespace DATA.Models
         public string Description { get; set; }
 		public bool ActiveForSale { get; set; }
 		public string Color { get; set; } 
-		public int Tax {get;set;}
+		public string Tax {get;set;}
 
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
