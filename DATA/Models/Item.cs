@@ -14,6 +14,8 @@ namespace DATA.Models
 		public string Color { get; set; } 
 		public string Tax {get;set;}
 
+		public bool On { get; set; }
+
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; }
