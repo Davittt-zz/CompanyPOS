@@ -181,10 +181,12 @@ namespace CompanyPOS.Controllers
 							currentItem.Name = Item.Name;
 							currentItem.Price = Item.Price;
 							currentItem.Value = Item.Value;
-							currentItem.Visible = Item.Visible;
+							currentItem.Amount = Item.Amount;
+							currentItem.Color = Item.Color ?? currentItem.Color;
 							currentItem.ProductID = (Item.ProductID > 0) ? Item.ProductID : currentItem.ProductID;
 							currentItem.Tax = Item.Tax;
-
+							currentItem.Units = Item.Units ?? currentItem.Units;
+							currentItem.Visible = Item.Visible;						
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

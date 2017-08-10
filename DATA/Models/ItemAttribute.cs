@@ -10,16 +10,14 @@ namespace DATA.Models
         public string Name { get; set; }
         public string Value { get; set; }
         public Nullable<float> Price { get; set; }
-        public Nullable<bool> Visible { get; set; }
-		public string Tax { get; set; }
+		public double Amount { get; set; }
+		public string Color { get; set; }
+		public string Units { get; set; }
+		public bool Visible { get; set; }
 
+		public string Tax { get; set; }
         public int ItemID { get; set; }
-        //[ForeignKey("ItemID")]
-        //public virtual Item Item { get; set; }
-        //
         public int StoreID { get; set; }
-        // [ForeignKey("StoreID")]
-        //public virtual Store Store { get; set; }
 
 		//Optional
 		public int ProductID { get; set; }

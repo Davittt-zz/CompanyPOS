@@ -206,6 +206,7 @@ namespace CompanyPOS.Controllers
 							currentItem.ActiveForSale = Item.ActiveForSale;
 							currentItem.Color = Item.Color ?? currentItem.Color;
 							currentItem.Tax = Item.Tax ;
+							currentItem.On = Item.On ;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

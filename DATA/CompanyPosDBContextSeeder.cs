@@ -32,7 +32,7 @@ namespace CompanyPOS
                                             new ItemAttribute(){
                                            Name = "Color"
                                            , Value = "Red"
-                                           , Visible = true
+                                           , Amount = 0
                                            , Price = 1
                                             }
                                        }
