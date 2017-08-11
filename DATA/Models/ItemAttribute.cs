@@ -15,6 +15,8 @@ namespace DATA.Models
 		public string Units { get; set; }
 		public bool Visible { get; set; }
 
+		public double Cost { get; set; }
+
 		public string Tax { get; set; }
         public int ItemID { get; set; }
         public int StoreID { get; set; }

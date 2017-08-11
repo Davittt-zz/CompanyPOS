@@ -16,6 +16,8 @@ namespace DATA.Models
 
 		public bool On { get; set; }
 
+		public double Cost { get; set; }
+
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; }
