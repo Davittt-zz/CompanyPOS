@@ -270,30 +270,36 @@ namespace CompanyPOS.Controllers
 					{
 						//Save last  update
 						session.LastUpdate = DateTime.Now;
-						var currentFakturi = database.Fakturies.ToList().FirstOrDefault(x => (x.InvoiceNumber ?? "-1").ToLower().Trim() == Item.InvoiceNumber.ToLower().Trim() && (x.StoreID == session.StoreID));
-						if (currentFakturi != null)
-						{
-							database.SaveChanges();
-							return Request.CreateResponse(HttpStatusCode.OK, "There is a Fakturi with this Invoice Number");
-						}
-						else
+
+						var Fakturies = database.Fakturies.Where(x => x.StoreID == session.StoreID);
+						if (Fakturies != null)
 						{
 							Item.Date = DateTime.Now;
 							Item.StoreID = session.StoreID;
+
+							var newFakturi = "000000000001";
+							if (Fakturies != null)
+							{
+								var lastFakturi = Fakturies.ToList().Max(i => Int32.Parse(i.InvoiceNumber));
+								newFakturi = (lastFakturi + 1).ToString().PadLeft(12, '0');
+							}
+							Item.InvoiceNumber = newFakturi;
+
 							database.Fakturies.Add(Item);
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
 								StoreID = session.StoreID
-								,
-								UserID = session.UserID
-								,
-								Activity = "CREATE Fakturi"
-								,
-								Date = DateTime.Now
+								, UserID = session.UserID
+								, Activity = "CREATE Fakturi"
+								, Date = DateTime.Now
 							});
 							database.SaveChanges();
 							return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+						}
+						else
+						{
+							return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 						}
 					}
 					else
