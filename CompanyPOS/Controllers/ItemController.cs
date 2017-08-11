@@ -55,12 +55,6 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		// GET: api/Item
-		//public IEnumerable<string> Get()
-		//{
-		//    return new string[] { "value1", "value2" };
-		//}
-
 		// GET: api/Item/5
 		public HttpResponseMessage Get(string token, int id)
 		{
@@ -207,6 +201,7 @@ namespace CompanyPOS.Controllers
 							currentItem.Color = Item.Color ?? currentItem.Color;
 							currentItem.Tax = Item.Tax ;
 							currentItem.On = Item.On ;
+							currentItem.Cost = Item.Cost;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

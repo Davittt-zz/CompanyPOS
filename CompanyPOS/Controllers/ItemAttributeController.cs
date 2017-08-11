@@ -186,7 +186,9 @@ namespace CompanyPOS.Controllers
 							currentItem.ProductID = (Item.ProductID > 0) ? Item.ProductID : currentItem.ProductID;
 							currentItem.Tax = Item.Tax;
 							currentItem.Units = Item.Units ?? currentItem.Units;
-							currentItem.Visible = Item.Visible;						
+							currentItem.Visible = Item.Visible;
+							currentItem.Cost = Item.Cost;
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
