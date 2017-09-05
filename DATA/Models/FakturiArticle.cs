@@ -16,7 +16,7 @@ namespace DATA.Models
 
 		public string Unit { get; set; }
 		public string Item { get; set; }
-		public int	  Qty { get; set; }
+		public Nullable<decimal> Qty { get; set; }
 		public string Price { get; set; }
 		public string Tax { get; set; }
 

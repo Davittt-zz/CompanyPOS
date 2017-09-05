@@ -65,25 +65,25 @@ namespace CompanyPOS.Controllers
 		// POST api/Session/Login
 		// [Route("Login")]
 		[HttpPost]
-		public HttpResponseMessage PostLogin([FromBody] User user)
+		public HttpResponseMessage PostLogin([FromBody] User user, string UUID)
 		{
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
 				{
-					if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Status == true))
+					if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Active == true))
 					{
 						if (database.Users.ToList().Any(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim())))
 						{
 							//Get user's data
 							User userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
-
+													
 							Session session = (database.Sessions.ToList().FirstOrDefault(x => x.UserID == userEntity.ID));
 
 							if (session == null)
 							{
 								session = new Session();
-								//Save SessionC:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\CompanyPOS\Controllers\SessionController.cs
+								//Save Session
 								session.StoreID = userEntity.StoreID;
 								session.TokenID = DateTime.Now.GetHashCode().GetHashCode().ToString() + session.StoreID;
 								session.UserID = userEntity.ID;
@@ -105,12 +105,9 @@ namespace CompanyPOS.Controllers
 							database.UserActivities.Add(new UserActivity()
 								{
 									StoreID = session.StoreID
-									 ,
-									UserID = session.UserID
-									 ,
-									Activity = "LOGIN"
-									,
-									Date = DateTime.Now
+									 ,	UserID = session.UserID
+									 ,	Activity = "LOGIN"
+									 ,	Date = DateTime.Now
 								}
 								);
 							database.SaveChanges();
@@ -121,8 +118,7 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "User or password invalid");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.NotFound, "User or password invalid");
 						}
 					}
 					else
@@ -137,7 +133,7 @@ namespace CompanyPOS.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
-
+		
 		[HttpPut]
 		// PUT: api/Session/5
 		public HttpResponseMessage PutLogout([FromBody] Session Session)

@@ -174,7 +174,7 @@ namespace CompanyPOS.Controllers
 					if (session != null)
 					{
 						//Validate storeID and ItemPurchaseID
-						var data = database.ItemPurchases.ToList().Select(x => (x.SaleID == saleId) && (x.StoreID == session.StoreID));
+						var data = database.ItemPurchases.Where(x => (x.SaleID == saleId) && (x.StoreID == session.StoreID)).ToList();
 						if (data != null)
 						{
 							//Save last  update
@@ -346,7 +346,8 @@ namespace CompanyPOS.Controllers
 						{
 							currentItemPurchase.Quantity = ItemPurchase.Quantity;
 							currentItemPurchase.TotalPrice = ItemPurchase.TotalPrice;
-							currentItemPurchase.Status = ItemPurchase.Status;
+							currentItemPurchase.Status = ItemPurchase.Status ?? currentItemPurchase.Status;
+							currentItemPurchase.Notes = ItemPurchase.Notes ?? currentItemPurchase.Notes;
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

@@ -202,8 +202,11 @@ namespace CompanyPOS.Controllers
 					SessionController sessionController = new SessionController();
 					Session session = sessionController.Autenticate(token);
 
+					
 					if (session != null)
 					{
+						var sessionUser = database.Users.ToList().FirstOrDefault(x => (x.ID == session.UserID));
+
 						if (user.UUID == null || user.UUID.Trim().Equals(""))
 						{
 							return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "UUID not specified");
@@ -253,8 +256,8 @@ namespace CompanyPOS.Controllers
 									return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "Wrong StoreID");
 								}
 							}
-
-							if (user.Type != "OWNER")
+							
+							if (sessionUser.Type != "OWNER")
 							{
 								database.Users.Add(user);
 								//SAVE ACTIVITY
@@ -318,6 +321,8 @@ namespace CompanyPOS.Controllers
 
 					if (session != null)
 					{
+						var sessionUser = database.Users.ToList().FirstOrDefault(x => (x.ID == session.UserID));
+
 						if (user.UUID == null || user.UUID.Trim().Equals(""))
 						{
 							return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "UUID not specified");
@@ -332,9 +337,10 @@ namespace CompanyPOS.Controllers
 
 						if (currentUser != null)
 						{
-							if ( database.Users.ToList().Any(x => (x.ClerkNum == user.ClerkNum) && (x.StoreID == session.StoreID))){
+							if ( database.Users.ToList().Any(x => (x.ClerkNum == user.ClerkNum) && (x.StoreID == session.StoreID) && (x.ID != id))){
 							 return  Request.CreateResponse(HttpStatusCode.OK, "ClerkNum Already exists");
 							}
+
 							currentUser.LastName = user.LastName;
 							currentUser.UserLevel = user.UserLevel;
 							currentUser.Username = user.Username;
@@ -343,9 +349,17 @@ namespace CompanyPOS.Controllers
 							currentUser.Phone = user.Phone;
 							currentUser.Status = user.Status;
 							currentUser.UUID = user.UUID;
+							currentUser.Active = user.Active;
+							currentUser.ClerkNum =  user.ClerkNum;
 
-							currentUser.ClerkNum = user.ClerkNum;
-							
+							if ((sessionUser.UserLevelNum < 5) && (currentUser.UserLevelNum != user.UserLevelNum))
+							{
+								return Request.CreateResponse(HttpStatusCode.OK, "You don't have priviledges to edit the user access level");
+							}
+							else {
+								currentUser.UserLevelNum = user.UserLevelNum;
+							}
+
 							currentUser.CompanyID = currentUser.CompanyID ?? Int32.Parse(currentCompanyID.CompanyID.ToString());
 
 							if (user.Password != null)
@@ -356,10 +370,8 @@ namespace CompanyPOS.Controllers
 							database.UserActivities.Add(new UserActivity()
 							{
 								StoreID = session.StoreID
-								,
-								UserID = session.UserID
-								,
-								Activity = "CREATE USER",
+								, UserID = session.UserID
+								, Activity = "UPDATE USER",
 								Date = DateTime.Now
 							});
 

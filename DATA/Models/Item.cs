@@ -16,6 +16,8 @@ namespace DATA.Models
 
 		public bool On { get; set; }
 
+		public bool AttributesOn { get; set; }
+
 		public double Cost { get; set; }
 
         public int StoreID { get; set; }

@@ -44,14 +44,12 @@ namespace CompanyPOS.Controllers
 						}
 						else
 						{
-							var message = Request.CreateResponse(HttpStatusCode.NotFound, "Fakturi not found");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.NotFound, "Fakturi not found");
 						}
 					}
 					else
 					{
-						var message = Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
-						return message;
+						return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "No asociated Session");
 					}
 				}
 			}
@@ -277,25 +275,44 @@ namespace CompanyPOS.Controllers
 							Item.Date = DateTime.Now;
 							Item.StoreID = session.StoreID;
 
-							var newFakturi = "000000000001";
-							if (Fakturies != null)
+							if (Item.SystemNumber == null)
+								return Request.CreateResponse(HttpStatusCode.OK, "SystemNumber attribute not found (Auto-Generated, Manual)");
+
+							if ((Item.InvoiceNumber == null) && (Item.SystemNumber.ToLower() == "manual"))
+								return Request.CreateResponse(HttpStatusCode.OK, "SystemNumber is manual but Item.InvoiceNumber is null");
+
+							if ((Item.InvoiceNumber == null) || Item.SystemNumber.ToLower().Equals(("Auto-Generated").ToLower()))
 							{
-								var lastFakturi = Fakturies.ToList().Max(i => Int32.Parse(i.InvoiceNumber));
-								newFakturi = (lastFakturi + 1).ToString().PadLeft(12, '0');
+								var newFakturi = "000000000001";
+								if (Fakturies.Count() > 0)
+								{
+									var lastFakturi = Fakturies.ToList().Max(i => Int64.Parse(i.InvoiceNumber));
+									newFakturi = (lastFakturi + 1).ToString().PadLeft(12, '0');
+								}
+								Item.InvoiceNumber = newFakturi;
 							}
-							Item.InvoiceNumber = newFakturi;
+
+							var currentFakturi = database.Fakturies.ToList().FirstOrDefault(x => (x.StoreID == session.StoreID) && (x.InvoiceNumber == Item.InvoiceNumber));
+							if (currentFakturi != null)
+							{
+								return Request.CreateResponse(HttpStatusCode.OK, "There is already a Fakturi with this FakturiNumber");
+							}
 
 							database.Fakturies.Add(Item);
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
 								StoreID = session.StoreID
-								, UserID = session.UserID
-								, Activity = "CREATE Fakturi"
-								, Date = DateTime.Now
+								,
+								UserID = session.UserID
+								,
+								Activity = "CREATE Fakturi"
+								,
+								Date = DateTime.Now
 							});
 							database.SaveChanges();
 							return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+
 						}
 						else
 						{

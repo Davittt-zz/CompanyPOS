@@ -202,6 +202,8 @@ namespace CompanyPOS.Controllers
 							currentItem.Tax = Item.Tax ;
 							currentItem.On = Item.On ;
 							currentItem.Cost = Item.Cost;
+							currentItem.AttributesOn = Item.AttributesOn;
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{

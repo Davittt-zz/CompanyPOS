@@ -115,44 +115,29 @@ namespace CompanyPOS.Controllers
 						//Save last update
 						session.LastUpdate = DateTime.Now;
 
-						var currentSale = database.Sales.ToList().FirstOrDefault(x => (x.Title == Sale.Title) && (x.StoreID == session.StoreID));
-						if (currentSale != null)
+						var shiftToFind = database.Shifts.FirstOrDefault(x => x.ID == Sale.ShiftID && session.StoreID == x.StoreID);
+						if ((shiftToFind != null) && (shiftToFind.Status == "OPEN"))
 						{
+							Sale.StoreID = session.StoreID;
+							Sale.Date = DateTime.Now;
+							//Create Transaction Number
+							Sale.TransactionNumber = Math.Abs((decimal)DateTime.Now.GetHashCode() * 1000 + (decimal)DateTime.Now.AddDays(-7).GetHashCode()).ToString();
+
+							database.Sales.Add(Sale);
+							//SAVE ACTIVITY
+							database.UserActivities.Add(new UserActivity()
+							{
+								StoreID = session.StoreID
+								, UserID = session.UserID
+								, Activity = "CREATE Sale"
+								, Date = DateTime.Now
+							});
 							database.SaveChanges();
-							var message = Request.CreateResponse(HttpStatusCode.OK, "There is a Sale with this name");
-							return message;
+							return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
 						}
 						else
 						{
-							var shiftToFind = database.Shifts.FirstOrDefault(x => x.ID == Sale.ShiftID && session.StoreID == x.StoreID);
-							if ((shiftToFind != null) && (shiftToFind.Status == "OPEN"))
-							{
-								Sale.StoreID = session.StoreID;
-								Sale.Date = DateTime.Now;
-								//Create Transaction Number
-								Sale.TransactionNumber = Math.Abs((decimal)DateTime.Now.GetHashCode() * 1000 + (decimal)DateTime.Now.AddDays(-7).GetHashCode()).ToString();
-
-								database.Sales.Add(Sale);
-								//SAVE ACTIVITY
-								database.UserActivities.Add(new UserActivity()
-								{
-									StoreID = session.StoreID
-									,
-									UserID = session.UserID
-									,
-									Activity = "CREATE Sale",
-									Date = DateTime.Now
-								});
-								database.SaveChanges();
-
-								var message = Request.CreateResponse(HttpStatusCode.Created, "Create Success");
-								return message;
-							}
-							else
-							{
-								var message = Request.CreateResponse(HttpStatusCode.OK, "Shift not found or not OPEN");
-								return message;
-							}
+							return Request.CreateResponse(HttpStatusCode.OK, "Shift not found or not OPEN");
 						}
 					}
 					else

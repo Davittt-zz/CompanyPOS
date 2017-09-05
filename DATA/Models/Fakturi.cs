@@ -9,7 +9,12 @@ namespace DATA.Models
 	{
 		public int ID { get; set; }
 
+
 		public string InvoiceNumber { get; set; }
+
+		public string SystemNumber { get; set; }
+
+
 		public int AssociatesID { get; set; }
 		public DateTime Date { get; set; }
 		public string PaymentType { get; set; }

@@ -14,6 +14,8 @@ namespace DATA.Models
 
 		public string Status { get; set; }
 
+		public string Notes { get; set; }
+
         public int ItemID { get; set; }
         //  [ForeignKey("ItemID")]
         //  public virtual Item Item { get; set; }

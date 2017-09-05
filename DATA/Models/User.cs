@@ -16,6 +16,9 @@ namespace DATA.Models
 
         public string Password { get; set; }
         public string UserLevel { get; set; }
+
+		public int UserLevelNum { get; set; }
+
         public string Username { get; set; }
         public string Email { get; set; }
 
@@ -33,6 +36,5 @@ namespace DATA.Models
         public virtual Store Store { get; set; }
 
         public virtual ICollection<UserActivity> UserActivity { get; set; }
-        //public virtual ICollection<Sale> Sale { get; set; }
     }
 }
