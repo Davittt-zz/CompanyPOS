@@ -26,3 +26,12 @@ C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\Company
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\obj\Debug\DATA.dll
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\obj\Debug\DATA.pdb
 C:\Users\admin\Google Drive\Proyectos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\obj\Debug\DATA.csprojResolveAssemblyReference.cache
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\DATA.dll
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\DATA.pdb
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\EntityFramework.dll
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\EntityFramework.xml
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\obj\Debug\DATA.csprojResolveAssemblyReference.cache
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\obj\Debug\DATA.dll
+C:\Users\admin\Google Drive\Proyectos\Abiertos\Freelancer.com\CompanyPOS\projects\CompanyPOS\DATA\obj\Debug\DATA.pdb
