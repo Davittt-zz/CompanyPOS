@@ -63,9 +63,9 @@ namespace CompanyPOS.Controllers
 		}
 
 		// POST api/Session/Login
-		// [Route("Login")]
+		[Route("Login")]
 		[HttpPost]
-		public HttpResponseMessage PostLogin([FromBody] User user, string UUID)
+		public HttpResponseMessage PostLogin([FromBody] User user)
 		{
 			try
 			{
