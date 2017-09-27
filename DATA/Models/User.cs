@@ -16,7 +16,7 @@ namespace DATA.Models
 
         public string Password { get; set; }
         public string UserLevel { get; set; }
-
+        [NotMapped]
 		public int UserLevelNum { get; set; }
 
         public string Username { get; set; }
