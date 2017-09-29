@@ -8,8 +8,8 @@ namespace DATA.Models
     {
         public int ID { get; set; }
 		public string UUID { get; set; }
-
-		public string FirstName { get; set; }
+        public int? PinNumber { get; set; }
+        public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Phone { get; set; }
         public string Type { get; set; }

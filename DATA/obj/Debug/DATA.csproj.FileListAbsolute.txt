@@ -32,6 +32,5 @@ C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.dll
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.xml
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.csprojResolveAssemblyReference.cache
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.dll
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.pdb

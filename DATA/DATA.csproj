@@ -53,6 +53,7 @@
     <Compile Include="CompanyPosDBContext.cs" />
     <Compile Include="CompanyPosDBContextSeeder.cs" />
     <Compile Include="Models\Associate.cs" />
+    <Compile Include="Models\Dispositives.cs" />
     <Compile Include="Models\FakturiArticle.cs" />
     <Compile Include="Models\ProductAmount.cs" />
     <Compile Include="Models\ProductTable.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringTrimmerInterceptor.cs" />
     <Compile Include="TimeTools.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

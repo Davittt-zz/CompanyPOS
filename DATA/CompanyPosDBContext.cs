@@ -42,5 +42,6 @@ namespace DATA
 		public DbSet<Fakturi> Fakturies { get; set; }
 		public DbSet<FakturiArticle> FakturiArticles { get; set; }
 		public DbSet<ProductAmount> ProductAmounts { get; set; }
-	}
+        public DbSet<Dispositives> Dispositives { get; set; }
+    }
 }

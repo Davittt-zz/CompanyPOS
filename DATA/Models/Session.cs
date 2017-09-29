@@ -3,6 +3,7 @@ namespace DATA.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public partial class Session
     {
@@ -12,5 +13,7 @@ namespace DATA.Models
         public string TokenID { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
         public Nullable<System.DateTime> LastUpdate { get; set; }
+        [NotMapped]
+        public int? PinNumber { get; set; }
     }
 }
