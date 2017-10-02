@@ -124,6 +124,7 @@ namespace CompanyPOS.Controllers
 							Sale.TransactionNumber = Math.Abs((decimal)DateTime.Now.GetHashCode() * 1000 + (decimal)DateTime.Now.AddDays(-7).GetHashCode()).ToString();
 
 							database.Sales.Add(Sale);
+
 							//SAVE ACTIVITY
 							database.UserActivities.Add(new UserActivity()
 							{
@@ -133,7 +134,7 @@ namespace CompanyPOS.Controllers
 								, Date = DateTime.Now
 							});
 							database.SaveChanges();
-							return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
+							return Request.CreateResponse(HttpStatusCode.Created, Sale.ID);
 						}
 						else
 						{
