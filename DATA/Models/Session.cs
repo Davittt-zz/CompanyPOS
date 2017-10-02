@@ -15,5 +15,7 @@ namespace DATA.Models
         public Nullable<System.DateTime> LastUpdate { get; set; }
         [NotMapped]
         public int? PinNumber { get; set; }
+        [NotMapped]
+        public string UUID { get; set; }
     }
 }

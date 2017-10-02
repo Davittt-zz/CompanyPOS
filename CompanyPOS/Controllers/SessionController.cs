@@ -130,13 +130,17 @@ namespace CompanyPOS.Controllers
 							User userEntity = database.Users.ToList().FirstOrDefault(x => x.Username.Trim().Equals(user.Username.Trim()) && x.Password.Trim().Equals(user.Password.Trim()));
                             //SAVE SESSION
                             Session session = saveSession(userEntity);
-                            int pinNumber = Util.GetPinNumber(user.UUID, userEntity.ID);
+
                             //SAVE DISPOSITIVE
-                            removeDispositive(user.UUID, userEntity.ID);
-                            Dispositives dispositive = new Dispositives { UserID = userEntity.ID, PinNumber = pinNumber, UUID = user.UUID, Active=true };
-                            database.Dispositives.Add(dispositive);
-                            database.SaveChanges();
-                            session.PinNumber = dispositive.PinNumber;
+                            if(!string.IsNullOrEmpty(user.UUID))
+                            { 
+                                int pinNumber = Util.GetPinNumber(user.UUID, userEntity.ID);
+                                removeDispositive(user.UUID, userEntity.ID);
+                                Dispositives dispositive = new Dispositives { UserID = userEntity.ID, PinNumber = pinNumber, UUID = user.UUID, Active=true };
+                                database.Dispositives.Add(dispositive);
+                                database.SaveChanges();
+                                session.PinNumber = dispositive.PinNumber;
+                            }
                             //SAVE ACTIVITY
                             database.UserActivities.Add(new UserActivity()
 								{
@@ -256,11 +260,15 @@ namespace CompanyPOS.Controllers
 							);
 
 						database.SaveChanges();
-
-                        Dispositives disp = database.Dispositives.Where(x => x.PinNumber.Equals((int)session.PinNumber)&& x.Active.Equals(true))
+                        if(!string.IsNullOrEmpty(session.UUID))
+                        { 
+                        Dispositives disp = database.Dispositives.Where(x => x.PinNumber.Equals((int)session.PinNumber)
+                        && x.Active.Equals(true)
+                        && x.UUID.Equals(session.UUID))
                         .FirstOrDefault();
                         User userEntity = database.Users.Find(session.UserID);
                         removeDispositive(disp.UUID, userEntity.ID);
+                        }
 
                         return Request.CreateResponse(HttpStatusCode.OK, "Logout Succesfully");
 					}
