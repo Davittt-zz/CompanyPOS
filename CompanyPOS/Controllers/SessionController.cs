@@ -169,7 +169,8 @@ namespace CompanyPOS.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
 			}
 		}
-        private Session saveSession(User userEntity)
+      
+		private Session saveSession(User userEntity)
         {
             using (CompanyPosDBContext database = new CompanyPosDBContext())
             {
