@@ -70,7 +70,8 @@ namespace CompanyPOS.Controllers
 					if (session != null)
 					{
 						//Validate storeID and SaleID
-						var data = database.Sales.ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
+						var data = database.Sales.Include("Invoices")
+                            .ToList().FirstOrDefault(x => (x.ID == id) && (x.StoreID == session.StoreID));
 						if (data != null)
 						{
 							//Save last  update

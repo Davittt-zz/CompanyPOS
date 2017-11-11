@@ -35,3 +35,15 @@ C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServe
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.dll
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.pdb
 C:\Users\pedro_2\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.csprojResolveAssemblyReference.cache
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\DATA.dll
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\DATA.pdb
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.dll
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.xml
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.csprojResolveAssemblyReference.cache
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.csproj.CoreCompileInputs.cache
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.dll
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\obj\Debug\DATA.pdb
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\Newtonsoft.Json.dll
+C:\Users\PEDRO PEREZ\Source\Repos\CompanyPOS\DATA\bin\Debug\Newtonsoft.Json.xml

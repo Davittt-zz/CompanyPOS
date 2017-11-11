@@ -33,8 +33,8 @@ namespace CompanyPOS.Controllers
 			}
 		}
 
-		public void Create(int StoreID, int SaleID, DateTime Date, string PaymentMethod, string TotalPrice)
-		{
+		public void Create(int StoreID, int SaleID, DateTime Date, string PaymentMethod, string TotalPrice, decimal? TotalPaid, int PaymentsNumber, decimal? AmountPaid)
+        {
 			try
 			{
 				using (CompanyPosDBContext database = new CompanyPosDBContext())
@@ -48,10 +48,13 @@ namespace CompanyPOS.Controllers
 						Date = Date
 						,
 						PaymentMethod = PaymentMethod
-					});
+                        ,
+                        AmountPaid= AmountPaid
+                    });
 
+                 
 
-					database.SaveChanges();
+                    database.SaveChanges();
 
 
 					//    var message = Request.CreateResponse(HttpStatusCode.OK, data);
@@ -265,7 +268,9 @@ namespace CompanyPOS.Controllers
 										Activity = "CREATE Invoice",
 										Date = DateTime.Now
 									});
-									database.SaveChanges();
+                                   
+
+                                    database.SaveChanges();
 
 									return Request.CreateResponse(HttpStatusCode.Created, "Create Success");
 								}
@@ -349,7 +354,11 @@ namespace CompanyPOS.Controllers
 								Date = DateTime.Now
 							});
 
-							database.SaveChanges();
+                            //update sale 
+                            
+                      
+
+                            database.SaveChanges();
 							return Request.CreateResponse(HttpStatusCode.OK, "Update Success");
 
 						}

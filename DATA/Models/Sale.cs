@@ -1,19 +1,20 @@
 
 namespace DATA.Models
 {
-	using System;
+    using Newtonsoft.Json;
+    using System;
 	using System.Collections.Generic;
 	using System.ComponentModel.DataAnnotations.Schema;
 
 	public partial class Sale
 	{
-		//public Sale()
-		//{
-		//    this.Invoice = new HashSet<Invoice>();
-		//    this.ItemPurchase = new HashSet<ItemPurchase>();
-		//}
+        public Sale()
+        {
+            this.Invoices = new HashSet<Invoice>();
+            this.ItemPurchases = new HashSet<ItemPurchase>();
+        }
 
-		public int ID { get; set; }
+        public int ID { get; set; }
 		public Nullable<System.DateTime> Date { get; set; }
 
 		public string Title { get; set; }
@@ -38,10 +39,13 @@ namespace DATA.Models
 		//   public virtual Shift Shift { get; set; }
 
 		public int StoreID { get; set; }
-		//    [ForeignKey("StoreID")]
-		//    public virtual Store Store { get; set; }
-
-		public virtual ICollection<Invoice> Invoices { get; set; }
-		public virtual ICollection<ItemPurchase> ItemPurchases { get; set; }
-	}
+        //    [ForeignKey("StoreID")]
+        //    public virtual Store Store { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Invoice> Invoices { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<ItemPurchase> ItemPurchases { get; set; }
+        public decimal? TotalPaid { get; set; }
+        public int? PaymentsNumber { get; set; }
+    }
 }

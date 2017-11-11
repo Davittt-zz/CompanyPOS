@@ -23,8 +23,12 @@ namespace CompanyPOS
             config.Formatters.Remove(config.Formatters.XmlFormatter);
            // config.Formatters.XmlFormatter.UseXmlSerializer = false;
             config.Formatters.JsonFormatter.UseDataContractJsonSerializer = true;
+            var json = config.Formatters.JsonFormatter;
+            json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
-		
-		}
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
+
+        }
     }
 }
