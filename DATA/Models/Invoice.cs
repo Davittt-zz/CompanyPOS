@@ -15,12 +15,14 @@ namespace DATA.Models
         public int ID { get; set; }
         [DataMember]
         public DateTime Date { get; set; }
+        [DataMember]
         public string PaymentMethod { get; set; }
 
         [NotMapped]
         public string errorMessage { get; set; }
 
         [NotMapped]
+        [DataMember]
         public string _date
         {
             get { return Date.ToString(); }
